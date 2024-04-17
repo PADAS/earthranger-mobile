@@ -1,0 +1,18 @@
+// External Dependencies
+import React from 'react';
+import {
+  Svg, Path,
+} from 'react-native-svg';
+
+// Internal Dependencies
+import { COLORS_LIGHT } from '../constants/colors';
+import { IconProps } from '../types/types';
+
+const PrivacyPolicyIcon = ({ width = '20', height = '20', color = COLORS_LIGHT.G2_5_mobileSecondaryGray }: IconProps) => (
+  <Svg width={width} height={height} viewBox="0 0 22 22" fill={color}>
+    <Path d="M18.6002 13.6899L15.2002 15.1999V17.4699C15.1989 18.4916 15.5299 19.486 16.1432 20.3031C16.7565 21.1202 17.6188 21.7158 18.6002 21.9999C19.5816 21.7158 20.4439 21.1202 21.0572 20.3031C21.6705 19.486 22.0015 18.4916 22.0002 17.4699V15.1999L18.6002 13.6899Z" />
+    <Path d="M14.2 15.2V14.55L14.79 14.28L17.52 13.07V6.57L11 0H2.19C1.60918 0 1.05214 0.230731 0.641436 0.641436C0.230731 1.05214 0 1.60918 0 2.19L0 19.71C0 20.2882 0.229678 20.8427 0.638507 21.2515C1.04734 21.6603 1.60183 21.89 2.18 21.89H15.33C15.5974 21.8927 15.8626 21.8416 16.11 21.74C15.515 21.1979 15.0383 20.5389 14.7096 19.8042C14.381 19.0695 14.2075 18.2748 14.2 17.47V15.2ZM9.85 1.64L15.85 7.64H9.85V1.64ZM13.14 17.52H4.38V15.33H13.14V17.52ZM13.14 13.14H4.38V11H13.14V13.14Z" />
+  </Svg>
+);
+
+export { PrivacyPolicyIcon };

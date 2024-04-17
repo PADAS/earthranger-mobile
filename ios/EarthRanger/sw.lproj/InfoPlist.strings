@@ -1,0 +1,9 @@
+NSCameraUsageDescription = "Programu hii hutumia kamera kupiga picha na kuwasha uwezo wa kuziongeza kwenye ripoti za matukio unazowasilisha";
+
+NSLocationAlwaysAndWhenInUseUsageDescription = "Unaposhiriki eneo lako na programu hii unawezesha ufuatiliaji wa wakati halisi na jukwaa la EarthRanger";
+
+NSLocationWhenInUseUsageDescription = "Unaposhiriki eneo lako na programu hii unawezesha ufuatiliaji wa wakati halisi na jukwaa la EarthRanger";
+
+NSMotionUsageDescription = "Masasisho ya mwendo huongeza ufanisi wa betri kwa kugeuza kwa akili huduma za eneo wakati kifaa kinapogunduliwa kuwa kinatembea";
+
+NSPhotoLibraryUsageDescription = "Unaposhiriki maktaba yako ya picha na programu hii unawezesha uwezo wa kuongeza picha kwenye ripoti za matukio unazowasilisha";

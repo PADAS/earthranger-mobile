@@ -1,0 +1,406 @@
+{
+    "splashScreen": {
+        "syncingUser": "Inasawazisha Akaunti",
+        "syncingReportCategories": "Inasawazisha Kategoria za Tukio",
+        "syncingTypesOfReports": "Inasawazisha Aina za tukio",
+        "syncingPatrolTypes": "Kusawazisha aina za doria"
+    },
+    "loginView": {
+        "requiredField": "Sehemu inayohitajika",
+        "incorrectCredentialsMessage": "Jina la mtumiaji au nenosiri batili. Tafadhali jaribu tena.",
+        "invalidSiteName": "Jina la tovuti si sahihi",
+        "internetConnectionNeeded": "Muunganisho wa mtandao unahitajika ili kuingia.",
+        "userIssuesMessage": "Akaunti yako ya mtumiaji haikuweza kusawazishwa, tafadhali wasiliana na msimamizi wa tovuti yako",
+        "loginButtonText": "Ingia",
+        "siteNameLabel": "JINA LA TOVUTI *",
+        "usernameLabel": "JINA LA MTUMIAJI *",
+        "passwordLabel": "NENOSIRI *",
+        "checkBoxText": "Nikumbuke",
+        "alertDialog": {
+            "title": "Ruhusu \"EarthRanger\" kufikia eneo lako",
+            "message": "Mahali ulipo hutumika kutoa ufuatiliaji wa wakati halisi kwenye jukwaa la EarthRanger.",
+            "action": "Endelea"
+        },
+        "expiredTokenAlertDialog": {
+            "title": "Tafadhali ingia tena",
+            "message": "Hitilafu fulani imetokea. Tafadhali ingiza jina lako la mtumiaji na nenosiri tena.",
+            "action": "sawa"
+        },
+        "loadingAccountInformation": "Inasawazisha Akaunti za Mtumiaji",
+        "loadingReportCategories": "Inasawazisha Kategoria za Tukio",
+        "loadingTypesOfReports": "Inasawazisha Aina za Tukio",
+        "loadingPatrolTypes": "Kusawazisha Aina za Doria"
+    },
+    "mapTrackLocation": {
+        "tracking": "Kufuatilia",
+        "off": "Off",
+        "live": "Ishi",
+        "on": "Washa",
+        "patrols": "Doria",
+        "patrol": "Doria",
+        "patrolTypes": "Aina za Doria",
+        "liveDescrption": "Moja kwa moja, inasawazisha kwa \nEarthRanger",
+        "onDescrption": "Imewashwa, inarekodi kwa \nkifaa",
+        "gpsDescrption": "Imewashwa, kufuatilia mapenzi\nImewashwa, mapenzi \neneo linaweza kuwa \nkuamua",
+        "gpsAccuracy": "Usahihi wa GPS: ",
+        "currentLocationAt": "ENEO KWA ",
+        "noGpsText": "Mahali hapapatikani",
+        "startTracking": "Anza Kufuatilia",
+        "startPatrol": "Anza Doria",
+        "startLocation": "Anzisha Mahali",
+        "permissions": {
+            "title": "Ruhusu {applicationName} kufikia eneo la kifaa hiki hata kikiwa kimefungwa au hakitumiki.",
+            "message": "Programu hii hukusanya data ya eneo ili kuwezesha kurekodi safari zako kwenda kazini na kukokotoa umbali wa kusafiri.",
+            "positiveAction": "Badilisha hadi {backgroundPermissionOptionLabel}",
+            "negativeAction": "Ghairi"
+        },
+        "trackDialog": {
+            "title": "Ungependa Kuzima Ufuatiliaji?",
+            "message": "Data ya kufuatilia eneo haitarekodiwa tena.",
+            "positiveAction": "Kuzima",
+            "negativeAction": "Ghairi"
+        },
+        "patrolDialog": {
+            "message": "Je, ungependa kuendelea kufuatilia eneo la kifaa chako?",
+            "positiveAction": "Ndiyo",
+            "negativeAction": "Hapana"
+        },
+        "unauthorizedPatrolDialog": {
+            "message": "Huna ruhusa zinazohitajika ili kuanzisha doria, tafadhali wasiliana na msimamizi wa tovuti yako ili upewe ruhusa zinazohitajika kufanya kazi na doria.",
+            "action": "Sawa"
+        },
+        "recentTracks": "Onyesha nyayo za hivi sasa",
+        "basemaps": "Ramani ya msingi",
+        "topo": "Juu",
+        "satellite": "Satellite",
+        "street": "Mtaa",
+        "noUserId": "Mtumiaji hawezi kuanza kufuatilia"
+    },
+    "patrolDetails": {
+        "startLocation": "Mahali pa kuanzia",
+        "started": "Imeanza",
+        "endPatrol": "Maliza Doria"
+    },
+    "mainTabBar": {
+        "map": "Ramani",
+        "status": "Hali",
+        "events": "Matukio",
+        "settings": "Mipangilio"
+    },
+    "menuSettingsView": {
+        "settings": "MIPANGILIO",
+        "about": "KUHUSU",
+        "menu": "Menyu"
+    },
+    "statusView": {
+        "tracks": "Nyimbo",
+        "pendingSync": "Inasubiri Usawazishaji",
+        "submittedSession": "Iliwasilisha kipindi hiki",
+        "lastSync": "Usawazishaji wa Mwisho",
+        "defaultPendingSync": "Bado haijasawazishwa",
+        "trackPoints": "pointi za kufuatilia",
+        "unableToSync": "Imeshindwa kusawazisha, jaribu tena baadaye.",
+        "syncAlertInfo" : {
+            "title": "Usawazishaji wa Programu",
+            "message": "Wakati kifaa kina muunganisho mzuri programu itajaribu kupakia nyimbo, ripoti na doria. Kubonyeza kitufe cha kusawazisha kutaanza kusawazisha mwenyewe.",
+            "positiveAction": "sawa"
+        },
+        "toastReportError": {
+            "message": "Aina ya tukio {{reportType}} haikuweza kuingizwa kwenye hifadhidata ya ndani"
+        },
+        "sync": "Sawazisha",
+        "noInternetConnection": "Hakuna muunganisho wa intaneti uliogunduliwa, tafadhali jaribu tena wakati umeanzisha muunganisho wa intaneti"
+    },
+    "settingsView": {
+        "earthrangerSite": "EARTHRANGER TOVUTI",
+        "user": "MTUMIAJI",
+        "logOut": "Toka nje",
+        "experimentalFeatures": "Vipengele vya Majaribio",
+        "experimentalFeaturesDescription": "Vipengele vya majaribio katika ukuzaji",
+        "mergeEventCategories": "Unganisha Kategoria za Tukio",
+        "mergeEventCategoriesDescription": "Aina za matukio zinatenganishwa na kategoria",
+        "switchTrackedBySubject": "Badilisha mada inayofuatiliwa",
+        "dataConnectionAlert" : {
+            "title": "Muunganisho wa data unahitajika ili kuingia",
+            "message": "Ukitoka utahitaji muunganisho wa data ili uingie tena.",
+            "positiveAction": "Ondoka",
+            "negativeAction": "Ghairi"
+        },
+        "pendingSyncAlert": {
+            "title": "Data ambayo haijasawazishwa itapotea",
+            "message": "Rasimu na data ambayo inasubiri kusawazishwa itapotea ikiwa utatoka kabla ya data yako kupakiwa kwenye EarthRanger.",
+            "positiveAction": "Ondoka",
+            "negativeAction": "Ghairi"
+        },
+        "activeTrackingAlert": {
+            "title": "Huwezi kuondoka unapofuatilia au kufanya doria",
+            "message": "Tafadhali malizia doria au ufuatiliaji wowote kabla ya kutoka"
+        },
+        "switchActiveUserAlert": {
+            "title": "Huwezi kubadilisha mtumiaji unapofuatilia au kufanya doria.",
+            "message": "Tafadhali malizia doria au ufuatiliaji wowote kabla ya kubadilisha mtumiaji.",
+            "positiveAction": "Ok"
+        },
+        "switchActiveUser": "Badili Mtumiaji",
+        "account": "Akaunti",
+        "testing": "Kupima",
+        "siteName": "Jina la Tovuti",
+        "dataCollection": "Mkusanyiko wa data",
+        "trackedBy": "Inafuatiliwa Na",
+        "display": "Onyesho",
+        "basemap": "Ramani ya msingi",
+        "coordinates": "Kuratibu",
+        "coordinatesUnits": "Vitengo vya Kuratibu",
+        "darkMode": "Hali ya giza",
+        "saveToCameraRoll": "Hifadhi kwenye Mkanda wa Kamera",
+        "uploadPhotosWithWifi": "Pakia Picha ukitumia Wifi",
+        "media": "Vyombo vya habari",
+        "photoQuality": "Ubora wa Picha",
+        "low": "Chini",
+        "medium": "Kati",
+        "high": "Juu",
+        "slowestUpload": "Upakiaji wa polepole zaidi",
+        "fastestUpload": "Upakiaji wa haraka zaidi",
+        "patrolEventDetails": "Maelezo ya Doria",
+        "eventType": "Aina ya Tukio"
+    },
+    "aboutView": {
+        "version": "Toleo 1.1.9.49",
+        "developedInPartnershipWith": "Imeandaliwa kwa ushirikiano na",
+        "theMaraElephantProject": " The Mara Elephant Project",
+        "privacyPolicy": "Sera ya Faragha",
+        "endUserLicenseAgreement": "Mkataba wa Leseni ya Mtumiaji wa Mwisho",
+        "emailSupport": "Msaada wa barua pepe",
+        "supportEmail": "support@earthranger.com",
+        "downloadUserGuide": "Pakua Mwongozo wa Mtumiaji",
+        "urlTheMaraElephantProject": "https://maraelephantproject.org",
+        "urlPrivacyPolicy": "https://earthranger.com/Privacy-Policy.html",
+        "urlEndUserLicenseAgreement": "https://earthranger.com/EULA",
+        "urlSupportEmail": "mailto:support@earthranger.com",
+        "urlHelpCenter": "https://support.earthranger.com/",
+        "helpCenter": "Kituo cha Usaidizi",
+        "resetDatabaseCache": "Weka upya Akiba ya Hifadhidata",
+        "reportIssue": "Ripoti Tatizo"
+    },
+    "reportIssue": {
+        "title": "Tunawezaje kuboresha?",
+        "body": "Tafadhali eleza suala lililotokea au jisikie huru kututumia maoni ya jumla! Unaweza pia kutuma barua pepe kwa support@earthranger.com.",
+        "message": "Ujumbe",
+        "shareLogsTitle": "Wasilisha kumbukumbu za wiki iliyopita",
+        "shareLogsDescription": "Hii itasaidia timu yetu kujua jinsi ya kutatua suala hilo.",
+        "shareDbTitle": "Shiriki Hifadhidata",
+        "shareDbDescription": "Unda nakala ya hifadhidata ya EarthRanger ili kusaidia katika utatuzi wa matatizo. Hifadhidata iliyoshirikiwa haiwezi kuingizwa moja kwa moja kwenye EarthRanger.",
+        "appBarTitle": "Ripoti Tatizo",
+        "reportButton": "Ripoti Tatizo",
+        "compressTitle": "Kukandamiza magogo",
+        "compressBody": "Hii inaweza kuchukua muda.",
+        "cancel": "Ghairi",
+        "compose": "Tunga",
+        "issueReport": "Ripoti ya Toleo",
+        "sensitiveDataTitle": "Kushiriki Data & Faragha",
+        "sensitiveDataDescription": "Kwa kuwasilisha tikiti hii ya usaidizi, nakala ya data ya tukio iliyokusanywa kwenye kifaa hiki itashirikiwa na timu ya EarthRanger ili kuchakata na kutatua suala hilo. Unaidhinisha timu ya EarthRanger kutumia data na uwasilishaji wako ili kukupa huduma za usaidizi kama ilivyofafanuliwa zaidi katika Sera ya Faragha inayopatikana kutoka kwa Mwonekano wa Mipangilio ya Programu.",
+        "sensitiveDataAdditionalText": "Je, ungependa kuendelea?"
+    },
+    "reports": {
+        "appBarTitle": "Tukio Jipya",
+        "title": "Matukio",
+        "savedDrafts": "RASIMU ZILIZOHIFADHIWA",
+        "pendingSync": "INASUBIRI Sync",
+        "status": "HALI",
+        "submittedThisSession": "Imewasilishwa Kikao Hiki: ",
+        "lastSyncInfo": "Usawazishaji wa mwisho: ",
+        "reportsCustomAlertInfo": {
+            "title": "Ripoti Usawazishaji",
+            "message": "Kifaa kikiwa na muunganisho mzuri programu itasawazisha ripoti zilizowasilishwa na kusasisha mabadiliko kwenye fomu za ripoti. Idadi ya ripoti zilizowasilishwa itawekwa upya kila wakati unapobadilisha watumiaji wanaotumika.",
+            "positiveAction": "sawa"
+        },
+        "statusList": {
+            "pendingSync": "Inasubiri Usawazishaji",
+            "draft": "Rasimu",
+            "error": "Hitilafu",
+            "synced": "Imesawazishwa"
+        },
+        "statusDetails": {
+            "edited": "Imehaririwa",
+            "submitted": "Imewasilishwa"
+        },
+        "notes": "maelezo",
+        "addNote": "Ongeza Noti",
+        "editNote": "Hariri Kumbuka",
+        "addImage": "Ongeza Picha",
+        "deleteNoteAlert": {
+            "positiveAction": "Rasimu",
+            "negativeAction": "Tupa",
+            "message": "Je, una uhakika unataka kutupa dokezo hili?"
+        },
+        "closeFormAlert": {
+            "saveDraft": "Hifadhi Rasimu",
+            "discard": "Tupa",
+            "continueEditing": "Endelea Kuhariri",
+            "message": "Je, unataka kuhifadhi ripoti?"
+        },
+        "requiredFieldsAlert": {
+            "title": "Sehemu zinazohitajika lazima ziwe kamili ili kuwasilisha ripoti hii.",
+            "subtitle": "Je, ungependa Kuihifadhi kama rasimu au Endelea kuhariri?",
+            "positiveAction": "Hifadhi",
+            "negativeAction": "Endelea"
+        },
+        "offlineReportLocation": "Mahali pa tukio",
+        "reportArea": "Eneo la tukio",
+        "area": "eneo",
+        "perimeter": "mzunguko",
+        "reportFormError": "Hitilafu ya fomu ya tukio",
+        "unknownFieldTypeInReportSchema": "Aina ya sehemu isiyojulikana katika utaratibu wa tukio",
+        "recordReportArea": "Rekodi Eneo la Tukio",
+        "recordReportAreaValue": "Eneo la Tukio {{areaValue}} sqm",
+        "send": "Tuma",
+        "NoInternetConnection": "Hakuna muunganisho wa intaneti",
+        "BadRequest": "Ombi Mbaya: Nyenzo haipo",
+        "ServerUploadError": "Hitilafu ya upakiaji wa seva",
+        "NotAuthorized": "Haijaidhinishwa",
+        "defaultPendingSync": "Bado haijasawazishwa",
+        "wifiDataConnectionRequired": "Muunganisho wa Wifi unahitajika ili kusawazisha picha.",
+        "save": "Hifadhi"
+    },
+    "eventList": {
+        "emptyEvents": "Hakuna matukio ya kuonyesha"
+    },
+    "reportTypes": {
+        "searchPlaceholder": "Tafuta",
+        "emptyStateSearch": "Hakuna matokeo yaliyopatikana"
+    },
+    "reportDrafts": {
+        "appBarTitle": "Rasimu Zilizohifadhiwa",
+        "dateUpdated": "Tarehe imesasishwa",
+        "toastRemoveConfirmationText": "Tukio imefutwa",
+        "toastSavedConfirmationText": "Rasimu Imehifadhiwa"
+    },
+    "reportForm": {
+        "images": "PICHA"
+    },
+    "reportRepeatableFieldListView": {
+        "newField": "Mpya",
+        "noItemsAddedYet": "Bado Hakuna Vipengee Vilivyoongezwa",
+        "tapToCreate": "Gusa kitufe cha 'Mpya' ili kuunda"
+    },
+    "reportRepeatableFormView": {
+        "discardChangesAlert": {
+            "title": "Je, una uhakika unataka kutupa mabadiliko?",
+            "positive": "Tupa",
+            "negative": "Ghairi"
+        }
+    },
+    "recordReportArea": {
+        "appBarTitle": "Rekodi Eneo la Tukio",
+        "startRecording": "Anza Kurekodi",
+        "addPoint": "Ongeza Pointi",
+        "closeArea": "Eneo la Karibu",
+        "discardReportAreaDialog": {
+            "title": "Je, una uhakika unataka kutupa eneo lako la tukio?",
+            "positive": "Tupa",
+            "negative": "Ghairi"
+        },
+        "helpDialog": {
+            "stepOne": {
+                "title": "Anza kurekodi na uongeze pointi unaposonga",
+                "body": "Ongeza pointi ili kubainisha mipaka ya eneo la tukio. Sogeza karibu na uguse kitufe cha Ongeza Pointi kila unapobadilisha maelekezo ili kuunda nanga za Eneo la Tukio."
+            },
+            "stepTwo": {
+                "title": "Rekodi eneo la tukio linalokubalika",
+                "body": "Maeneo ya tukio lazima yawe na umbo moja funge na pointi 3 au zaidi na hakuna sehemu za kukatiza. Rekodi zozote ambazo hazitimizi mahitaji haya haziwezi kuhifadhiwa."
+            },
+            "stepThree": {
+                "title": "Funga na uhifadhi eneo lako la tukio",
+                "body": "Rekodi yako lazima iwe sura inayokubalika ili kufunga eneo lako la tukio. Ili kuifunga, gusa kitufe cha Eneo la Karibu ili kuunganisha pointi za kwanza na za mwisho za Eneo la Tukio. Hifadhi Eneo la Tukio ili kuliongeza kwenye tukio."
+            }
+        }
+    },
+    "editCoordinatesDialog": {
+        "latitude": "Latitudo",
+        "longitude": "Longitudo",
+        "errorMsg": "Mahali si sahihi",
+        "cancel": "Ghairi",
+        "save": "Hifadhi"
+    },
+    "reportNotes": {
+        "appBarTitle": "Ongeza Noti"
+    },
+    "notesView": {
+        "discardNoteAlert": {
+            "positiveAction": "Tupa",
+            "negativeAction": "Ghairi",
+            "messageExistingNote": "Je, una uhakika unataka kutupa mabadiliko kwenye dokezo hili?",
+            "messageNewNote": "Je, una uhakika unataka kutupa dokezo hili?"
+        }
+    },
+    "reportEditLocationView": {
+        "appBarTitle": "Tukio Mahali"
+    },
+    "eventRenderers": {
+        "multiField": {
+            "total": "Jumla"
+        }
+    },
+    "reportsPendingSync": {
+        "appBarTitle": "Inasubiri Usawazishaji"
+    },
+    "pinAuthentication": {
+        "enterPin": "Weka PIN ili kuchagua mtumiaji",
+        "incorrectPin": "PIN si sahihi"
+    },
+    "common": {
+        "undo": "Tendua",
+        "delete": "Futa",
+        "image": "picha",
+        "images": "picha",
+        "note": "kumbuka",
+        "notes": "maelezo",
+        "report": "Tukio",
+        "none": "Hakuna",
+        "uploaded": "Imepakiwa",
+        "pending": "Inasubiri",
+        "reason": "Sababu",
+        "skip": "Ruka",
+        "done": "Imekamilika",
+        "cancel": "Ghairi",
+        "ok": "sawa",
+        "start": "Anza",
+        "end": "Mwisho",
+        "submit": "Wasilisha",
+        "clearAll": "Futa Zote",
+        "apply": "Omba"
+    },
+    "startPatrolView": {
+        "patrolTitle": "Kichwa cha Doria",
+        "discardTitle": "Je, una uhakika unataka kutupa doria hii?",
+        "discardAction": "Tupa"
+    },
+    "permissionsView": {
+        "title": "Huna ruhusa ya kuunda ripoti.",
+        "description": "Wasiliana na msimamizi wako ili kusasisha ruhusa za akaunti yako.",
+        "emptyEventCategory": {
+            "title": "Huna ufikiaji wa aina zozote za ripoti.",
+            "description": "Wasiliana na msimamizi wako ili kusasisha ruhusa za akaunti yako au kuunda aina za ripoti."
+        }
+    },
+    "trackingStatusView": {
+        "title": "Ufuatiliaji Umewashwa",
+        "endTracking": "Maliza Ufuatiliaji"
+    },
+    "resetDatabaseCacheView": {
+        "alertDescription": "Kuweka upya akiba yako ya hifadhidata kutafuta data yako yote. Huwezi kutendua kitendo hiki."
+    },
+    "eventsListFilterView": {
+        "appBarTitle": "Chuja",
+        "status": {
+            "title": "Hali",
+            "options": {
+                "draft": "Rasimu",
+                "pendingSync":"Inasubiri Usawazishaji",
+                "synced": "Imesawazishwa"
+            }
+        },
+        "saveAndApply": "Hifadhi na utumie vichujio",
+        "discard": "Tupa mabadiliko"
+    }
+}

@@ -1,0 +1,25 @@
+// External Dependencies
+import React from 'react';
+import {
+  Svg, Path, G, Rect, Defs, ClipPath,
+} from 'react-native-svg';
+
+// Internal Dependencies
+import { COLORS_LIGHT } from '../constants/colors';
+import { IconProps } from '../types/types';
+
+const NotePlusIcon = ({ width = '22', height = '22', color = COLORS_LIGHT.G2_secondaryMediumGray }: IconProps) => (
+  <Svg width={width} height={height} viewBox="0 0 22 22">
+    <G clipPath="url(#clip0_464_280)">
+      <Path d="M10.0101 6.60156H1.76011C1.52898 6.60156 1.30011 6.64706 1.08657 6.7355C0.873039 6.82395 0.679056 6.95362 0.515625 7.11705C0.352194 7.28048 0.222726 7.47447 0.134277 7.688C0.0458291 7.90153 0 8.13041 0 8.36154V20.3516C0.02802 20.799 0.226146 21.2189 0.553223 21.5255C0.880299 21.8322 1.31177 22.0024 1.76011 22.0016H10.3404L15.4 16.9415V11.9915C14.0479 11.7765 12.7985 11.1394 11.8304 10.1713C10.8623 9.20315 10.2252 7.95368 10.0101 6.60156ZM7.7 16.0615H3.41011V14.3016H7.7V16.0615ZM9.46011 20.7915V16.0615H14.1904L9.46011 20.7915ZM11.9904 12.6516H3.41011V10.8915H11.9904V12.6516Z" fill={color} />
+      <Path d="M16.5 0C15.0501 0.0281608 13.6679 0.616668 12.6425 1.64208C11.6171 2.66749 11.0282 4.05013 11 5.5C11 6.95869 11.5799 8.35762 12.6113 9.38907C13.6428 10.4205 15.0413 11 16.5 11C17.9587 11 19.3578 10.4205 20.3892 9.38907C21.4207 8.35762 22 6.95869 22 5.5C22 4.04131 21.4207 2.64237 20.3892 1.61092C19.3578 0.579475 17.9587 0 16.5 0ZM19.25 6.05H17.05V8.25H15.95V6.05H13.75V4.95H15.95V2.75H17.05V4.95H19.25V6.05Z" fill={color} />
+    </G>
+    <Defs>
+      <ClipPath id="clip0_464_280">
+        <Rect width={width} height={height} fill={color} />
+      </ClipPath>
+    </Defs>
+  </Svg>
+);
+
+export { NotePlusIcon };

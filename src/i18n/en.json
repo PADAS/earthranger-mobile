@@ -1,0 +1,413 @@
+{
+    "splashScreen": {
+        "syncingUser": "Syncing Accounts",
+        "syncingReportCategories": "Syncing Event Categories",
+        "syncingTypesOfReports": "Syncing Event Types",
+        "syncingPatrolTypes": "Syncing Patrol Types"
+    },
+    "loginView": {
+        "requiredField": "Required field",
+        "incorrectCredentialsMessage": "Invalid username or password. Please try again.",
+        "invalidSiteName": "Invalid site name",
+        "internetConnectionNeeded": "Internet connection is needed to log in.",
+        "userIssuesMessage": "Your user account could not be synced, please contact your site admin",
+        "loginButtonText": "Log In",
+        "siteNameLabel": "SITE NAME *",
+        "usernameLabel": "USER NAME *",
+        "passwordLabel": "PASSWORD *",
+        "checkBoxText": "Remember me",
+        "alertDialog": {
+            "title": "Allow \"EarthRanger\" to access your location",
+            "message": "Your location is used to provide real time tracking on the EarthRanger platform.",
+            "action": "Continue"
+        },
+        "expiredTokenAlertDialog": {
+            "title": "Please log in again",
+            "message": "Something went wrong. Please enter your user name and password again.",
+            "action": "Ok"
+        },
+        "loadingAccountInformation": "Syncing User Accounts",
+        "loadingReportCategories": "Syncing Event Categories",
+        "loadingTypesOfReports": "Syncing Event Types",
+        "loadingPatrolTypes": "Syncing Patrol Types"
+    },
+    "mapTrackLocation": {
+        "tracking": "Tracking",
+        "off": "Off",
+        "live": "Live",
+        "on": "On",
+        "patrols": "Patrols",
+        "patrol": "Patrol",
+        "patrolTypes": "Patrol Types",
+        "liveDescrption": "Live, syncing to \nEarthRanger",
+        "onDescrption": "On, recording to \ndevice",
+        "gpsDescrption": "On, tracking will\nresume when \nlocation can be \ndetermined",
+        "gpsAccuracy": "GPS accuracy: ",
+        "currentLocationAt": "LOCATION AT ",
+        "noGpsText": "Location not found",
+        "startTracking": "Start Tracking",
+        "startPatrol": "Start Patrol",
+        "startLocation": "Start Location",
+        "permissions": {
+            "title": "Allow {applicationName} to access this device's location even when closed or not in use.",
+            "message": "This app collects location data to enable recording your trips to work and calculate distance-travelled.",
+            "positiveAction": "Change to {backgroundPermissionOptionLabel}",
+            "negativeAction": "Cancel"
+        },
+        "trackDialog": {
+            "title": "Turn Tracking Off?",
+            "message": "Location tracking data will no longer be recorded.",
+            "positiveAction": "Turn Off",
+            "negativeAction": "Cancel"
+        },
+        "patrolDialog": {
+            "message": "Would you like to continue tracking your device's location?",
+            "positiveAction": "Yes",
+            "negativeAction": "No"
+        },
+        "unauthorizedPatrolDialog": {
+            "message": "You do not have required permissions to start a patrol, please contact your site admin to be granted the required permissions to work with patrols.",
+            "action": "Ok"
+        },
+        "recentTracks": "Show Recent Track",
+        "basemaps": "Basemaps",
+        "topo": "Topo",
+        "satellite": "Satellite",
+        "street": "Street",
+        "noUserId": "User is not able to start tracking"
+    },
+    "patrolDetails": {
+        "startLocation": "Start Location",
+        "started": "Started",
+        "endPatrol": "End Patrol"
+    },
+    "mainTabBar": {
+        "map": "Map",
+        "status": "Status",
+        "events": "Events",
+        "settings": "Settings"
+    },
+    "menuSettingsView": {
+        "settings": "SETTINGS",
+        "about": "ABOUT",
+        "menu": "Menu"
+    },
+    "statusView": {
+        "tracks": "Tracks",
+        "pendingSync": "Pending Sync",
+        "submittedSession": "Submitted this session",
+        "lastSync": "Last Sync",
+        "defaultPendingSync": "Not yet synced",
+        "trackPoints": "track points",
+        "unableToSync": "Unable to sync, try again later.",
+        "syncAlertInfo" : {
+            "title": "App Syncing",
+            "message": "When the device has a good connection the app will try to upload tracks, reports, and patrols. Pressing the sync button will manually start a sync.",
+            "positiveAction": "Ok"
+        },
+        "toastReportError": {
+            "message": "Event type {{reportType}} could not be inserted into the local database"
+        },
+        "sync": "Sync",
+        "noInternetConnection": "No internet connection detected, please try again when you have established an internet connection"
+    },
+    "settingsView": {
+        "earthrangerSite": "EARTHRANGER SITE",
+        "user": "USER",
+        "logOut": "Log Out",
+        "experimentalFeatures": "Experimental Features",
+        "experimentalFeaturesDescription": "Testing features in development",
+        "mergeEventCategories": "Merge Event Categories",
+        "mergeEventCategoriesDescription": "Event types are separated by categories",
+        "switchTrackedBySubject": "Switch Tracked By Subject",
+        "dataConnectionAlert" : {
+            "title": "Data connection needed to log in",
+            "message": "If you log out you will need a data connection in order to log in again.",
+            "positiveAction": "Log Out",
+            "negativeAction": "Cancel"
+        },
+        "pendingSyncAlert": {
+            "title": "Data that has not synced will be lost",
+            "message": "Drafts and data that is pending sync will be lost if you log out before your data is uploaded to EarthRanger.",
+            "positiveAction": "Log Out",
+            "negativeAction": "Cancel"
+        },
+        "activeTrackingAlert": {
+            "title": "You cannot log out while tracking or patrolling",
+            "message": "Please end any patrols or tracking before logging out"
+        },
+        "switchActiveUserAlert": {
+            "title": "You cannot switch user while tracking or patrolling.",
+            "message": "Please end any patrols or tracking before switching user.",
+            "positiveAction": "Ok"
+        },
+        "switchActiveUser": "Switch User",
+        "account": "Account",
+        "testing": "Testing",
+        "siteName": "Site Name",
+        "dataCollection": "Data Collection",
+        "trackedBy": "Tracked By",
+        "display": "Display",
+        "basemap": "Basemap",
+        "coordinates": "Coordinates",
+        "coordinatesUnits": "Coordinates Units",
+        "darkMode": "Dark Mode",
+        "saveToCameraRoll": "Save to Camera Roll",
+        "uploadPhotosWithWifi": "Upload Photos with Wifi",
+        "media": "Media",
+        "photoQuality": "Photo Quality",
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High",
+        "slowestUpload": "Slowest upload",
+        "fastestUpload": "Fastest upload",
+        "patrolEventDetails": "Patrol Details",
+        "eventType": "Event Type"
+    },
+    "aboutView": {
+        "version": "Version 1.1.9.49",
+        "developedInPartnershipWith": "Developed in partnership with",
+        "theMaraElephantProject": " The Mara Elephant Project",
+        "privacyPolicy": "Privacy Policy",
+        "endUserLicenseAgreement": "End User License Agreement",
+        "emailSupport": "Email Support",
+        "supportEmail": "support@earthranger.com",
+        "downloadUserGuide": "Download User Guide",
+        "urlTheMaraElephantProject": "https://maraelephantproject.org",
+        "urlPrivacyPolicy": "https://earthranger.com/Privacy-Policy.html",
+        "urlEndUserLicenseAgreement": "https://earthranger.com/EULA",
+        "urlSupportEmail": "mailto:support@earthranger.com",
+        "urlHelpCenter": "https://support.earthranger.com/",
+        "helpCenter": "Help Center",
+        "resetDatabaseCache": "Reset Database Cache",
+        "reportIssue": "Report an Issue"
+    },
+    "reportIssue": {
+        "title": "How can we improve?",
+        "body": "Please describe the issue that occurred or feel free to send us general feedback! You can also send an email to support@earthranger.com.",
+        "message": "Message",
+        "shareLogsTitle": "Share logs from past week",
+        "shareLogsDescription": "This will help our team figure out how to fix the issue.",
+        "shareDbTitle": "Share Database",
+        "shareDbDescription": "Create a copy of the EarthRanger database to assist in troubleshooting. Shared database cannot be directly imported into EarthRanger.",
+        "appBarTitle": "Report an Issue",
+        "reportButton": "Report an Issue",
+        "compressTitle": "Compressing logs",
+        "compressBody": "This may take a moment.",
+        "cancel": "Cancel",
+        "compose": "Compose",
+        "issueReport": "Issue Report",
+        "sensitiveDataTitle": "Data Sharing & Privacy",
+        "sensitiveDataDescription": "By submitting this support ticket, a copy of the event data collected on this device will be shared with the EarthRanger team to process and troubleshoot the issue. You authorize the EarthRanger team to use the data with your submission to provide you support services as further described in the Privacy Policy available from the Apps Settings View.",
+        "sensitiveDataAdditionalText": "Do you wish to proceed?"
+    },
+    "reports": {
+        "appBarTitle": "New Event",
+        "title": "Events",
+        "savedDrafts": "SAVED DRAFTS",
+        "pendingSync": "PENDING SYNC",
+        "status": "STATUS",
+        "submittedThisSession": "Submitted This Session: ",
+        "lastSyncInfo": "Last Sync: ",
+        "reportsCustomAlertInfo": {
+            "title": "Report Syncing",
+            "message": "When the device has a good connection the app will sync submited reports and update changes to the report forms. The number of submitted reports will reset each time you switch active users.",
+            "positiveAction": "OK"
+        },
+        "statusList": {
+            "pendingSync": "Pending Sync",
+            "draft": "Draft",
+            "error": "Error",
+            "synced": "Synced"
+        },
+        "statusDetails": {
+            "edited": "Edited",
+            "submitted": "Submitted"
+        },
+        "notes": "Notes",
+        "addNote": "Add Note",
+        "editNote": "Edit Note",
+        "addImage": "Add Image",
+        "deleteNoteAlert": {
+            "positiveAction": "Discard",
+            "negativeAction": "Cancel",
+            "message": "Are you sure you want to discard this note?"
+        },
+        "closeFormAlert": {
+            "saveDraft": "Save Draft",
+            "discard": "Discard",
+            "continueEditing": "Continue Editing",
+            "message": "Do you want to save the report?"
+        },
+        "requiredFieldsAlert": {
+            "title": "Required fields must be complete to submit this report.",
+            "subtitle": "Do you wish to Save it as a draft or Continue editing?",
+            "positiveAction": "Save Draft",
+            "negativeAction": "Continue"
+        },
+        "offlineReportLocation": "Event Location",
+        "reportArea": "Event Area",
+        "area": "area",
+        "perimeter": "perimeter",
+        "reportFormError": "Event form error",
+        "unknownFieldTypeInReportSchema": "Unknown field type in event schema",
+        "recordReportArea": "Record Event Area",
+        "recordReportAreaValue": "Event Area {{areaValue}} sqm",
+        "send": "Send",
+        "NoInternetConnection": "No internet connection",
+        "BadRequest": "Bad Request: Resource doesn't exist",
+        "ServerUploadError": "Server upload error",
+        "NotAuthorized": "Not authorized",
+        "defaultPendingSync": "Not yet synced",
+        "wifiDataConnectionRequired": "Wifi connection required to sync photos.",
+        "save": "Save"
+    },
+    "eventList": {
+        "emptyEvents": "No events to display"
+    },
+    "reportTypes": {
+        "searchPlaceholder": "Search",
+        "emptyStateSearch": "No results have been found"
+    },
+    "reportDrafts": {
+        "appBarTitle": "Saved Drafts",
+        "dateUpdated": "Date updated",
+        "toastRemoveConfirmationText": "Event deleted",
+        "toastSavedConfirmationText": "Draft Saved"
+    },
+    "reportForm": {
+        "images": "IMAGES"
+    },
+    "reportRepeatableFieldListView": {
+        "newField": "New",
+        "noItemsAddedYet": "No Items Added Yet",
+        "tapToCreate": "Tap the 'New' button to create"
+    },
+    "reportRepeatableFormView": {
+        "discardChangesAlert": {
+            "title": "Are you sure you want to discard changes?",
+            "positive": "Discard",
+            "negative": "Cancel"
+        }
+    },
+    "recordReportArea": {
+        "appBarTitle": "Record Event Area",
+        "startRecording": "Start Recording",
+        "addPoint": "Add Point",
+        "closeArea": "Close Area",
+        "discardReportAreaDialog": {
+            "title": "Are you sure you want to discard your event area?",
+            "positive": "Discard",
+            "negative": "Cancel"
+        },
+        "helpDialog": {
+            "stepOne": {
+                "title": "Start recording and add points as you move",
+                "body": "Add points to determine the boundaries of the event area. Move around and tap the Add Point button whenever you change directions to create the anchors of the Event Area."
+            },
+            "stepTwo": {
+                "title": "Record an acceptable event area",
+                "body": "Event Areas must be a single closed shape with 3 or more points and no intersecting segments. Any recordings that don't meet these requirements cannot be saved."
+            },
+            "stepThree": {
+                "title": "Close and save your event area",
+                "body": "Your recording must be an acceptable shape to close your event area. To close it, tap the Close Area button to connect the first and last points of the Event Area. Save the Event Area to add it to the event."
+            }
+        }
+    },
+    "editCoordinatesDialog": {
+        "latitude": "Latitude",
+        "longitude": "Longitude",
+        "errorMsg": "Invalid location",
+        "cancel": "Cancel",
+        "save": "Save"
+    },
+    "notesView": {
+        "discardNoteAlert": {
+            "positiveAction": "Discard",
+            "negativeAction": "Cancel",
+            "messageExistingNote": "Are you sure you want to discard changes to this note?",
+            "messageNewNote": "Are you sure you want to discard this note?"
+        }
+    },
+    "reportNotes": {
+        "appBarTitle": "Add Note"
+    },
+    "reportEditLocationView": {
+        "appBarTitle": "Event Location"
+    },
+    "eventRenderers": {
+        "multiField": {
+            "total": "Total"
+        }
+    },
+    "reportsPendingSync": {
+        "appBarTitle": "Pending Sync"
+    },
+    "pinAuthentication": {
+        "enterPin": "Enter PIN to select user",
+        "incorrectPin": "Incorrect PIN"
+    },
+    "common": {
+        "undo": "Undo",
+        "delete": "Delete",
+        "image": "image",
+        "images": "images",
+        "note": "note",
+        "notes": "notes",
+        "report": "Event",
+        "none": "None",
+        "uploaded": "Uploaded",
+        "pending": "Pending",
+        "reason": "Reason",
+        "skip": "Skip",
+        "done": "Done",
+        "cancel": "Cancel",
+        "ok": "OK",
+        "start": "Start",
+        "end": "End",
+        "submit": "Submit",
+        "clearAll": "Clear All",
+        "apply": "Apply"
+    },
+    "coordinateUnitsView": {
+        "deg": "DEG (Decimal Degrees) \n19.60794°, -99.18771°",
+        "dms": "DMS (Degrees Minutes, Seconds) \n19° 36' 28.6164'' N, 99° 11' 15.78'' W",
+        "ddm": "DDM (Degrees Decimal, Minutes) \n19°2.52932N, 99°1.554W",
+        "utm": "UTM (Universal Tranverse Mercator) \n37 N 311814 9983089",
+        "mgrs": "MGRS (Military Grid Reference System) \n37M CV 11813 83088"
+    },
+    "startPatrolView": {
+        "patrolTitle": "Patrol Title",
+        "discardTitle": "Are you sure you want to discard this patrol?",
+        "discardAction": "Discard"
+    },
+    "permissionsView": {
+        "title": "You do not have permission to create reports.",
+        "description": "Contact your administrator to update your account permissions.",
+        "emptyEventCategory": {
+            "title": "You do not have access to any report types.",
+            "description": "Contact your administrator to update your account permissions or to create report types."
+        }
+    },
+    "trackingStatusView": {
+        "title": "Tracking On",
+        "endTracking": "End Tracking"
+    },
+    "resetDatabaseCacheView": {
+        "alertDescription": "Resetting your database cache will delete all your data. You cannot undo this action."
+    },
+    "eventsListFilterView": {
+        "appBarTitle": "Filter",
+        "status": {
+            "title": "Status",
+            "options": {
+                "draft": "Draft",
+                "pendingSync":"Pending Sync",
+                "synced": "Synced"
+            }
+        },
+        "saveAndApply": "Save and apply filters",
+        "discard": "Discard changes"
+    }
+}

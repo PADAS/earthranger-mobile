@@ -1,0 +1,9 @@
+NSCameraUsageDescription = "This app uses the camera to take photos and enable ability to add them to event reports you submit";
+
+NSLocationAlwaysAndWhenInUseUsageDescription = "When you share your location with this app you enable real time tracking with EarthRanger platform";
+
+NSLocationWhenInUseUsageDescription = "When you share your location with this app you enable real time tracking with EarthRanger platform";
+
+NSMotionUsageDescription = "Motion updates increase battery efficiency by intelligently toggling location services when device is detected to be moving";
+
+NSPhotoLibraryUsageDescription = "When you share your photo library with this app you enable ability to add photos to event reports you submit";

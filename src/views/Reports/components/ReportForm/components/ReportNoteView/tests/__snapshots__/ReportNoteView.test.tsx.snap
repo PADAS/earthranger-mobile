@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ReportNoteView matches snapshot 1`] = `
+<RNCSafeAreaView
+  edges={
+    Array [
+      "bottom",
+    ]
+  }
+  style={
+    Object {
+      "flex": 1,
+    }
+  }
+>
+  <TextInput
+    autoFocus={true}
+    multiline={true}
+    onChangeText={[Function]}
+    scrollEnabled={true}
+    style={
+      Array [
+        Object {
+          "flex": 1,
+          "fontSize": 16,
+          "fontWeight": "400",
+          "lineHeight": 18,
+          "marginLeft": 12,
+          "marginRight": 12,
+          "marginTop": 21,
+          "textAlignVertical": "top",
+        },
+        Object {
+          "marginBottom": 0,
+        },
+      ]
+    }
+    value=""
+  />
+  <Modal
+    animationType="fade"
+    hardwareAccelerated={false}
+    transparent={true}
+    visible={false}
+  />
+</RNCSafeAreaView>
+`;

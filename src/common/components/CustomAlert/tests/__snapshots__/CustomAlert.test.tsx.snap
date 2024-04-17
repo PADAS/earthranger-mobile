@@ -1,0 +1,715 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustomAlert matches snapshot - with alert icon 1`] = `
+<Modal
+  animationType="fade"
+  hardwareAccelerated={false}
+  transparent={true}
+  visible={true}
+>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "backgroundColor": "#00000088",
+        "flex": 1,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "backgroundColor": "#FFFFFF",
+          "borderRadius": 5,
+          "paddingBottom": 22,
+          "paddingLeft": 15,
+          "paddingRight": 15,
+          "paddingTop": 22,
+          "width": "80%",
+        }
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+            "width": "100%",
+          }
+        }
+      >
+        <View
+          style={
+            Object {
+              "marginRight": 8,
+            }
+          }
+        >
+          <RNSVGSvgView
+            align="xMidYMid"
+            bbHeight="8"
+            bbWidth="8"
+            fill="#888B8D"
+            focusable={false}
+            height="8"
+            meetOrSlice={0}
+            minX={0}
+            minY={0}
+            style={
+              Array [
+                Object {
+                  "backgroundColor": "transparent",
+                  "borderWidth": 0,
+                },
+                Object {
+                  "flex": 0,
+                  "height": 8,
+                  "width": 8,
+                },
+              ]
+            }
+            vbHeight={8}
+            vbWidth={8}
+            width="8"
+          >
+            <RNSVGGroup
+              fill={4287138701}
+              propList={
+                Array [
+                  "fill",
+                ]
+              }
+            >
+              <RNSVGPath
+                d="M8 0L0 3.34667V3.78222L3.04 4.96L4.21333 8H4.64889L8 0Z"
+              />
+            </RNSVGGroup>
+          </RNSVGSvgView>
+        </View>
+        <Text
+          color="#000000"
+          style={
+            Array [
+              Object {
+                "backgroundColor": "transparent",
+                "color": "#20303C",
+                "textAlign": "left",
+              },
+              undefined,
+              Object {
+                "color": "#000000",
+              },
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              Object {
+                "flex": 1,
+                "fontSize": 18,
+                "fontWeight": "500",
+                "lineHeight": 21,
+              },
+            ]
+          }
+        >
+          Alert Title
+        </Text>
+      </View>
+      <Text
+        style={
+          Array [
+            Object {
+              "backgroundColor": "transparent",
+              "color": "#20303C",
+              "textAlign": "left",
+            },
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            Object {
+              "color": "#63666A",
+              "fontSize": 15,
+              "fontWeight": "400",
+              "marginTop": 16,
+            },
+          ]
+        }
+      >
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam semper in dolor et egestas.
+      </Text>
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+            "justifyContent": "flex-end",
+            "marginTop": 22,
+          }
+        }
+      >
+        <View
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          hitSlop={
+            Object {
+              "bottom": 5,
+              "left": 5,
+              "right": 5,
+              "top": 5,
+            }
+          }
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            Object {
+              "flexDirection": "row",
+            }
+          }
+        >
+          <Text
+            style={
+              Array [
+                Object {
+                  "backgroundColor": "transparent",
+                  "color": "#20303C",
+                  "textAlign": "left",
+                },
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                Object {
+                  "color": "#888B8D",
+                  "fontSize": 17,
+                  "fontWeight": "600",
+                  "lineHeight": 18,
+                  "textTransform": "capitalize",
+                },
+              ]
+            }
+          >
+            Reject
+          </Text>
+        </View>
+        <View
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            Array [
+              Object {
+                "backgroundColor": "#0056C7",
+              },
+              Object {
+                "alignItems": "center",
+                "borderRadius": 5,
+                "display": "flex",
+                "flexDirection": "row",
+                "height": 40,
+                "justifyContent": "center",
+                "marginLeft": 24,
+                "maxWidth": "60%",
+                "minWidth": "40%",
+                "paddingHorizontal": 16,
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Array [
+                Object {
+                  "backgroundColor": "transparent",
+                  "color": "#20303C",
+                  "textAlign": "left",
+                },
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                Object {
+                  "color": "#FFFFFF",
+                  "fontSize": 17,
+                  "fontWeight": "600",
+                  "lineHeight": 21,
+                  "marginLeft": 9,
+                  "marginRight": 9,
+                  "textTransform": "capitalize",
+                },
+              ]
+            }
+          >
+            Accept
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+</Modal>
+`;
+
+exports[`CustomAlert matches snapshot - with progress bar 1`] = `
+<Modal
+  animationType="fade"
+  hardwareAccelerated={false}
+  transparent={true}
+  visible={true}
+>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "backgroundColor": "#00000088",
+        "flex": 1,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "backgroundColor": "#FFFFFF",
+          "borderRadius": 5,
+          "paddingBottom": 22,
+          "paddingLeft": 15,
+          "paddingRight": 15,
+          "paddingTop": 22,
+          "width": "80%",
+        }
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+            "width": "100%",
+          }
+        }
+      >
+        <Text
+          color="#000000"
+          style={
+            Array [
+              Object {
+                "backgroundColor": "transparent",
+                "color": "#20303C",
+                "textAlign": "left",
+              },
+              undefined,
+              Object {
+                "color": "#000000",
+              },
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              Object {
+                "flex": 1,
+                "fontSize": 18,
+                "fontWeight": "500",
+                "lineHeight": 21,
+              },
+            ]
+          }
+        >
+          Alert Title
+        </Text>
+      </View>
+      <Text
+        style={
+          Array [
+            Object {
+              "backgroundColor": "transparent",
+              "color": "#20303C",
+              "textAlign": "left",
+            },
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            Object {
+              "color": "#63666A",
+              "fontSize": 15,
+              "fontWeight": "400",
+              "marginTop": 16,
+            },
+          ]
+        }
+      >
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam semper in dolor et egestas.
+      </Text>
+      <View
+        accessibilityRole="progressbar"
+        accessibilityState={
+          Object {
+            "busy": true,
+          }
+        }
+        accessibilityValue={
+          Object {
+            "max": 100,
+            "min": 0,
+            "now": 100,
+          }
+        }
+        accessible={true}
+        onLayout={[Function]}
+      >
+        <View
+          collapsable={false}
+          style={
+            Object {
+              "backgroundColor": "#DDDDDD",
+              "borderRadius": 5,
+              "height": 12,
+              "marginTop": 16,
+              "opacity": 0,
+              "overflow": "hidden",
+            }
+          }
+        />
+      </View>
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+            "justifyContent": "flex-end",
+            "marginTop": 22,
+          }
+        }
+      >
+        <View
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          hitSlop={
+            Object {
+              "bottom": 5,
+              "left": 5,
+              "right": 5,
+              "top": 5,
+            }
+          }
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            Object {
+              "flexDirection": "row",
+            }
+          }
+        >
+          <Text
+            style={
+              Array [
+                Object {
+                  "backgroundColor": "transparent",
+                  "color": "#20303C",
+                  "textAlign": "left",
+                },
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                Object {
+                  "color": "#888B8D",
+                  "fontSize": 17,
+                  "fontWeight": "600",
+                  "lineHeight": 18,
+                  "textTransform": "capitalize",
+                },
+              ]
+            }
+          >
+            Reject
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+</Modal>
+`;
+
+exports[`CustomAlert matches snapshot 1`] = `
+<Modal
+  animationType="fade"
+  hardwareAccelerated={false}
+  transparent={true}
+  visible={true}
+>
+  <View
+    style={
+      Object {
+        "alignItems": "center",
+        "backgroundColor": "#00000088",
+        "flex": 1,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "backgroundColor": "#FFFFFF",
+          "borderRadius": 5,
+          "paddingBottom": 22,
+          "paddingLeft": 15,
+          "paddingRight": 15,
+          "paddingTop": 22,
+          "width": "80%",
+        }
+      }
+    >
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+            "width": "100%",
+          }
+        }
+      >
+        <Text
+          color="#000000"
+          style={
+            Array [
+              Object {
+                "backgroundColor": "transparent",
+                "color": "#20303C",
+                "textAlign": "left",
+              },
+              undefined,
+              Object {
+                "color": "#000000",
+              },
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              undefined,
+              Object {
+                "flex": 1,
+                "fontSize": 18,
+                "fontWeight": "500",
+                "lineHeight": 21,
+              },
+            ]
+          }
+        >
+          Alert Title
+        </Text>
+      </View>
+      <Text
+        style={
+          Array [
+            Object {
+              "backgroundColor": "transparent",
+              "color": "#20303C",
+              "textAlign": "left",
+            },
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            Object {
+              "color": "#63666A",
+              "fontSize": 15,
+              "fontWeight": "400",
+              "marginTop": 16,
+            },
+          ]
+        }
+      >
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam semper in dolor et egestas.
+      </Text>
+      <View
+        style={
+          Object {
+            "alignItems": "center",
+            "flexDirection": "row",
+            "justifyContent": "flex-end",
+            "marginTop": 22,
+          }
+        }
+      >
+        <View
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          hitSlop={
+            Object {
+              "bottom": 5,
+              "left": 5,
+              "right": 5,
+              "top": 5,
+            }
+          }
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            Object {
+              "flexDirection": "row",
+            }
+          }
+        >
+          <Text
+            style={
+              Array [
+                Object {
+                  "backgroundColor": "transparent",
+                  "color": "#20303C",
+                  "textAlign": "left",
+                },
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                Object {
+                  "color": "#888B8D",
+                  "fontSize": 17,
+                  "fontWeight": "600",
+                  "lineHeight": 18,
+                  "textTransform": "capitalize",
+                },
+              ]
+            }
+          >
+            Reject
+          </Text>
+        </View>
+        <View
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            Array [
+              Object {
+                "backgroundColor": "#0056C7",
+              },
+              Object {
+                "alignItems": "center",
+                "borderRadius": 5,
+                "display": "flex",
+                "flexDirection": "row",
+                "height": 40,
+                "justifyContent": "center",
+                "marginLeft": 24,
+                "maxWidth": "60%",
+                "minWidth": "40%",
+                "paddingHorizontal": 16,
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Array [
+                Object {
+                  "backgroundColor": "transparent",
+                  "color": "#20303C",
+                  "textAlign": "left",
+                },
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                Object {
+                  "color": "#FFFFFF",
+                  "fontSize": 17,
+                  "fontWeight": "600",
+                  "lineHeight": 21,
+                  "marginLeft": 9,
+                  "marginRight": 9,
+                  "textTransform": "capitalize",
+                },
+              ]
+            }
+          >
+            Accept
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+</Modal>
+`;

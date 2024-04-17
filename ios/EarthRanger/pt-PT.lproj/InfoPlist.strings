@@ -1,0 +1,9 @@
+NSCameraUsageDescription = "Este aplicativo usa a câmera para tirar fotos e habilitar a capacidade de adicioná-las aos relatórios de eventos que você enviar";
+
+NSLocationAlwaysAndWhenInUseUsageDescription = "Ao compartilhar sua localização com este aplicativo, você habilita o rastreamento em tempo real com a plataforma EarthRanger";
+
+NSLocationWhenInUseUsageDescription = "Ao compartilhar sua localização com este aplicativo, você habilita o rastreamento em tempo real com a plataforma EarthRanger";
+
+NSMotionUsageDescription = "As atualizações de movimento aumentam a eficiência da bateria, alternando de forma inteligente os serviços de localização quando o dispositivo é detectado em movimento";
+
+NSPhotoLibraryUsageDescription = "Ao compartilhar sua biblioteca de fotos com este aplicativo, você habilita a capacidade de adicionar fotos aos relatórios de eventos que você envia";

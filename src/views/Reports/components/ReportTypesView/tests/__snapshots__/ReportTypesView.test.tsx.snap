@@ -1,0 +1,404 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ReportTypesView matches snapshot 1`] = `
+<RNCSafeAreaView
+  edges={
+    Array [
+      "bottom",
+    ]
+  }
+  style={
+    Object {
+      "backgroundColor": "#FFFFFF",
+      "flex": 1,
+    }
+  }
+>
+  <View
+    style={
+      Array [
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+      ]
+    }
+  >
+    <View
+      style={
+        Array [
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          Object {
+            "height": "100%",
+          },
+        ]
+      }
+    >
+      <View
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "opacity": 1,
+          }
+        }
+      >
+        <View
+          style={
+            Object {
+              "alignItems": "center",
+              "borderBottomWidth": 1,
+              "borderColor": "#DDDDDD",
+              "borderRightWidth": 1,
+              "flexDirection": "column",
+              "height": 131,
+              "justifyContent": "center",
+              "paddingBottom": 8,
+              "paddingLeft": 8,
+              "paddingRight": 8,
+              "paddingTop": 16,
+              "width": 250,
+            }
+          }
+        >
+          <View
+            style={
+              Object {
+                "alignItems": "center",
+                "display": "flex",
+                "height": 40,
+                "justifyContent": "center",
+                "marginBottom": 16,
+              }
+            }
+          >
+            <RNSVGSvgView
+              bbHeight="24"
+              bbWidth="24"
+              focusable={false}
+              height="24"
+              style={
+                Array [
+                  Object {
+                    "backgroundColor": "transparent",
+                    "borderWidth": 0,
+                  },
+                  Object {
+                    "flex": 0,
+                    "height": 24,
+                    "width": 24,
+                  },
+                ]
+              }
+              width="24"
+            >
+              <RNSVGGroup>
+                <RNSVGGroup>
+                  <RNSVGGroup>
+                    <RNSVGGroup
+                      fill={4294967295}
+                      opacity={0.8}
+                      propList={
+                        Array [
+                          "fill",
+                        ]
+                      }
+                    >
+                      <RNSVGCircle
+                        cx="7.5"
+                        cy="7.5"
+                        r="6.75"
+                      />
+                      <RNSVGPath
+                        d="M7.5 1.5a6 6 0 1 1-6 6 6 6 0 0 1 6-6m0-1.5A7.5 7.5 0 1 0 15 7.5 7.508 7.508 0 0 0 7.5 0Z"
+                      />
+                    </RNSVGGroup>
+                    <RNSVGCircle
+                      cx={12}
+                      cy={12}
+                      fill={4278190080}
+                      propList={
+                        Array [
+                          "fill",
+                        ]
+                      }
+                      r={12}
+                    />
+                  </RNSVGGroup>
+                </RNSVGGroup>
+              </RNSVGGroup>
+            </RNSVGSvgView>
+          </View>
+          <Text
+            numberOfLines={3}
+            style={
+              Object {
+                "fontSize": 15,
+                "height": 54,
+                "lineHeight": 17,
+                "textAlign": "center",
+              }
+            }
+          >
+            Fence Report
+          </Text>
+        </View>
+      </View>
+      <View
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "opacity": 1,
+          }
+        }
+      >
+        <View
+          style={
+            Object {
+              "alignItems": "center",
+              "borderBottomWidth": 1,
+              "borderColor": "#DDDDDD",
+              "borderRightWidth": 1,
+              "flexDirection": "column",
+              "height": 131,
+              "justifyContent": "center",
+              "paddingBottom": 8,
+              "paddingLeft": 8,
+              "paddingRight": 8,
+              "paddingTop": 16,
+              "width": 250,
+            }
+          }
+        >
+          <View
+            style={
+              Object {
+                "alignItems": "center",
+                "display": "flex",
+                "height": 40,
+                "justifyContent": "center",
+                "marginBottom": 16,
+              }
+            }
+          >
+            <RNSVGSvgView
+              bbHeight="24"
+              bbWidth="24"
+              focusable={false}
+              height="24"
+              style={
+                Array [
+                  Object {
+                    "backgroundColor": "transparent",
+                    "borderWidth": 0,
+                  },
+                  Object {
+                    "flex": 0,
+                    "height": 24,
+                    "width": 24,
+                  },
+                ]
+              }
+              width="24"
+            >
+              <RNSVGGroup>
+                <RNSVGGroup>
+                  <RNSVGGroup>
+                    <RNSVGGroup
+                      fill={4294967295}
+                      opacity={0.8}
+                      propList={
+                        Array [
+                          "fill",
+                        ]
+                      }
+                    >
+                      <RNSVGCircle
+                        cx="7.5"
+                        cy="7.5"
+                        r="6.75"
+                      />
+                      <RNSVGPath
+                        d="M7.5 1.5a6 6 0 1 1-6 6 6 6 0 0 1 6-6m0-1.5A7.5 7.5 0 1 0 15 7.5 7.508 7.508 0 0 0 7.5 0Z"
+                      />
+                    </RNSVGGroup>
+                    <RNSVGCircle
+                      cx={12}
+                      cy={12}
+                      fill={4278190080}
+                      propList={
+                        Array [
+                          "fill",
+                        ]
+                      }
+                      r={12}
+                    />
+                  </RNSVGGroup>
+                </RNSVGGroup>
+              </RNSVGGroup>
+            </RNSVGSvgView>
+          </View>
+          <Text
+            numberOfLines={3}
+            style={
+              Object {
+                "fontSize": 15,
+                "height": 54,
+                "lineHeight": 17,
+                "textAlign": "center",
+              }
+            }
+          >
+            Crossing Report
+          </Text>
+        </View>
+      </View>
+      <View
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "opacity": 1,
+          }
+        }
+      >
+        <View
+          style={
+            Object {
+              "alignItems": "center",
+              "borderBottomWidth": 1,
+              "borderColor": "#DDDDDD",
+              "borderRightWidth": 1,
+              "flexDirection": "column",
+              "height": 131,
+              "justifyContent": "center",
+              "paddingBottom": 8,
+              "paddingLeft": 8,
+              "paddingRight": 8,
+              "paddingTop": 16,
+              "width": 250,
+            }
+          }
+        >
+          <View
+            style={
+              Object {
+                "alignItems": "center",
+                "display": "flex",
+                "height": 40,
+                "justifyContent": "center",
+                "marginBottom": 16,
+              }
+            }
+          >
+            <RNSVGSvgView
+              bbHeight="24"
+              bbWidth="24"
+              focusable={false}
+              height="24"
+              style={
+                Array [
+                  Object {
+                    "backgroundColor": "transparent",
+                    "borderWidth": 0,
+                  },
+                  Object {
+                    "flex": 0,
+                    "height": 24,
+                    "width": 24,
+                  },
+                ]
+              }
+              width="24"
+            >
+              <RNSVGGroup>
+                <RNSVGGroup>
+                  <RNSVGGroup>
+                    <RNSVGGroup
+                      fill={4294967295}
+                      opacity={0.8}
+                      propList={
+                        Array [
+                          "fill",
+                        ]
+                      }
+                    >
+                      <RNSVGCircle
+                        cx="7.5"
+                        cy="7.5"
+                        r="6.75"
+                      />
+                      <RNSVGPath
+                        d="M7.5 1.5a6 6 0 1 1-6 6 6 6 0 0 1 6-6m0-1.5A7.5 7.5 0 1 0 15 7.5 7.508 7.508 0 0 0 7.5 0Z"
+                      />
+                    </RNSVGGroup>
+                    <RNSVGCircle
+                      cx={12}
+                      cy={12}
+                      fill={4278190080}
+                      propList={
+                        Array [
+                          "fill",
+                        ]
+                      }
+                      r={12}
+                    />
+                  </RNSVGGroup>
+                </RNSVGGroup>
+              </RNSVGGroup>
+            </RNSVGSvgView>
+          </View>
+          <Text
+            numberOfLines={3}
+            style={
+              Object {
+                "fontSize": 15,
+                "height": 54,
+                "lineHeight": 17,
+                "textAlign": "center",
+              }
+            }
+          >
+            Confiscation
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+</RNCSafeAreaView>
+`;

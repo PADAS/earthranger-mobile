@@ -1,0 +1,415 @@
+{
+  "splashScreen": {
+    "syncingUser": "Synchroniser les comptes",
+    "syncingReportCategories": "Synchronisation des catégories d'événements",
+    "syncingTypesOfReports": "Synchronisation des types d'événements",
+    "syncingPatrolTypes": "Synchronisation des types de patrouille"
+  },
+  "loginView": {
+    "requiredField": "champs requis",
+    "incorrectCredentialsMessage": "Nom d'utilisateur ou mot de passe invalide. Veuillez réessayer.",
+    "invalidSiteName": "Nom de site invalide",
+    "internetConnectionNeeded": "Une connexion Internet est nécessaire pour se connecter.",
+    "userIssuesMessage": "Votre compte utilisateur n'a pas pu être synchronisé, veuillez contacter l'administrateur de votre site",
+    "loginButtonText": "Se connecter",
+    "siteNameLabel": "NOM DU SITE *",
+    "usernameLabel": "NOM D'UTILISATEUR *",
+    "passwordLabel": "LE MOT DE PASSE *",
+    "checkBoxText": "Souviens-toi de moi",
+    "deviceName": "NOM DE L'APPAREIL *",
+    "checkBoxText": "Se souvenir de moi",
+    "alertDialog": {
+      "title": "Autoriser \"EarthRanger\" à accéder à votre position",
+      "message": "Votre position est utilisée pour fournir un suivi en temps réel sur la plate-forme EarthRanger.",
+      "action": "Continuer"
+    },
+    "expiredTokenAlertDialog": {
+        "title": "Veuillez vous reconnecter",
+        "message": "Quelque chose s'est mal passé. Veuillez saisir à nouveau votre nom d'utilisateur et votre mot de passe.",
+        "action": "D'ACCORD"
+    },
+    "loadingAccountInformation": "Synchronisation des comptes d'utilisateurs",
+    "loadingReportCategories": "Synchronisation des catégories d'événements",
+    "loadingTypesOfReports": "Synchronisation des types d'événements",
+    "loadingPatrolTypes": "Synchronisation des types de patrouille"
+  },
+  "mapTrackLocation": {
+    "tracking": "Suivi",
+    "off": "Désactivé",
+    "live": "En Direct",
+    "on": "Activé",
+    "patrols": "Patrouilles",
+    "patrol": "Patrouille",
+    "patrolTypes": "Types de patrouille",
+    "liveDescrption": "En direct, synchronisation avec \nEarthRanger",
+    "onDescrption": "Activé, enregistrement sur \nmobile",
+    "gpsDescrption": "Activé, le suivi\nreprendra quand \nl'emplacement peut être \nl'emplacement pourra être déterminé",
+    "gpsAccuracy": "Précision GPS: ",
+    "currentLocationAt": "EMPLACEMENT À ",
+    "noGpsText": "Emplacement introuvable",
+    "startTracking": "Démarrer le suivi",
+    "startPatrol": "Démarrer la patrouille",
+    "startLocation": "Lieu de départ",
+    "permissions": {
+      "title": "Permettre {applicationName} pour accéder à l'emplacement de cet appareil même lorsqu'il est fermé ou non utilisé.",
+      "message": "Cette application collecte des données de localisation pour permettre d'enregistrer vos trajets au travail et de calculer la distance parcourue.",
+      "positiveAction": "Remplacer par {backgroundPermissionOptionLabel}",
+      "negativeAction": "Annuler"
+    },
+    "trackDialog": {
+      "title": "Désactiver le suivi ?",
+      "message": "Les données de localisation ne seront plus enregistrées.",
+      "positiveAction": "Éteindre",
+      "negativeAction": "Annuler"
+    },
+    "patrolDialog": {
+      "message": "Souhaitez-vous continuer à suivre la position de votre appareil?",
+      "positiveAction": "Oui",
+      "negativeAction": "Non"
+    },
+    "unauthorizedPatrolDialog": {
+      "message": "Vous ne disposez pas des autorisations requises pour démarrer une patrouille, veuillez contacter l'administrateur de votre site pour obtenir les autorisations nécessaires pour travailler avec les patrouilles.",
+      "action": "Ok"
+    },
+    "recentTracks": "Afficher le parcours récent",
+    "basemaps": "Fonds de carte",
+    "topo": "Topo",
+    "satellite": "Satellite",
+    "street": "Rue",
+    "noUserId": "L'utilisateur ne parvient pas à démarrer le suivi"
+  },
+  "patrolDetails": {
+    "startLocation": "Lieu de départ",
+    "started": "Commencé",
+    "endPatrol": "Fin de la Patrouille"
+  },
+  "mainTabBar": {
+    "map": "Carte",
+    "status": "Statut",
+    "events": "Événements",
+    "settings": "Réglages"
+  },
+  "menuSettingsView": {
+    "settings": "RÉGLAGES",
+    "about": "Savoir plus",
+    "menu": "Menu"
+  },
+  "statusView": {
+    "tracks": "Points",
+    "pendingSync": "Synchronisation en attente",
+    "submittedSession": "Soumis cette session",
+    "lastSync": "Dernière synchronisation",
+    "defaultPendingSync": "Pas encore synchronisé",
+    "trackPoints": "suivre les points",
+    "unableToSync": "Impossible de synchroniser, réessayez plus tard.",
+    "syncAlertInfo": {
+      "title": "Synchronisation des applications",
+      "message": "Lorsque l'appareil dispose d'une bonne connexion, l'application essaie de télécharger des pistes, des rapports et des patrouilles. Appuyez sur le bouton de synchronisation pour démarrer manuellement une synchronisation.",
+      "positiveAction": "D'ACCORD"
+    },
+    "toastReportError": {
+      "message": "Le type d'événement {{reportType}} n'a pas pu être inséré dans la base de données locale"
+    },
+    "sync": "Synchroniser",
+    "noInternetConnection": "Aucune connexion Internet détectée, veuillez réessayer lorsque vous aurez établi une connexion Internet"
+  },
+  "settingsView": {
+    "earthrangerSite": "EARTHRANGER SITE",
+    "user": "UTILISATRICE",
+    "logOut": "Se déconnecter",
+    "experimentalFeatures": "Fonctionnalités expérimentales",
+    "experimentalFeaturesDescription": "Tester les fonctionnalités en cours de développement",
+    "mergeEventCategories": "Fusionner les catégories d'événements",
+    "mergeEventCategoriesDescription": "Les types d'événements sont séparés par catégories",
+    "switchTrackedBySubject": "Changer le sujet suivi",
+    "dataConnectionAlert": {
+      "title": "Connexion de données nécessaire pour se connecter",
+      "message": "Si vous vous déconnectez, vous aurez besoin d'une connexion de données pour vous reconnecter.",
+      "positiveAction": "Sortir",
+      "negativeAction": "Annuler"
+    },
+    "pendingSyncAlert": {
+      "title": "Les données non synchronisées seront perdues",
+      "message": "Les brouillons et les données en attente de synchronisation seront perdus si vous vous déconnectez avant que vos données ne soient téléchargées sur EarthRanger.",
+      "positiveAction": "Sortir",
+      "negativeAction": "Annuler"
+    },
+    "activeTrackingAlert": {
+      "title": "Vous ne pouvez pas vous déconnecter pendant le suivi ou la patrouille",
+      "message": "Veuillez mettre fin à toute patrouille ou suivi avant de vous déconnecter"
+    },
+    "switchActiveUserAlert": {
+      "title": "Vous ne pouvez pas changer d'utilisateur pendant le suivi ou la patrouille.",
+      "message": "Veuillez mettre fin à toute patrouille ou suivi avant de changer d'utilisateur.",
+      "positiveAction": "Ok"
+    },
+    "switchActiveUser": "Changer d'utilisateur",
+    "account": "Compte",
+    "testing": "Essai",
+    "siteName": "Nom du site",
+    "dataCollection": "Collecte de données",
+    "trackedBy": "Suivi par",
+    "display": "Afficher",
+    "basemap": "Fond de carte",
+    "coordinates": "Coordonnées",
+    "coordinatesUnits": "Unités de coordonnées",
+    "darkMode": "Mode sombre",
+    "saveToCameraRoll": "Enregistrer sur pellicule",
+    "uploadPhotosWithWifi": "Télécharger des photos avec Wifi",
+    "media": "Médias",
+    "photoQuality": "La qualité de la photo",
+    "low": "Faible",
+    "medium": "Moyen",
+    "high": "Haut",
+    "slowestUpload": "Téléchargement le plus lent",
+    "fastestUpload": "Téléchargement le plus rapide",
+    "patrolEventDetails": "Détails de la patrouille",
+    "eventType": "Type d'événement"
+  },
+  "aboutView": {
+    "version": "Version 1.1.9.49",
+    "developedInPartnershipWith": "Développé en partenariat avec",
+    "theMaraElephantProject": " The Mara Elephant Project",
+    "privacyPolicy": "Politique de confidentialité",
+    "endUserLicenseAgreement": "Contrat de licence de l'utilisateur final",
+    "emailSupport": "Assistance par e-mail",
+    "supportEmail": "support@earthranger.com",
+    "downloadUserGuide": "Télécharger le guide de l'utilisateur",
+    "urlTheMaraElephantProject": "https://maraelephantproject.org",
+    "urlPrivacyPolicy": "https://earthranger.com/Privacy-Policy.html",
+    "urlEndUserLicenseAgreement": "https://earthranger.com/EULA",
+    "urlSupportEmail": "mailto:support@earthranger.com",
+    "urlHelpCenter": "https://support.earthranger.com/",
+    "helpCenter": "Centre d'aide",
+    "resetDatabaseCache": "Réinitialiser le cache de la base de données",
+    "reportIssue": "Signaler un problème"
+  },
+  "reportIssue": {
+    "title": "Comment pouvons nous nous améliorer ?",
+    "body": "Veuillez décrire le problème qui s'est produit ou n'hésitez pas à nous envoyer des commentaires généraux ! Vous pouvez également envoyer un e-mail à support@earthranger.com.",
+    "message": "Message",
+    "shareLogsTitle": "Partager les journaux de la semaine dernière",
+    "shareLogsDescription": "Cela aidera notre équipe à déterminer comment résoudre le problème.",
+      "shareDbTitle": "Partager la base de données",
+      "shareDbDescription": "Créez une copie de la base de données EarthRanger pour faciliter le dépannage. La base de données partagée ne peut pas être importée directement dans EarthRanger.",
+    "appBarTitle": "Signaler un problème",
+    "reportButton": "Signaler un problème",
+    "compressTitle": "Compression des journaux",
+    "compressBody": "Cela peut prendre un moment.",
+    "cancel": "Annuler",
+    "compose": "Composer",
+    "issueReport": "Rapport de problème",
+    "sensitiveDataTitle": "Partage de données et confidentialité",
+    "sensitiveDataDescription": "En soumettant ce ticket d'assistance, une copie des données d'événement collectées sur cet appareil sera partagée avec l'équipe EarthRanger pour traiter et résoudre le problème. Vous autorisez l'équipe EarthRanger à utiliser les données avec votre soumission pour vous fournir des services d'assistance, comme décrit plus en détail dans la politique de confidentialité disponible à partir de la vue des paramètres des applications.",
+    "sensitiveDataAdditionalText": "Voulez-vous continuer ?"
+  },
+  "reports": {
+    "appBarTitle": "Nouvel Évènement",
+    "title": "Événements",
+    "savedDrafts": "Brouillons enregistrés",
+    "pendingSync": "SYNCHRONISATION EN ATTENTE",
+    "status": "STATUT",
+    "submittedThisSession": "Soumis cette session: ",
+    "lastSyncInfo": "Dernière synchronisation: ",
+    "reportsCustomAlertInfo": {
+      "title": "Synchronisation des rapports",
+      "message": "Lorsque l'appareil dispose d'une bonne connexion, l'application synchronise les rapports soumis et met à jour les modifications apportées aux formulaires de rapport. Le nombre de rapports soumis sera réinitialisé à chaque fois que vous changerez d'utilisateur actif.",
+      "positiveAction": "D'ACCORD"
+    },
+    "statusList": {
+      "pendingSync": "En attente de synchronisation",
+      "draft": "Brouillon",
+      "error": "Erreur",
+      "synced": "Synchronisé"
+  },
+  "statusDetails": {
+      "edited": "Édité",
+      "submitted": "Soumis"
+  },
+    "notes": "Remarques",
+    "addNote": "Ajouter Une Note",
+    "editNote": "Note Éditée",
+    "addImage": "Ajouter Une Image",
+    "deleteNoteAlert": {
+      "positiveAction": "Supprimer",
+      "negativeAction": "Annuler",
+      "message": "Voulez-vous vraiment supprimer cette note ?"
+    },
+    "closeFormAlert": {
+      "saveDraft": "Enregistrer le brouillon",
+      "discard": "Jeter",
+      "continueEditing": "Continuer l'édition",
+      "message": "Voulez-vous enregistrer le rapport ?"
+  },
+    "requiredFieldsAlert": {
+      "title": "Les champs obligatoires doivent être remplis pour soumettre ce rapport.",
+      "subtitle": "Souhaitez-vous Enregistrer en tant que brouillon ou Continuer l'édition ?",
+      "positiveAction": "Enregistrer",
+      "negativeAction": "Continuer"
+    },
+    "offlineReportLocation": "Lieu de l'événement",
+    "reportArea": "Zone de événement",
+    "area": "région",
+    "perimeter": "périmètre",
+    "reportFormError": "Erreur de formulaire d'événement",
+    "unknownFieldTypeInReportSchema": "Type de champ inconnu dans le schéma d'événement",
+    "recordReportArea": "Enregistrement de la zone d'événement",
+    "recordReportAreaValue": "Zone d'événement {{areaValue}} sqm",
+    "send": "Envoyer",
+    "NoInternetConnection": "Pas de connexion Internet",
+    "BadRequest": "Requête incorrecte: la ressource n'existe pas",
+    "ServerUploadError": "Erreur de téléchargement du serveur",
+    "NotAuthorized": "Pas autorisé",
+    "defaultPendingSync": "Pas encore synchronisé",
+    "wifiDataConnectionRequired": "Connexion Wifi requise pour synchroniser les photos.",
+    "save": "Enregistrer"
+  },
+  "eventList": {
+    "emptyEvents": "Aucun événement à afficher"
+  },
+  "reportTypes": {
+    "searchPlaceholder": "Chercher",
+    "emptyStateSearch": "Aucun résultat n'a été trouvé"
+  },
+  "reportDrafts": {
+    "appBarTitle": "Brouillons enregistrés",
+    "dateUpdated": "Date de mise à jour",
+    "toastRemoveConfirmationText": "Événement supprimé",
+    "toastSavedConfirmationText": "Brouillon enregistré"
+  },
+  "reportForm": {
+    "images": "IMAGES"
+  },
+  "reportRepeatableFieldListView": {
+    "newField": "Nouveau",
+    "noItemsAddedYet": "Aucun article ajouté pour le moment",
+    "tapToCreate": "Appuyez sur le bouton 'Nouveau' pour créer"
+  },
+  "reportRepeatableFormView": {
+    "discardChangesAlert": {
+      "title": "Voulez-vous vraiment annuler les modifications ?",
+      "positive": "Jeter",
+      "negative": "Annuler"
+    }
+  },
+  "recordReportArea": {
+    "appBarTitle": "Enregistrement de la zone d'événement",
+    "startRecording": "Commencer l'enregistrement",
+    "addPoint": "Ajouter un point",
+    "closeArea": "Fermer la zone",
+    "discardReportAreaDialog": {
+      "title": "Voulez-vous vraiment supprimer votre zone d'événement ?",
+      "positive": "Jeter",
+      "negative": "Annuler"
+    },
+    "helpDialog": {
+      "stepOne": {
+        "title": "Commencez à enregistrer et ajoutez des points au fur et à mesure que vous vous déplacez",
+        "body": "Ajoutez des points pour déterminer les limites de la zone d'événement. Déplacez-vous et appuyez sur le bouton Ajouter un point chaque fois que vous changez de direction pour créer les ancres de la zone d'événement."
+      },
+      "stepTwo": {
+        "title": "Enregistrer une zone d'événement acceptable",
+        "body": "Les zones d'événement doivent être une seule forme fermée avec 3 points ou plus et aucun segment d'intersection. Les enregistrements qui ne répondent pas à ces exigences ne peuvent pas être sauvegardés."
+      },
+      "stepThree": {
+        "title": "Fermez et enregistrez votre zone d'événement",
+        "body": "Votre enregistrement doit être d'une forme acceptable pour fermer votre zone d'événement. Pour le fermer, appuyez sur le bouton Fermer la zone pour connecter les premier et dernier points de la zone d'événement. Enregistrez la zone d'événement pour l'ajouter au événement."
+      }
+    }
+  },
+  "editCoordinatesDialog": {
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "errorMsg": "Location invalide",
+    "cancel": "Annuler",
+    "save": "Enregistrer"
+  },
+  "notesView": {
+    "discardNoteAlert": {
+      "positiveAction": "Supprimer",
+      "negativeAction": "Annuler",
+      "messageExistingNote": "Voulez-vous vraiment annuler les modifications apportées à cette note ?",
+      "messageNewNote": "Voulez-vous vraiment supprimer cette note ?"
+    }
+  },
+  "reportNotes": {
+    "appBarTitle": "Ajouter Une Note"
+  },
+  "reportEditLocationView": {
+    "appBarTitle": "Emplacement du évènement"
+  },
+  "eventRenderers": {
+    "multiField": {
+      "total": "Total"
+    }
+  },
+  "reportsPendingSync": {
+    "appBarTitle": "Synchronisation en attente"
+  },
+  "pinAuthentication": {
+    "enterPin": "Entrez le code PIN pour sélectionner l'utilisateur",
+    "incorrectPin": "PIN incorrect"
+  },
+  "common": {
+    "undo": "Annuler",
+    "delete": "Effacer",
+    "image": "image",
+    "images": "images",
+    "note": "remarque",
+    "notes": "remarques",
+    "report": "Événement",
+    "none": "Aucun",
+    "uploaded": "Téléchargé",
+    "pending": "En attente",
+    "reason": "Raison",
+    "skip": "Sauter",
+    "done": "Fait",
+    "cancel": "Annuler",
+    "ok": "D'ACCORD",
+    "start": "Commencer",
+    "end": "Finir",
+    "submit": "Soumettre",
+    "clearAll": "Tout effacer",
+    "apply": "Appliquer"
+  },
+  "coordinateUnitsView": {
+    "deg": "DEG (Degrés décimaux) \n19.60794°, -99.18771°",
+    "dms": "DMS (Degrés Minutes Secondes) \n19° 36' 28.6164'' N, 99° 11' 15.78'' W",
+    "ddm": "DDM (Degrés Minutes Décimales) \n19°2.52932N, 99°1.554W",
+    "utm": "UTM (Universal Transverse Mercator) \n37 N 311814 9983089",
+    "mgrs": "MGRS (Military Grid Reference System) \n37M CV 11813 83088"
+  },
+  "startPatrolView": {
+    "patrolTitle": "Titre de patrouille",
+    "discardTitle": "Voulez-vous vraiment supprimer cette patrouille ?",
+    "discardAction": "Jeter"
+  },
+  "permissionsView": {
+    "title": "Vous n'êtes pas autorisé à créer des rapports.",
+    "description": "Contactez votre administrateur pour mettre à jour les autorisations de votre compte.",
+    "emptyEventCategory": {
+      "title": "Vous n'avez accès à aucun type de rapport.",
+      "description": "Contactez votre administrateur pour mettre à jour les autorisations de votre compte ou pour créer des types de rapports."
+    }
+  },
+  "trackingStatusView": {
+    "title": "Suivi activé",
+    "endTracking": "Terminer le suivi"
+  },
+  "resetDatabaseCacheView": {
+    "alertDescription": "La réinitialisation du cache de votre base de données supprimera toutes vos données. Vous ne pouvez pas annuler cette action."
+  },
+  "eventsListFilterView": {
+      "appBarTitle": "Filtre",
+      "status": {
+        "title": "Statut",
+        "options": {
+            "draft": "Brouillon",
+            "pendingSync":"En attente de synchronisation",
+            "synced": "Synchronisé"
+        }
+      },
+      "saveAndApply": "Enregistrer et appliquer des filtres",
+      "discard": "Annuler les modifications"
+  }
+}
