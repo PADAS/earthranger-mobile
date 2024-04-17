@@ -1,0 +1,75 @@
+# fastlane constants
+fastlane_version "2.205.2"
+
+# constants
+APP_IDENTIFIER = "com.earthranger"
+APP_IDENTIFIER_BETA = "com.earthranger.beta"
+APP_IDENTIFIER_DEBUG = "com.earthranger.debug"
+BUILD_NUM = `git log --pretty=format:'' | wc -l | tr -d ' '`.to_i.to_s
+PROFILE_TYPE_APPSTORE = "appstore"
+PROFILE_TYPE_DEVELOPMENT = "development"
+
+############################### ios ##############################
+
+platform :ios do
+
+  ############################### public ##############################
+
+  desc "Build debug configuration"
+  lane :build do |options|
+    puts "Build Num: " + BUILD_NUM
+    build_debug
+
+    if options[:install]
+      install
+    end
+  end
+
+  desc "Fetches the provisioning profiles so you can build locally and deploy to your device"
+  lane :dev_certs_fetch do
+    match(app_identifier: APP_IDENTIFIER_DEBUG, type: PROFILE_TYPE_DEVELOPMENT, readonly: true, force_for_new_devices: true)
+  end
+
+  desc "Fetches the provisioning profiles so you can build locally and deploy to the store"
+  lane :dist_certs_fetch do
+    # match(app_identifier: APP_IDENTIFIERS, type: PROFILE_TYPE_APPSTORE)
+    match(app_identifier: APP_IDENTIFIER_BETA, type: PROFILE_TYPE_APPSTORE)
+  end
+
+  desc "Test build number, future lane to run tests"
+  lane :test do
+    puts "Build Num: " + BUILD_NUM
+  end
+
+  ############################## private ##############################
+
+  desc "Create debug app"
+  private_lane :build_debug do
+
+    gym(
+      clean: true,
+      workspace: "./ios/EarthRanger.xcworkspace",
+      scheme: "EarthRanger",
+      output_directory: "./fastlane/builds",
+      output_name: "EarthRanger",
+      export_options: {
+        method: "development"
+      }
+    )
+  end
+
+  desc "Install on device, must have ios-deploy installed, `brew install ios-deplloy`"
+  private_lane :install do
+
+    install_on_device(
+      ipa: "./fastlane/builds/EarthRanger.ipa"
+    )
+  end
+
+end
+
+############################### android ##########################
+
+platform :android do
+  # Android Lanes
+end

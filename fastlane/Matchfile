@@ -1,0 +1,12 @@
+## Matchfile for EarthRanger
+
+git_url("git@github.com:PADAS/er-certs.git")
+git_branch("develop")
+storage_mode("git")
+type("development") 
+
+app_identifier(["com.earthranger", "com.earthranger.beta", "com.earthranger.debug"])
+username("mobiledev@earthranger.com") 
+
+shallow_clone true
+force_for_new_devices true
