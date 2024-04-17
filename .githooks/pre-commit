@@ -1,0 +1,3 @@
+#!/bin/sh
+
+yarn run eslint --no-error-on-unmatched-pattern $(git diff --staged --name-only HEAD | grep -E '\.(js|jsx|ts|tsx)$' | xargs)
