@@ -33,6 +33,8 @@ build/
 .gradle
 local.properties
 *.iml
+*.keystore
+*.jks
 *.hprof
 
 # node.js
