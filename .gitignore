@@ -33,6 +33,8 @@ build/
 .gradle
 local.properties
 *.iml
+*.apk
+*.bundle
 *.keystore
 *.jks
 *.hprof
