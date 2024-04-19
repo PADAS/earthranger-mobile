@@ -164,17 +164,17 @@ android {
     signingConfigs {
 
         release {
-            keyAlias "earthranger"
-            storeFile file("earthranger.keystore")
-            storePassword getKeystorePassword()
+            keyAlias localProperties['KEY_ALIAS']
             keyPassword getSigningKeyPassword()
+            storeFile file(localProperties['KEY_FILE'])
+            storePassword getKeystorePassword()
         }
 
         beta {
-            keyAlias "earthranger-test"
-            storeFile file("earthranger-test.jks")
-            storePassword getKeystorePassword()
-            keyPassword getSigningKeyPassword()
+            keyAlias localProperties['PREVIEW_KEY_ALIAS']
+            keyPassword getPreviewSigningKeyPassword()
+            storeFile file(localProperties['PREVIEW_KEY_FILE'])
+            storePassword getPreviewKeystorePassword()
         }
 
     }
@@ -308,6 +308,24 @@ def getSigningKeyPassword() {
     props.load(new FileInputStream(rootProject.file("local.properties")))
 
     def encoded = props.getProperty('KEY_ALIAS_PASSWORD')
+    byte[] signPassword = encoded.decodeBase64()
+    return new String(signPassword)
+}
+
+def getPreviewKeystorePassword() {
+    def props = new Properties()
+    props.load(new FileInputStream(rootProject.file("local.properties")))
+
+    def encoded = props.getProperty('PREVIEW_KEY_STORE_PASSWORD')
+    byte[] keyPassword = encoded.decodeBase64()
+    return new String(keyPassword)
+}
+
+def getPreviewSigningKeyPassword() {
+    def props = new Properties()
+    props.load(new FileInputStream(rootProject.file("local.properties")))
+
+    def encoded = props.getProperty('PREVIEW_KEY_ALIAS_PASSWORD')
     byte[] signPassword = encoded.decodeBase64()
     return new String(signPassword)
 }
