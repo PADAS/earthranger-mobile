@@ -39,7 +39,6 @@ export type RootStackParamList = {
   ReportEditLocationView: { coordinates: Position },
   RecordReportAreaView: undefined,
   AboutView: undefined,
-  ReportDraftsView: undefined,
   ReportNoteView: { id: number, text: string, coordinates: Position, channelId: string },
   MenuSettingsView: undefined,
   SettingsView: undefined,

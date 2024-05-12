@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next';
 
 // Internal Dependencies
 import { cleanUpSvg, mapPriorityToBgColor, mapPriorityToColor } from '../../../../common/utils/svgIconsUtils';
-import { isSyncingReports } from '../../../../common/utils/syncUtils';
 import { EventStatus } from '../../../../common/enums/enums';
 import { COLORS_LIGHT } from '../../../../common/constants/colors';
 
@@ -25,6 +24,7 @@ import { icons } from '../../../../ui/AssetsUtils';
 
 // Styles
 import styles from './EventCell.styles';
+import { isSyncingReports } from '../../../../common/utils/syncUtils';
 
 interface EventCellProps {
   bgColor: string,
@@ -39,6 +39,7 @@ interface EventCellProps {
   text: string,
   title: string;
   type: EventStatus;
+  isEditable: boolean
 }
 
 const EventCell = ({
@@ -54,6 +55,7 @@ const EventCell = ({
   text,
   title,
   type,
+  isEditable,
 }: EventCellProps) => {
   // Hooks
   const { t } = useTranslation();
@@ -83,7 +85,7 @@ const EventCell = ({
           () => {
             if (
               (type === EventStatus.draft || type === EventStatus.pendingSync)
-              && !isSyncingReports()
+              && isEditable
             ) {
               navigateToReportForm(id);
             }
@@ -127,17 +129,17 @@ const EventCell = ({
           </View>
           {/* End Details */}
 
-          {/* Carat */}
-          <View style={styles.caratContainer}>
+          {/* Caret */}
+          <View style={styles.caretContainer}>
             {
               (
-                (type === EventStatus.draft || type === EventStatus.pendingSync)
-                && !isSyncingReports()
+                (((type === EventStatus.pendingSync) && !isSyncingReports())
+                || type === EventStatus.draft) && isEditable
               )
               && <ReportsArrowIcon />
             }
           </View>
-          {/* End Carat */}
+          {/* End Caret */}
         </View>
       </Pressable>
     );

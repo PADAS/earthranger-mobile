@@ -164,7 +164,7 @@ export const useRetrieveReports = () => {
               fgColor = COLORS_LIGHT.brightBlue;
               statusIcon = 'editIcon';
               labelText = t('reports.statusList.draft');
-              text = `${t('reports.statusDetails.edited')} ${dayjs(reportItem.created_at).format('YYYY MMM D, HH:mm')}`;
+              text = `${t('reports.statusDetails.edited')} ${dayjs(reportItem.updated_at).format('YYYY MMM D, HH:mm')}`;
             } else if (reportItem.state) {
               status = EventStatus.error;
               bgColor = '#FDF2F4';

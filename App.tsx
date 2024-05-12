@@ -19,7 +19,6 @@ import { TrackLocationMapView } from './src/views/TrackLocationMap/TrackLocation
 import ReportIssueView from './src/views/SettingsSection/ReportIssue/ReportIssueView';
 import { MainTabBar } from './src/views/TabBar/MainTabBar';
 import { ReportCategoriesView } from './src/views/Reports/components/ReportCategoriesView/ReportCategoriesView';
-import { ReportDraftsView } from './src/views/Reports/ReportDraftsView/ReportDraftsView';
 import { ReportTypesView } from './src/views/Reports/components/ReportTypesView/ReportTypesView';
 import { RootStackParamList } from './src/common/types/types';
 import { CloseIcon } from './src/common/icons/CloseIcon';
@@ -33,7 +32,6 @@ import { RecordReportAreaView } from './src/views/Reports/components/RecordRepor
 import { ReportRepeatableFieldListView } from './src/views/Reports/components/ReportForm/components/ReportRepeatableFieldListView/ReportRepeatableFieldListView';
 import { RepeatableFormView } from './src/views/Reports/components/ReportForm/components/ReportRepeatableFieldListView/components/RepeatableFormView/RepeatableFormView';
 import { SyncLoaderView } from './src/views/Login/SyncLoaderView/SyncLoaderView';
-import { ReportsPendingSyncView } from './src/views/Reports/components/ReportsPendingSync/ReportsPendingSyncView';
 import {
   PinAuthenticationView,
 } from './src/views/Login/PinAuthenticationView/PinAuthenticationView';
@@ -104,14 +102,6 @@ export const App = () => {
               })}
             />
             <Stack.Screen
-              name="ReportsPendingSync"
-              component={ReportsPendingSyncView}
-              options={() => ({
-                ...navigationOptionsHeader,
-                title: t('reportsPendingSync.appBarTitle'),
-              })}
-            />
-            <Stack.Screen
               name="ReportIssueView"
               component={ReportIssueView}
               options={({ navigation }) => ({
@@ -154,15 +144,6 @@ export const App = () => {
                 ...navigationOptionsHeader,
                 title: t('reportNotes.appBarTitle'),
                 headerLeft: () => customBackButton(<CloseIcon />, () => navigation.pop(), true),
-              })}
-            />
-            <Stack.Screen
-              name="ReportDraftsView"
-              component={ReportDraftsView}
-              options={({ navigation }) => ({
-                ...navigationOptionsHeader,
-                title: t('reportDrafts.appBarTitle'),
-                headerLeft: () => customBackButton(osBackIcon, () => navigation.pop()),
               })}
             />
             <Stack.Screen

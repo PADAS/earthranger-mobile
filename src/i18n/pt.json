@@ -102,7 +102,7 @@
         "unableToSync": "Não foi possível sincronizar. Tente novamente mais tarde.",
         "syncAlertInfo" : {
             "title": "Sincronização de aplicativos",
-            "message": "Quando o dispositivo estiver com uma boa conexão, o aplicativo tentará carregar rastreamentos, relatórios e patrulhas. Pressionar o botão de sincronização iniciará manualmente uma sincronização.",
+            "message": "Quando o dispositivo estiver com uma boa conexão, o aplicativo tentará carregar rastreamentos, eventos e patrulhas. Pressionar o botão de sincronização iniciará manualmente uma sincronização.",
             "positiveAction": "Ok"
         },
         "toastReportError": {
@@ -237,10 +237,10 @@
             "saveDraft": "Salvar rascunho",
             "discard": "Descartar",
             "continueEditing": "Continuar Editando",
-            "message": "Deseja salvar o relatório?"
+            "message": "Deseja salvar o evento?"
         },
         "requiredFieldsAlert": {
-            "title": "Os campos obrigatórios devem ser preenchidos para enviar este relatório.",
+            "title": "Os campos obrigatórios devem ser preenchidos para enviar este evento.",
             "subtitle": "Deseja Salvar como rascunho ou Continuar editando?",
             "positiveAction": "Salvar",
             "negativeAction": "Continuar"
@@ -269,9 +269,7 @@
         "searchPlaceholder": "Procurar",
         "emptyStateSearch": "Nenhum resultado foi encontrado"
     },
-    "reportDrafts": {
-        "appBarTitle": "Rascunhos salvos",
-        "dateUpdated": "Data atualizada",
+    "eventsDrafts": {
         "toastRemoveConfirmationText": "Evento excluído",
         "toastSavedConfirmationText": "Rascunho salvo"
     },
@@ -341,9 +339,6 @@
             "total": "Total"
         }
     },
-    "reportsPendingSync": {
-        "appBarTitle": "Sincronização pendente"
-    },
     "pinAuthentication": {
         "enterPin": "Insira o PIN para selecionar o usuário",
         "incorrectPin": "PIN incorreto"
@@ -383,7 +378,7 @@
         "discardAction": "Descartar"
     },
     "permissionsView": {
-        "title": "Você não tem permissão para criar relatórios.",
+        "title": "Você não tem permissão para criar eventos.",
         "description": "Entre em contato com seu administrador para atualizar as permissões de sua conta.",
         "emptyEventCategory": {
             "title": "Você não tem acesso a nenhum tipo de relatório.",
@@ -407,6 +402,7 @@
                 "synced": "Sincronizado"
             }
         },
+        "title": "Salvar alterações nos filtros?",
         "saveAndApply": "Salvar e aplicar filtros",
         "discard": "Descartar mudanças"
     }

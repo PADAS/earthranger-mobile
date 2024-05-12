@@ -102,7 +102,7 @@
         "unableToSync": "Imeshindwa kusawazisha, jaribu tena baadaye.",
         "syncAlertInfo" : {
             "title": "Usawazishaji wa Programu",
-            "message": "Wakati kifaa kina muunganisho mzuri programu itajaribu kupakia nyimbo, ripoti na doria. Kubonyeza kitufe cha kusawazisha kutaanza kusawazisha mwenyewe.",
+            "message": "Wakati kifaa kina muunganisho mzuri programu itajaribu kupakia nyimbo, matukio na doria. Kubonyeza kitufe cha kusawazisha kutaanza kusawazisha mwenyewe.",
             "positiveAction": "sawa"
         },
         "toastReportError": {
@@ -237,10 +237,10 @@
             "saveDraft": "Hifadhi Rasimu",
             "discard": "Tupa",
             "continueEditing": "Endelea Kuhariri",
-            "message": "Je, unataka kuhifadhi ripoti?"
+            "message": "Je, ungependa kuhifadhi tukio?"
         },
         "requiredFieldsAlert": {
-            "title": "Sehemu zinazohitajika lazima ziwe kamili ili kuwasilisha ripoti hii.",
+            "title": "Sehemu zinazohitajika lazima ziwe zimekamilika ili kuwasilisha tukio hili.",
             "subtitle": "Je, ungependa Kuihifadhi kama rasimu au Endelea kuhariri?",
             "positiveAction": "Hifadhi",
             "negativeAction": "Endelea"
@@ -269,9 +269,7 @@
         "searchPlaceholder": "Tafuta",
         "emptyStateSearch": "Hakuna matokeo yaliyopatikana"
     },
-    "reportDrafts": {
-        "appBarTitle": "Rasimu Zilizohifadhiwa",
-        "dateUpdated": "Tarehe imesasishwa",
+    "eventsDrafts": {
         "toastRemoveConfirmationText": "Tukio imefutwa",
         "toastSavedConfirmationText": "Rasimu Imehifadhiwa"
     },
@@ -341,9 +339,6 @@
             "total": "Jumla"
         }
     },
-    "reportsPendingSync": {
-        "appBarTitle": "Inasubiri Usawazishaji"
-    },
     "pinAuthentication": {
         "enterPin": "Weka PIN ili kuchagua mtumiaji",
         "incorrectPin": "PIN si sahihi"
@@ -376,7 +371,7 @@
         "discardAction": "Tupa"
     },
     "permissionsView": {
-        "title": "Huna ruhusa ya kuunda ripoti.",
+        "title": "Huna ruhusa ya kuunda matukio.",
         "description": "Wasiliana na msimamizi wako ili kusasisha ruhusa za akaunti yako.",
         "emptyEventCategory": {
             "title": "Huna ufikiaji wa aina zozote za ripoti.",
@@ -400,6 +395,7 @@
                 "synced": "Imesawazishwa"
             }
         },
+        "title": "Ungependa kuhifadhi mabadiliko kwenye vichujio?",
         "saveAndApply": "Hifadhi na utumie vichujio",
         "discard": "Tupa mabadiliko"
     }

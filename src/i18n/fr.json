@@ -104,7 +104,7 @@
     "unableToSync": "Impossible de synchroniser, réessayez plus tard.",
     "syncAlertInfo": {
       "title": "Synchronisation des applications",
-      "message": "Lorsque l'appareil dispose d'une bonne connexion, l'application essaie de télécharger des pistes, des rapports et des patrouilles. Appuyez sur le bouton de synchronisation pour démarrer manuellement une synchronisation.",
+      "message": "Lorsque l'appareil dispose d'une bonne connexion, l'application essaiera de télécharger des traces, des événements et des patrouilles. Appuyer sur le bouton de synchronisation démarrera manuellement une synchronisation.",
       "positiveAction": "D'ACCORD"
     },
     "toastReportError": {
@@ -239,10 +239,10 @@
       "saveDraft": "Enregistrer le brouillon",
       "discard": "Jeter",
       "continueEditing": "Continuer l'édition",
-      "message": "Voulez-vous enregistrer le rapport ?"
+      "message": "Voulez-vous enregistrer l'événement ?"
   },
     "requiredFieldsAlert": {
-      "title": "Les champs obligatoires doivent être remplis pour soumettre ce rapport.",
+      "title": "Les champs obligatoires doivent être remplis pour soumettre cet événement.",
       "subtitle": "Souhaitez-vous Enregistrer en tant que brouillon ou Continuer l'édition ?",
       "positiveAction": "Enregistrer",
       "negativeAction": "Continuer"
@@ -271,9 +271,7 @@
     "searchPlaceholder": "Chercher",
     "emptyStateSearch": "Aucun résultat n'a été trouvé"
   },
-  "reportDrafts": {
-    "appBarTitle": "Brouillons enregistrés",
-    "dateUpdated": "Date de mise à jour",
+  "eventsDrafts": {
     "toastRemoveConfirmationText": "Événement supprimé",
     "toastSavedConfirmationText": "Brouillon enregistré"
   },
@@ -343,9 +341,6 @@
       "total": "Total"
     }
   },
-  "reportsPendingSync": {
-    "appBarTitle": "Synchronisation en attente"
-  },
   "pinAuthentication": {
     "enterPin": "Entrez le code PIN pour sélectionner l'utilisateur",
     "incorrectPin": "PIN incorrect"
@@ -385,7 +380,7 @@
     "discardAction": "Jeter"
   },
   "permissionsView": {
-    "title": "Vous n'êtes pas autorisé à créer des rapports.",
+    "title": "Vous n'êtes pas autorisé à créer des événements.",
     "description": "Contactez votre administrateur pour mettre à jour les autorisations de votre compte.",
     "emptyEventCategory": {
       "title": "Vous n'avez accès à aucun type de rapport.",
@@ -409,6 +404,7 @@
             "synced": "Synchronisé"
         }
       },
+      "title": "Enregistrer les modifications apportées aux filtres ?",
       "saveAndApply": "Enregistrer et appliquer des filtres",
       "discard": "Annuler les modifications"
   }

@@ -102,7 +102,7 @@
         "unableToSync": "Unable to sync, try again later.",
         "syncAlertInfo" : {
             "title": "App Syncing",
-            "message": "When the device has a good connection the app will try to upload tracks, reports, and patrols. Pressing the sync button will manually start a sync.",
+            "message": "When the device has a good connection the app will try to upload tracks, events, and patrols. Pressing the sync button will manually start a sync.",
             "positiveAction": "Ok"
         },
         "toastReportError": {
@@ -240,7 +240,7 @@
             "message": "Do you want to save the report?"
         },
         "requiredFieldsAlert": {
-            "title": "Required fields must be complete to submit this report.",
+            "title": "Required fields must be complete to submit this event.",
             "subtitle": "Do you wish to Save it as a draft or Continue editing?",
             "positiveAction": "Save Draft",
             "negativeAction": "Continue"
@@ -269,9 +269,7 @@
         "searchPlaceholder": "Search",
         "emptyStateSearch": "No results have been found"
     },
-    "reportDrafts": {
-        "appBarTitle": "Saved Drafts",
-        "dateUpdated": "Date updated",
+    "eventsDrafts": {
         "toastRemoveConfirmationText": "Event deleted",
         "toastSavedConfirmationText": "Draft Saved"
     },
@@ -341,9 +339,6 @@
             "total": "Total"
         }
     },
-    "reportsPendingSync": {
-        "appBarTitle": "Pending Sync"
-    },
     "pinAuthentication": {
         "enterPin": "Enter PIN to select user",
         "incorrectPin": "Incorrect PIN"
@@ -383,7 +378,7 @@
         "discardAction": "Discard"
     },
     "permissionsView": {
-        "title": "You do not have permission to create reports.",
+        "title": "You do not have permission to create events.",
         "description": "Contact your administrator to update your account permissions.",
         "emptyEventCategory": {
             "title": "You do not have access to any report types.",
@@ -407,6 +402,7 @@
                 "synced": "Synced"
             }
         },
+        "title": "Save changes to filters?",
         "saveAndApply": "Save and apply filters",
         "discard": "Discard changes"
     }

@@ -12,6 +12,7 @@ import { useRetrieveUser } from '../../../common/data/users/useRetrieveUser';
 import {
   ACTIVE_USER_HAS_PATROLS_PERMISSION,
   ACTIVE_USER_NAME_KEY,
+  REPORTS_SUBMITTED_KEY,
   SUBJECT_ID_KEY,
   USER_REMOTE_ID_KEY,
   USER_SUBJECT_NAME_KEY,
@@ -21,7 +22,7 @@ import { logGeneral } from '../../../common/utils/logUtils';
 import { setAuthState } from '../../../common/utils/authUtils';
 import { AuthState, Permissions } from '../../../common/enums/enums';
 import { usePopulateUsers } from '../../../common/data/users/usePopulateUsers';
-import { setBoolForKey } from '../../../common/data/storage/keyValue';
+import { setBoolForKey, setNumberForKey } from '../../../common/data/storage/keyValue';
 import { useRetrievePatrolPermissions } from '../../../common/data/permissions/useRetrievePermissions';
 import { resetUserEventFilters } from '../../../common/utils/deleteSession';
 
@@ -52,6 +53,7 @@ const PinAuthenticationView = () => {
       if (user) {
         if (getSecuredStringForKey(ACTIVE_USER_NAME_KEY) !== user.username) {
           resetUserEventFilters();
+          setNumberForKey(REPORTS_SUBMITTED_KEY, 0);
         }
         setSecuredStringForKey(ACTIVE_USER_NAME_KEY, user.username);
         setSecuredStringForKey(USER_REMOTE_ID_KEY, user.remote_id);

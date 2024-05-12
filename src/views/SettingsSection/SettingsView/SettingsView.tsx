@@ -40,7 +40,7 @@ import {
   SAVE_TO_CAMERA_ROLL,
   SETTINGS_VIEW_DISAPPEAR_KEY,
   SITE_VALUE_KEY,
-  START_PATROL_METADATA,
+  PATROL_EVENT_DETAILS,
   TRACKED_BY_SUBJECT_ID_KEY,
   TRACKED_BY_SUBJECT_NAME_KEY,
   TRACKED_BY_SUBJECT_STATUS_KEY,
@@ -146,7 +146,7 @@ export const SettingsView = ({
   const [isUploadPhotosWifiEnabled, setIsUploadPhotosWifiEnabled] = useState(getBoolForKey(UPLOAD_PHOTOS_WIFI));
   const [isSwitchTrackBySubjectEnabled, setIsSwitchTrackBySubjectEnabled] = useState(false);
   const [isPatrolEventDetailsEnabled, setIsPatrolEventDetailsEnabled] = useState(
-    getBoolForKey(START_PATROL_METADATA) || false,
+    getBoolForKey(PATROL_EVENT_DETAILS) || false,
   );
   const [defaultEventType, setDefaultEventType] = useState('');
   const { t } = useTranslation();
@@ -307,7 +307,7 @@ export const SettingsView = ({
   };
 
   const resetPatrolEventDetailsSettings = () => {
-    setBoolForKey(START_PATROL_METADATA, false);
+    setBoolForKey(PATROL_EVENT_DETAILS, false);
   };
 
   const toggleExperimentalFeatures = async () => {
@@ -322,7 +322,7 @@ export const SettingsView = ({
       resetPatrolEventDetailsSettings();
     }
 
-    setIsPatrolEventDetailsEnabled(getBoolForKey(START_PATROL_METADATA) || false);
+    setIsPatrolEventDetailsEnabled(getBoolForKey(PATROL_EVENT_DETAILS) || false);
   };
 
   const toggleMergeCategories = () => {
@@ -331,10 +331,10 @@ export const SettingsView = ({
     setBoolForKey(MERGE_CATEGORIES_KEY, toggle);
   };
 
-  const toggleStartPatrolMetaData = async () => {
+  const togglePatrolEventDetails = async () => {
     const toggle = !isPatrolEventDetailsEnabled;
     setIsPatrolEventDetailsEnabled(toggle);
-    setBoolForKey(START_PATROL_METADATA, toggle);
+    setBoolForKey(PATROL_EVENT_DETAILS, toggle);
 
     if (!toggle) {
       resetPatrolEventDetailsSettings();
@@ -481,7 +481,7 @@ export const SettingsView = ({
                   isPatrolEventDetailsEnabled
                     ? COLORS_LIGHT.brightBlue : COLORS_LIGHT.G3_secondaryMediumLightGray
                 }
-                onValueChange={toggleStartPatrolMetaData}
+                onValueChange={togglePatrolEventDetails}
                 value={isPatrolEventDetailsEnabled}
               />
             </View>

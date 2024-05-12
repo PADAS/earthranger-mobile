@@ -242,7 +242,7 @@ const ReportRepeatableFieldListView = () => {
         autoDismiss={2000}
         backgroundColor={COLORS_LIGHT.G0_black}
         icon={TrashIcon}
-        message={t('reportDrafts.toastRemoveConfirmationText')}
+        message={t('eventsDrafts.toastRemoveConfirmationText')}
         messageStyle={{ color: COLORS_LIGHT.white }}
         onDismiss={onDeleteRepeatableForm}
         position="bottom"

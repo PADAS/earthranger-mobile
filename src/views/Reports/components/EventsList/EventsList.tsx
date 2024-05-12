@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Incubator, Text, View } from 'react-native-ui-lib';
 import { useFocusEffect } from '@react-navigation/native';
+import { isEmpty } from 'lodash-es';
 
 // Internal Dependencies
 import { EventCell } from '../EventCell/EventCell';
@@ -328,6 +329,7 @@ const EventsList = ({
             text={item.text}
             title={item.title}
             type={item.status}
+            isEditable={(isEmpty(item.remoteId))}
           />
         );
       default:
@@ -376,7 +378,7 @@ const EventsList = ({
         autoDismiss={2000}
         backgroundColor={COLORS_LIGHT.G0_black}
         icon={TrashIcon}
-        message={t('reportDrafts.toastRemoveConfirmationText')}
+        message={t('eventsDrafts.toastRemoveConfirmationText')}
         messageStyle={{ color: COLORS_LIGHT.white }}
         onDismiss={() => commitEventRemoval()}
         position="bottom"

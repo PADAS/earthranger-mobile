@@ -23,12 +23,14 @@ import styles from './ReportFormOfflineSection.styles';
 interface OfflineSectionProps {
   reportCoordinates: Position;
   enableLocationIcon: boolean;
+  canEdit: boolean;
   onFieldPress: () => void;
   onIconPress: () => void;
 }
 
 export const OfflineSection = ({
   reportCoordinates,
+  canEdit,
   enableLocationIcon,
   onFieldPress,
   onIconPress,
@@ -42,7 +44,7 @@ export const OfflineSection = ({
   return (
     <View style={styles.horizontalContainer}>
       <Pressable
-        disabled={coordinatesFormat !== LocationFormats.DEG}
+        disabled={coordinatesFormat !== LocationFormats.DEG || !canEdit}
         style={styles.inputContainer}
         onPress={() => onFieldPress()}
       >
@@ -52,6 +54,7 @@ export const OfflineSection = ({
           <View style={styles.line} />
         </View>
       </Pressable>
+      {canEdit && (
       <Pressable
         onPress={() => onIconPress()}
       >
@@ -76,6 +79,7 @@ export const OfflineSection = ({
             )}
         </View>
       </Pressable>
+      )}
     </View>
   );
 };

@@ -85,7 +85,7 @@ const EventsListFilterView = () => {
         <CloseIcon
           width="13"
           height="13"
-          viewbox="0 0 13 13"
+          viewbox="0 0 16 16"
         />
       </View>
     );
@@ -182,7 +182,8 @@ const EventsListFilterView = () => {
       {/* Discard changes ActionSheet */}
       <ActionSheet
         visible={showFilterChangeAlert}
-        title="Save changes to filters?"
+        title={t('eventsListFilterView.title')}
+        onDismiss={() => setShowFilterChangeAlert(false)}
         options={[
           {
             iconSource: () => ActionSheetCheckmark,

@@ -55,9 +55,10 @@ import { useSyncState } from '../../common/data/hooks/useSyncState';
 import { COLORS_LIGHT } from '../../common/constants/colors';
 import { RootStackParamList } from '../../common/types/types';
 import { getAuthState, isParentUserActive, setAuthState } from '../../common/utils/authUtils';
-import { AuthState } from '../../common/enums/enums';
+import { AuthState, Permissions } from '../../common/enums/enums';
 import { usePopulateUsers } from '../../common/data/users/usePopulateUsers';
 import { deleteSession } from '../../common/utils/deleteSession';
+import { useRetrievePatrolPermissions } from '../../common/data/permissions/useRetrievePermissions';
 
 // Style
 import styles from './StatusView.styles';
@@ -88,6 +89,7 @@ export const StatusView = ({ navigation }: StatusViewProps) => {
     onSyncPatrolTypes,
   } = useOnSynchronizeData();
   const { updateSyncState } = useSyncState();
+  const { isPermissionAvailable } = useRetrievePatrolPermissions();
 
   // Component's State
   const syncIcon = useMemo(() => (<SyncIcon />), []);
@@ -274,6 +276,10 @@ export const StatusView = ({ navigation }: StatusViewProps) => {
         await syncResource(eTag, syncScope, accessToken);
         if (syncScope === SyncScope.PatrolTypes) {
           setBoolForKey(UPDATE_PATROL_TYPES_UI, true);
+        }
+        if (syncScope === SyncScope.Users || syncScope === SyncScope.Profiles) {
+          const isPatrolPermissionAvailable = await isPermissionAvailable(Permissions.patrol);
+          setBoolForKey(ACTIVE_USER_HAS_PATROLS_PERMISSION, isPatrolPermissionAvailable);
         }
         const authState = getAuthState();
         if (authState === AuthState.userInvalidated || authState === AuthState.authInvalidated) {

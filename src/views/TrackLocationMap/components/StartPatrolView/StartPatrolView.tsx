@@ -23,7 +23,7 @@ import {
   COORDINATES_FORMAT_KEY,
   TRACKED_BY_SUBJECT_NAME_KEY,
   ACTIVE_USER_NAME_KEY,
-  EXPERIMENTAL_FEATURES_FLAG_KEY, PATROL_DEFAULT_EVENT_TYPE_VALUE, START_PATROL_METADATA,
+  EXPERIMENTAL_FEATURES_FLAG_KEY, PATROL_DEFAULT_EVENT_TYPE_VALUE, PATROL_EVENT_DETAILS,
 } from '../../../../common/constants/constants';
 import { LocationLiveStateIcon } from '../../../../common/icons/LocationLiveStateIcon';
 import { LocationOnStateIcon } from '../../../../common/icons/LocationOnStateIcon';
@@ -194,7 +194,7 @@ const StartPatrolView = () => {
     });
 
     if (status !== PatrolResult.unauthorized) {
-      if (getBoolForKey(START_PATROL_METADATA)) {
+      if (getBoolForKey(PATROL_EVENT_DETAILS)) {
         await presentDefaultReportForm(timestamp);
       } else {
         navigation.popToTop();

@@ -11,7 +11,7 @@ import { AccountSettingsIcon } from '../../common/icons/AccountSettingsIcon';
 // Styles
 import styles from './PermissionView.styles';
 
-const PermissionView = ({ emptyEventCategory }: { emptyEventCategory: boolean }) => {
+const PermissionView = ({ emptyEventCategory }: { emptyEventCategory?: boolean }) => {
   // Hooks
   const { t } = useTranslation();
 

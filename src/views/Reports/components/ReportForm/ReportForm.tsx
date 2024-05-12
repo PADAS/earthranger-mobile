@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 // External Dependencies
 import React, {
-  useCallback, useEffect, useRef, useState,
+  useCallback, useEffect, useLayoutEffect, useRef, useState,
 } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -83,12 +83,13 @@ import {
   submitReportEvent,
 } from '../../../../analytics/reports/reportsAnalytics';
 import { customBackButton, osBackIcon } from '../../../../common/components/header/header';
-import { nullIslandLocation } from '../../../../common/utils/locationUtils';
+import { LocationFormats, nullIslandLocation } from '../../../../common/utils/locationUtils';
 
 // constants
 import {
   ACTIVE_PATROL_KEY,
   ALERT_BUTTON_BACKGROUND_COLOR_RED,
+  COORDINATES_FORMAT_KEY,
   IS_ANDROID,
   PHOTO_QUALITY_KEY,
   SAVE_TO_CAMERA_ROLL,
@@ -284,7 +285,7 @@ const ReportForm = () => {
       : schemaErrors);
   }, [schemaErrors]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     initAppBar();
   }, [
     images,
@@ -303,6 +304,10 @@ const ReportForm = () => {
     reportCoordinates,
     isSaveDraftEnabled,
   ]);
+
+  useLayoutEffect(() => {
+    initAppBar();
+  }, [navigation]);
 
   useEffect(() => {
     if (isEqual(reportCoordinates, currentCoordinates)) {
@@ -623,7 +628,9 @@ const ReportForm = () => {
   };
 
   const onCoordinatePress = () => {
-    setDisplayEditDialog(true);
+    if (getStringForKey(COORDINATES_FORMAT_KEY) === LocationFormats.DEG) {
+      setDisplayEditDialog(true);
+    }
   };
 
   const onCancelDialogPress = () => {
@@ -1030,11 +1037,13 @@ const ReportForm = () => {
                   <MapView
                     mapURL={mapURL}
                     reportCoordinates={reportCoordinates}
+                    canEdit={!isDefaultPatrolTypeEnabled}
                     onMapPress={onMapPress}
                     onCoordinatesPress={onCoordinatePress}
                   />
                 ) : (
                   <OfflineSection
+                    canEdit={!isDefaultPatrolTypeEnabled}
                     reportCoordinates={reportCoordinates}
                     enableLocationIcon={enableLocationIcon}
                     onFieldPress={onOfflineFieldPress}
@@ -1192,7 +1201,7 @@ const ReportForm = () => {
         autoDismiss={2000}
         backgroundColor={COLORS_LIGHT.G0_black}
         icon={FolderIcon}
-        message={t('reportDrafts.toastSavedConfirmationText')}
+        message={t('eventsDrafts.toastSavedConfirmationText')}
         messageStyle={{ color: COLORS_LIGHT.white }}
         onDismiss={() => setDisplayToast(false)}
         position="bottom"

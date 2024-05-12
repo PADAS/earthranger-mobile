@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     width: '84%',
   },
-  caratContainer: {
+  caretContainer: {
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'column',

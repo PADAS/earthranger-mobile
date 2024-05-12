@@ -1,5 +1,5 @@
 # fastlane constants
-fastlane_version "2.205.2"
+fastlane_version "2.220.0"
 
 # constants
 APP_IDENTIFIER = "com.earthranger"

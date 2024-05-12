@@ -23,6 +23,7 @@ import styles from './ReportFormMapView.styles';
 interface MapViewProps {
   mapURL: string;
   reportCoordinates: Position;
+  canEdit: boolean,
   onMapPress: () => void;
   onCoordinatesPress: () => void;
 }
@@ -30,6 +31,7 @@ interface MapViewProps {
 export const MapView = ({
   mapURL,
   reportCoordinates,
+  canEdit,
   onMapPress,
   onCoordinatesPress,
 }: MapViewProps) => {
@@ -43,13 +45,13 @@ export const MapView = ({
 
   return (
     <View style={styles.mapContainer}>
-      <Pressable onPress={onMapPress} style={styles.mapImage}>
+      <Pressable disabled={!canEdit} onPress={onMapPress} style={styles.mapImage}>
         <Image style={styles.mapImage} source={{ uri: mapURL }} key={mapURL} />
       </Pressable>
 
       {/* Coordinates */}
       <View style={styles.mapCoordinatesContainer}>
-        <Pressable onPress={onCoordinatesPress}>
+        <Pressable disabled={!canEdit} onPress={onCoordinatesPress}>
           <Text style={styles.mapCoordinates}>
             {parseLocationToSelectedFormat()}
           </Text>
@@ -57,11 +59,13 @@ export const MapView = ({
       </View>
 
       {/* Edit Icon */}
+      {canEdit && (
       <View style={styles.editIcon}>
         <TouchableOpacity onPress={onMapPress} style={styles.touchableArea}>
           <EditIcon />
         </TouchableOpacity>
       </View>
+      )}
     </View>
   );
 };

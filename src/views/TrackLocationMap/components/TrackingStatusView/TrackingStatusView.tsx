@@ -20,12 +20,13 @@ import { useWindowDimensions } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 
 // Internal Dependencies
-import { useMMKVNumber } from 'react-native-mmkv';
+import { useMMKVBoolean, useMMKVNumber } from 'react-native-mmkv';
 import { COLORS_LIGHT } from '../../../../common/constants/colors';
 import { LocationOnForIos } from '../../../../common/icons/LocationOnForIos';
 import { ChevronIcon } from '../../../../common/icons/ChevronIcon';
 import { StopTrackingIcon } from '../../../../common/icons/StopTrackingIcon';
 import {
+  ACTIVE_USER_HAS_PATROLS_PERMISSION,
   BOTTOM_SHEET_NAVIGATOR,
   BOTTOM_SHEET_NAVIGATOR_STATUS_INDEX,
 } from '../../../../common/constants/constants';
@@ -38,7 +39,7 @@ import {
   TRACKING_STATUS_STACKED_BUTTONS_HEIGHT,
   TRACKING_STATUS_TITLE_HEIGHT,
 } from '../../../../common/constants/dimens';
-import { getNumberForKey, localStorage } from '../../../../common/data/storage/keyValue';
+import { getBoolForKey, getNumberForKey, localStorage } from '../../../../common/data/storage/keyValue';
 import { StartPatrolIcon } from '../../../../common/icons/StartPatrolIcon';
 
 // Styles
@@ -50,12 +51,17 @@ export const TrackingStatusView = () => {
   const { animatedPosition } = useBottomSheetContext();
   const { height: windowHeight } = useWindowDimensions();
   const [bottomSheetIndex] = useMMKVNumber(BOTTOM_SHEET_NAVIGATOR_STATUS_INDEX, localStorage);
+  const [isPatrolPermissionStatus] = useMMKVBoolean(
+    ACTIVE_USER_HAS_PATROLS_PERMISSION,
+    localStorage,
+  );
 
   const getIsMinimized = () => getNumberForKey(BOTTOM_SHEET_NAVIGATOR_STATUS_INDEX) === 0;
 
   // State
   const [isMinimized, setIsMinimized] = useState(getIsMinimized());
   const [isDeviceOnline, setIsDeviceOnline] = useState(false);
+  const [isPatrolPermissionAvailable, setIsPatrolPermissionAvailable] = useState(true);
 
   // References
   const eventEmitter = useRef(getEventEmitter()).current;
@@ -72,6 +78,10 @@ export const TrackingStatusView = () => {
   useEffect(() => {
     setIsMinimized(getIsMinimized());
   }, [bottomSheetIndex]);
+
+  useEffect(() => {
+    setIsPatrolPermissionAvailable(getBoolForKey(ACTIVE_USER_HAS_PATROLS_PERMISSION));
+  }, [isPatrolPermissionStatus]);
 
   useEffect(() => {
     // Listen for internet connection status
@@ -173,6 +183,7 @@ export const TrackingStatusView = () => {
             ]
           }
       >
+        {isPatrolPermissionAvailable && (
         <View style={styles.buttonContainer}>
           <Button
             onPress={() => eventEmitter.emit(
@@ -196,6 +207,7 @@ export const TrackingStatusView = () => {
             </Text>
           </Button>
         </View>
+        )}
 
         <View style={styles.buttonContainer}>
           <Button

@@ -24,9 +24,10 @@ import { LocationOnAndroid } from '../../../../common/icons/LocationOnAndroid';
 import { LocationOnForIos } from '../../../../common/icons/LocationOnForIos';
 import { LocationOffForIos } from '../../../../common/icons/LocationOffForIos';
 import { LocationOffAndroid } from '../../../../common/icons/LocationOffAndroid';
-import { BASEMAP_KEY, IS_ANDROID } from '../../../../common/constants/constants';
+import { BASEMAP_KEY, COORDINATES_FORMAT_KEY, IS_ANDROID } from '../../../../common/constants/constants';
 import { osBackIcon } from '../../../../common/components/header/header';
 import { getStringForKey } from '../../../../common/data/storage/keyValue';
+import { LocationFormats, formatCoordinates } from '../../../../common/utils/locationUtils';
 
 // Styles
 import styles from './ReportEditLocationView.styles';
@@ -148,13 +149,25 @@ export const ReportEditLocationView = () => {
     <>
       {/* Coordinates */}
       <View style={styles.coordinatesContainer}>
-        <Pressable onPress={onCoordinatesPress} style={styles.coordinatesPressable}>
+        <Pressable
+          disabled={getStringForKey(COORDINATES_FORMAT_KEY) !== LocationFormats.DEG}
+          onPress={onCoordinatesPress}
+          style={styles.coordinatesPressable}
+        >
           <Text style={styles.mapCoordinates}>
-            {`${coordinates[1].toFixed(6)}°, ${coordinates[0].toFixed(6)}°`}
+            {
+              formatCoordinates(
+                coordinates[1],
+                coordinates[0],
+                getStringForKey(COORDINATES_FORMAT_KEY),
+              )
+            }
           </Text>
-          <View style={styles.editIconContainer}>
-            <EditIcon color={COLORS_LIGHT.white} />
-          </View>
+          {getStringForKey(COORDINATES_FORMAT_KEY) === LocationFormats.DEG && (
+            <View style={styles.editIconContainer}>
+              <EditIcon color={COLORS_LIGHT.white} />
+            </View>
+          )}
         </Pressable>
       </View>
       {/* End Coordinates */}
