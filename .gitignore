@@ -1,13 +1,13 @@
 # IDE
 *.sublime-project
 *.sublime-workspace
-*.vscode
+*.vscode/**
 *.fleet
 .ignore
 
-# React Native
 # OSX
 .DS_Store
+.cache_ggshield
 
 # Xcode
 build/
