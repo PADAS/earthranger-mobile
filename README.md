@@ -1,5 +1,5 @@
 # EarthRanger Mobile
-Android and iOS client to the EarthRanger platform
+Android and iOS client to the [EarthRanger platform](https://www.earthranger.com/)
 
 ## Run the app
 There are mulitple ways to run the app. You can open the respective IDE's, Android Studio or xCode and click the **Run** button with the app selected.  Instructions below run the app from a terminal. In all instances, be sure you have a connected physical device and/or emulator/simulator running.
@@ -55,7 +55,7 @@ $ [bundle exec] fastlane ios build install:true
 
 ## Contributors
 
-Contributions are welcome! If you find a bug or have a feature request, please open an issue.
+EarthRanger is an open-source project built by the [EarthRanger team](https://www.earthranger.com/) at the [Allen Institute for AI](https://allenai.org/) (AI2). AI2 is a non-profit institute with the mission to contribute to humanity through high-impact AI research and engineering.  Contributions are welcome! If you find a bug or have a feature request, please open an issue.
 
 <a href="https://github.com/PADAS/earthranger-mobile/graphs/contributors">
   <img src="https://contributors-img.web.app/image?repo=PADAS/earthranger-mobile" />
