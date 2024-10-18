@@ -9,14 +9,13 @@ import React, {
 } from 'react';
 import { JsonForms } from '@jsonforms/react';
 import { createAjv } from '@jsonforms/core';
+import { generateUISchema, validateJSONSchema } from '@earthranger/react-native-jsonforms-formatter';
 
 // Internal Dependencies
 import {
   RNCells,
   RNRenderers,
 } from '../../../../jsonforms/jsonFormsUtils';
-import { useGenerateUISchema } from '../../../../../../common/utils/useGenerateUISchema';
-import { validateJSONSchema } from '../../../../../../common/utils/validateJSONSchema';
 import log from '../../../../../../common/utils/logUtils';
 
 // Interfaces
@@ -39,9 +38,6 @@ export const ReportJsonForm = ({
   setSchemaErrors,
   setShowSchemaErrorMessage,
 }: ReportJsonFormProps) => {
-  // Hooks
-  const { generateUISchema } = useGenerateUISchema();
-
   // Component's State
   const [jsonSchema, setJsonSchema] = useState<any>({});
   const [uiSchema, setUiSchema] = useState<any>();

@@ -12,6 +12,8 @@ import { useRetrieveUser } from '../../../common/data/users/useRetrieveUser';
 import {
   ACTIVE_USER_HAS_PATROLS_PERMISSION,
   ACTIVE_USER_NAME_KEY,
+  PATROL_INFO_ENABLED,
+  PATROL_INFO_EVENT_TYPE_VALUE,
   REPORTS_SUBMITTED_KEY,
   SUBJECT_ID_KEY,
   USER_REMOTE_ID_KEY,
@@ -22,7 +24,7 @@ import { logGeneral } from '../../../common/utils/logUtils';
 import { setAuthState } from '../../../common/utils/authUtils';
 import { AuthState, Permissions } from '../../../common/enums/enums';
 import { usePopulateUsers } from '../../../common/data/users/usePopulateUsers';
-import { setBoolForKey, setNumberForKey } from '../../../common/data/storage/keyValue';
+import { setBoolForKey, setNumberForKey, setStringForKey } from '../../../common/data/storage/keyValue';
 import { useRetrievePatrolPermissions } from '../../../common/data/permissions/useRetrievePermissions';
 import { resetUserEventFilters } from '../../../common/utils/deleteSession';
 
@@ -54,11 +56,13 @@ const PinAuthenticationView = () => {
         if (getSecuredStringForKey(ACTIVE_USER_NAME_KEY) !== user.username) {
           resetUserEventFilters();
           setNumberForKey(REPORTS_SUBMITTED_KEY, 0);
+          setBoolForKey(PATROL_INFO_ENABLED, false);
         }
         setSecuredStringForKey(ACTIVE_USER_NAME_KEY, user.username);
         setSecuredStringForKey(USER_REMOTE_ID_KEY, user.remote_id);
         setSecuredStringForKey(USER_SUBJECT_NAME_KEY, user.username);
         setSecuredStringForKey(SUBJECT_ID_KEY, user.subject_id);
+        setStringForKey(PATROL_INFO_EVENT_TYPE_VALUE, '');
 
         const isPatrolPermissionAvailable = await isPermissionAvailable(Permissions.patrol);
         setBoolForKey(ACTIVE_USER_HAS_PATROLS_PERMISSION, isPatrolPermissionAvailable);

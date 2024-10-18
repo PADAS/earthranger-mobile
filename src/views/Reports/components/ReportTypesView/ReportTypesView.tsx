@@ -21,7 +21,7 @@ import { View } from 'react-native-ui-lib';
 import { RouteProp } from '@react-navigation/native';
 
 // Internal Dependencies
-import { MERGE_CATEGORIES_KEY, PATROL_DEFAULT_EVENT_TYPE_VALUE } from '../../../../common/constants/constants';
+import { MERGE_CATEGORIES_KEY, PATROL_INFO_EVENT_TYPE_VALUE } from '../../../../common/constants/constants';
 import { useRetrieveReportTypesByCategory } from '../../../../common/data/reports/useRetrieveReportTypesByCategory';
 import { EventType } from '../../../../common/types/reportsResponse';
 import { getBoolForKey, setStringForKey } from '../../../../common/data/storage/keyValue';
@@ -49,7 +49,7 @@ const DEFAULT_HEIGHT = 131;
 // Interfaces + Types
 interface ReportTypesViewProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'ReportTypesView'>;
-  route: RouteProp<{ params: { title: string, categoryId: string, coordinates?: Position, isDefaultPatrolTypeEnabled?: boolean, } }, 'params'>,
+  route: RouteProp<{ params: { title: string, categoryId: string, coordinates?: Position, isPatrolInfoEventType?: boolean, } }, 'params'>,
 }
 
 // @ts-ignore
@@ -65,7 +65,7 @@ const ReportTypesView = ({ route, navigation }: ReportTypesViewProps) => {
   // References
   const inputRef = useRef<TextInput>(null);
   // eslint-disable-next-line max-len
-  const mergeCategories = useRef(route.params.isDefaultPatrolTypeEnabled || getBoolForKey(MERGE_CATEGORIES_KEY));
+  const mergeCategories = useRef(route.params.isPatrolInfoEventType || getBoolForKey(MERGE_CATEGORIES_KEY));
   const isSearching = useRef(false);
 
   // Variables
@@ -165,12 +165,14 @@ const ReportTypesView = ({ route, navigation }: ReportTypesViewProps) => {
   };
 
   const initCoordinates = () => {
-    setCoordinates(
-      [
-        parseFloat(route.params.coordinates[0].toFixed(6)),
-        parseFloat(route.params.coordinates[1].toFixed(6)),
-      ],
-    );
+    if (route.params.coordinates) {
+      setCoordinates(
+        [
+          parseFloat(route.params.coordinates[0].toFixed(6)),
+          parseFloat(route.params.coordinates[1].toFixed(6)),
+        ],
+      );
+    }
   };
 
   const getReportTypes = async () => {
@@ -263,8 +265,8 @@ const ReportTypesView = ({ route, navigation }: ReportTypesViewProps) => {
             iconImage={data.icon_svg}
             priority={data.default_priority}
             onPress={() => {
-              if (route.params.isDefaultPatrolTypeEnabled) {
-                setStringForKey(PATROL_DEFAULT_EVENT_TYPE_VALUE, data.value);
+              if (route.params.isPatrolInfoEventType) {
+                setStringForKey(PATROL_INFO_EVENT_TYPE_VALUE, data.value);
                 navigation.goBack();
               } else {
                 navigateToReportForm(

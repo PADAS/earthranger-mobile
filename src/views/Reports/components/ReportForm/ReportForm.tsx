@@ -19,7 +19,6 @@ import {
   RouteProp, useFocusEffect, useNavigation, useRoute,
 } from '@react-navigation/native';
 import RNFS, { moveFile } from 'react-native-fs';
-import Geolocation from 'react-native-geolocation-service';
 import { v4 as uuidv4 } from 'uuid';
 import {
   isEmpty, isEqual, isFunction, last, omit, replace,
@@ -29,7 +28,7 @@ import Svg, { Polygon } from 'react-native-svg';
 import { ActionSheet, Incubator } from 'react-native-ui-lib';
 import dayjs from 'dayjs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { GeoJSON } from 'geodesy';
+import { GeoPosition } from 'react-native-geolocation-service';
 
 // Internal Dependencies
 import { ReportFormFooter } from './components/ReportFormFooter/ReportFormFooter';
@@ -84,6 +83,7 @@ import {
 } from '../../../../analytics/reports/reportsAnalytics';
 import { customBackButton, osBackIcon } from '../../../../common/components/header/header';
 import { LocationFormats, nullIslandLocation } from '../../../../common/utils/locationUtils';
+import { useGetLocation } from '../../../../common/data/location/useGetLocation';
 
 // constants
 import {
@@ -117,6 +117,7 @@ interface ReportDataSnapshot {
 const IMAGE_LIBRARY_OPTIONS: ImageLibraryOptions = {
   mediaType: 'photo',
   selectionLimit: 0, // Let user select multiple images
+  includeExtra: true,
 };
 const ATTACHMENTS_THUMBNAILS_FOLDER = `${RNFS.DocumentDirectoryPath}/attachments/thumbnails`;
 const MAX_MAPBOX_URL_LENGTH = 8192;
@@ -162,6 +163,7 @@ const ReportForm = () => {
   const { retrieveReportAttachmentsById } = useRetrieveReportAttachmentsById();
   const { updateReportEvent } = useUpdateReportEvent();
   const { retrieveActivePatrolSegmentId } = useRetrieveActivePatrolSegmentId();
+  const { getLocationWithRetries } = useGetLocation();
 
   const {
     reportId, title, schema, typeId, geometryType, isEditMode,
@@ -171,7 +173,7 @@ const ReportForm = () => {
   const reportTypeId = useRef(typeId).current;
   const reportTitle = useRef(cropHeaderTitleText(title, 5)).current;
   // eslint-disable-next-line max-len
-  const isDefaultPatrolTypeEnabled = useRef(route.params.isDefaultPatrolTypeEnabled || false).current;
+  const isDefaultPatrolInfoEnabled = useRef(route.params.isDefaultPatrolInfoEnabled || false).current;
   const patrolCreatedAt = useRef(route.params.createdAt || '').current;
   const initialCoordinates = useRef(route.params.coordinates);
 
@@ -187,8 +189,7 @@ const ReportForm = () => {
   const [showAlertCloseForm, setShowAlertCloseForm] = useState(false);
   const [displayEditDialog, setDisplayEditDialog] = useState(false);
   const [isDeviceOnline, setIsDeviceOnline] = useState(true);
-  const [currentCoordinates, setCurrentCoordinates] = useState<Position>([0, 0]);
-  const [enableLocationIcon, setEnableLocationIcon] = useState(false);
+  const [enableLocationIcon, setEnableLocationIcon] = useState(true);
   const [showSchemaErrorMessage, setShowSchemaErrorMessage] = useState(false);
   const [reportCoordinates, setReportCoordinates] = useState<Position>([0, 0]);
   const [isFormEmpty, setIsFormEmpty] = useState(true);
@@ -212,6 +213,7 @@ const ReportForm = () => {
   const [coordinatesOfScreenElements] = useState<number[]>([]);
   const [draftViewFinishedLoading, setDraftViewFinishedLoading] = useState(false);
   const [isLoaderVisible, setIsLoaderVisible] = useState(false);
+  const [accuracy, setAccuracy] = useState(0);
 
   let mapURL = createMapBoxPointMapURL(reportCoordinates);
 
@@ -223,6 +225,10 @@ const ReportForm = () => {
       } catch (error) {
         log.error(`[ReportForm] - Could not init ${path} folder`);
       }
+    };
+
+    const getCurrentCoordinatesAsync = async () => {
+      await getCurrentCoordinates();
     };
 
     const loadReportDraftData = async () => {
@@ -237,7 +243,7 @@ const ReportForm = () => {
     };
 
     initAppBar();
-    getCurrentCoordinates();
+    getCurrentCoordinatesAsync();
     verifyInternetConnection();
     loadReportDraftData();
     initFolder(ATTACHMENTS_FOLDER);
@@ -309,14 +315,6 @@ const ReportForm = () => {
     initAppBar();
   }, [navigation]);
 
-  useEffect(() => {
-    if (isEqual(reportCoordinates, currentCoordinates)) {
-      setEnableLocationIcon(false);
-    } else {
-      setEnableLocationIcon(true);
-    }
-  }, [reportCoordinates]);
-
   useFocusEffect(useCallback(() => {
     verifyInternetConnection();
     if (geometryType === 'Polygon') {
@@ -359,7 +357,10 @@ const ReportForm = () => {
         setIsSaveDraftEnabled(true);
       }
 
-      mapURL = createMapBoxPointMapURL(reportCoordinates);
+      mapURL = createMapBoxPointMapURL([
+        parseFloat(updatedCoordinates[0].toFixed(6)),
+        parseFloat(updatedCoordinates[1].toFixed(6)),
+      ]);
     }
   }, [route]));
 
@@ -469,11 +470,12 @@ const ReportForm = () => {
     navigation.setOptions({
       title: reportTitle,
       headerRight,
-      headerLeft: () => (isDefaultPatrolTypeEnabled ? emptyBackButton : customBackButton(
-        osBackIcon,
-        closeFormView,
-        false,
-      )),
+      headerLeft: () => (isDefaultPatrolInfoEnabled
+      && !showSchemaErrorMessage ? emptyBackButton : customBackButton(
+          osBackIcon,
+          closeFormView,
+          false,
+        )),
       gestureEnabled: false,
     });
   };
@@ -505,25 +507,24 @@ const ReportForm = () => {
     });
   };
 
-  const getCurrentCoordinates = () => {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        setCurrentCoordinates(
-          [parseFloat(position.coords.longitude.toFixed(6)),
-            parseFloat(position.coords.latitude.toFixed(6))],
-        );
-        if (isEqual(route.params.coordinates, [0, 0]) && !isEditMode) {
-          setReportCoordinates(
-            [parseFloat(position.coords.longitude.toFixed(6)),
-              parseFloat(position.coords.latitude.toFixed(6))],
-          );
-        }
-      },
-      (error) => {
-        log.error(`[ReportForm] - Get current position - ${error}`);
-      },
-      { enableHighAccuracy: true },
-    );
+  const getCurrentCoordinates = async () => {
+    try {
+      const location = await getLocationWithRetries(notifyLocationAttempts);
+      notifyLocationAttempts(location);
+    } catch {
+      log.error('[ReportForm] - Error getCurrentCoordinates');
+    }
+    setEnableLocationIcon(true);
+  };
+
+  const notifyLocationAttempts = (location: GeoPosition) => {
+    if (isEqual(route.params.coordinates, [0, 0]) && !isEditMode) {
+      setReportCoordinates(
+        [parseFloat(location.coords.longitude.toFixed(6)),
+          parseFloat(location.coords.latitude.toFixed(6))],
+      );
+      setAccuracy(location.coords.accuracy);
+    }
   };
 
   const loadReportFormData = async (accountId: string) => {
@@ -540,7 +541,7 @@ const ReportForm = () => {
         setJsonSchema(schema);
       }
 
-      if (geometryType === 'Polygon') {
+      if (geometryType === 'Polygon' && reportDraft.geometry) {
         loadReportGeometry(reportDraft.geometry);
       } else {
         initialCoordinates.current = [reportDraft.longitude, reportDraft.latitude];
@@ -713,13 +714,24 @@ const ReportForm = () => {
         setIsLoaderVisible(true);
         for (let i = 0, l = response.assets.length; i < l; i++) {
           const image = response.assets[i];
+
           if (image.uri) {
-            let photoName = getPhotoName();
-            if (response.assets.length > 1) {
-              photoName += `-${String(i + 1).padStart(2, '0')}`;
+            let photoName;
+
+            if (IS_ANDROID && image.fileName) {
+              photoName = image.fileName;
+            } else {
+              photoName = getPhotoName();
+
+              if (response.assets.length > 1) {
+                photoName += `-${String(i + 1).padStart(2, '0')}`;
+              }
+
+              photoName += '.jpg';
             }
-            const imageURI = `${ATTACHMENTS_FOLDER}/${photoName}.jpg`;
-            const thumbnailURI = `${ATTACHMENTS_THUMBNAILS_FOLDER}/${photoName}.jpg`;
+
+            const imageURI = `${ATTACHMENTS_FOLDER}/${photoName}`;
+            const thumbnailURI = `${ATTACHMENTS_THUMBNAILS_FOLDER}/${photoName}`;
 
             // Persist new image to document directory
             // eslint-disable-next-line no-await-in-loop
@@ -860,7 +872,7 @@ const ReportForm = () => {
     saveReportSnapshot();
   };
 
-  const getCreatedAt = () => (isDefaultPatrolTypeEnabled ? patrolCreatedAt : '');
+  const getCreatedAt = () => (isDefaultPatrolInfoEnabled ? patrolCreatedAt : '');
 
   const updateReportData = async (reportEvent: EventData) => {
     const updatedNotes = reportSnapshot.current.notes.filter(
@@ -961,7 +973,9 @@ const ReportForm = () => {
   };
 
   const closeFormView = () => {
-    if (showSchemaErrorMessage || isFormEmpty) {
+    if (isDefaultPatrolInfoEnabled && showSchemaErrorMessage) {
+      navigation.popToTop();
+    } else if (showSchemaErrorMessage || isFormEmpty) {
       navigation.pop();
     } else if (showCloseFormCustomAlert) {
       setShowAlertCloseForm(true);
@@ -978,11 +992,9 @@ const ReportForm = () => {
     }
   };
 
-  const onOfflineIconPress = () => {
-    setReportCoordinates([
-      parseFloat(currentCoordinates[0].toFixed(6)),
-      parseFloat(currentCoordinates[1].toFixed(6)),
-    ]);
+  const onOfflineIconPress = async () => {
+    setEnableLocationIcon(false);
+    await getCurrentCoordinates();
   };
 
   return (
@@ -1037,17 +1049,17 @@ const ReportForm = () => {
                   <MapView
                     mapURL={mapURL}
                     reportCoordinates={reportCoordinates}
-                    canEdit={!isDefaultPatrolTypeEnabled}
+                    canEdit={!isDefaultPatrolInfoEnabled}
                     onMapPress={onMapPress}
                     onCoordinatesPress={onCoordinatePress}
                   />
                 ) : (
                   <OfflineSection
-                    canEdit={!isDefaultPatrolTypeEnabled}
                     reportCoordinates={reportCoordinates}
                     enableLocationIcon={enableLocationIcon}
                     onFieldPress={onOfflineFieldPress}
                     onIconPress={onOfflineIconPress}
+                    accuracy={accuracy}
                   />
                 )}
               </View>

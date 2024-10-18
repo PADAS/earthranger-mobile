@@ -9,7 +9,7 @@ import {
   SELECT_USER_PATROL_PERMISSIONS,
 } from '../sql/queries';
 import { useRetrieveUser } from '../users/useRetrieveUser';
-import { Permissions, UserType } from '../../enums/enums';
+import { PermissionLevel, Permissions, UserType } from '../../enums/enums';
 
 export const useRetrievePatrolPermissions = () => {
   // Hooks
@@ -17,7 +17,10 @@ export const useRetrievePatrolPermissions = () => {
   const { retrieveData } = useRetrieveData();
   const { retrieveUserInfo } = useRetrieveUser();
 
-  const isPermissionAvailable = useCallback(async (permission: Permissions) => {
+  const isPermissionAvailable = useCallback(async (
+    permission: Permissions,
+    level: PermissionLevel = PermissionLevel.add,
+  ) => {
     // Get database connection instance
     const dbInstance = await getDBInstance();
     const userInfo = await retrieveUserInfo();
@@ -31,9 +34,12 @@ export const useRetrievePatrolPermissions = () => {
           ? SELECT_PROFILE_PATROL_PERMISSIONS : SELECT_USER_PATROL_PERMISSIONS,
         [activeUserId],
       );
-
       return permissions && permissions.length > 0
-        ? containsPermission(JSON.parse(permissions[0].rows.item(0).permissions) || {}, permission)
+        ? containsPermissionLevel(
+          JSON.parse(permissions[0].rows.item(0).permissions) || {},
+          permission,
+          level,
+        )
         : false;
     }
 
@@ -83,5 +89,13 @@ export const useRetrieveEventPermissions = () => {
   };
 };
 
-// eslint-disable-next-line max-len
-const containsPermission = (permissions: any, permission: Permissions) => Object.keys(permissions).some((key) => key === permission);
+const containsPermission = (
+  permissions: any,
+  permission: Permissions,
+) => Object.keys(permissions).some((key) => key === permission);
+
+const containsPermissionLevel = (
+  permissions: any,
+  permission: Permissions,
+  level: PermissionLevel,
+) => containsPermission(permissions, permission) && permissions[permission].includes(level);

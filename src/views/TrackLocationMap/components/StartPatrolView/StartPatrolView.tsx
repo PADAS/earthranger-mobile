@@ -23,7 +23,7 @@ import {
   COORDINATES_FORMAT_KEY,
   TRACKED_BY_SUBJECT_NAME_KEY,
   ACTIVE_USER_NAME_KEY,
-  EXPERIMENTAL_FEATURES_FLAG_KEY, PATROL_DEFAULT_EVENT_TYPE_VALUE, PATROL_EVENT_DETAILS,
+  EXPERIMENTAL_FEATURES_FLAG_KEY, PATROL_INFO_EVENT_TYPE_VALUE, PATROL_INFO_ENABLED,
 } from '../../../../common/constants/constants';
 import { LocationLiveStateIcon } from '../../../../common/icons/LocationLiveStateIcon';
 import { LocationOnStateIcon } from '../../../../common/icons/LocationOnStateIcon';
@@ -194,16 +194,16 @@ const StartPatrolView = () => {
     });
 
     if (status !== PatrolResult.unauthorized) {
-      if (getBoolForKey(PATROL_EVENT_DETAILS)) {
-        await presentDefaultReportForm(timestamp);
+      if (getBoolForKey(PATROL_INFO_ENABLED)) {
+        await openPatrolInfoEventForm(timestamp);
       } else {
         navigation.popToTop();
       }
     }
   };
 
-  const presentDefaultReportForm = async (timestamp: string) => {
-    const defaultEventTypeValue = getStringForKey(PATROL_DEFAULT_EVENT_TYPE_VALUE) || '';
+  const openPatrolInfoEventForm = async (timestamp: string) => {
+    const defaultEventTypeValue = getStringForKey(PATROL_INFO_EVENT_TYPE_VALUE) || '';
     const defaultEventType = await retrieveDefaultEventTypeByValue(defaultEventTypeValue);
 
     if (defaultEventType) {
@@ -214,7 +214,7 @@ const StartPatrolView = () => {
         schema: defaultEventType.schema,
         geometryType: defaultEventType.geometry_type,
         createdAt: timestamp,
-        isDefaultPatrolTypeEnabled: true,
+        isDefaultPatrolInfoEnabled: true,
       });
     } else {
       navigation.popToTop();

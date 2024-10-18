@@ -219,7 +219,9 @@ export const useUploadReports = () => {
               logGeneral.info(`Upload photos with Wifi: ${getBoolForKey(UPLOAD_PHOTOS_WIFI)}`);
               logGeneral.info(`Current network: ${networkState.type}`);
             }
-            const filePath = `${ATTACHMENTS_FOLDER}/${getFileName(attachment.path)}`;
+
+            const fileName = getFileName(attachment.path);
+            const filePath = `${ATTACHMENTS_FOLDER}/${fileName}`;
             const fileExists = await exists(filePath);
             if (fileExists) {
               try {
@@ -229,7 +231,7 @@ export const useUploadReports = () => {
                   {
                     uri: `file://${filePath}`,
                     type: 'image/jpeg',
-                    name: filePath.match(/\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}_.+$/im)?.[0] || 'photo.jpg',
+                    name: filePath.match(/\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}_.+$/im)?.[0] || fileName || 'photo.jpg',
                   } as FileRequest,
                   reportedByData?.profileRemoteId,
                 );

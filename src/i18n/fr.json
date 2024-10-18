@@ -15,8 +15,6 @@
     "siteNameLabel": "NOM DU SITE *",
     "usernameLabel": "NOM D'UTILISATEUR *",
     "passwordLabel": "LE MOT DE PASSE *",
-    "checkBoxText": "Souviens-toi de moi",
-    "deviceName": "NOM DE L'APPAREIL *",
     "checkBoxText": "Se souvenir de moi",
     "alertDialog": {
       "title": "Autoriser \"EarthRanger\" à accéder à votre position",
@@ -24,9 +22,9 @@
       "action": "Continuer"
     },
     "expiredTokenAlertDialog": {
-        "title": "Veuillez vous reconnecter",
-        "message": "Quelque chose s'est mal passé. Veuillez saisir à nouveau votre nom d'utilisateur et votre mot de passe.",
-        "action": "D'ACCORD"
+      "title": "Veuillez vous reconnecter",
+      "message": "Quelque chose s'est mal passé. Veuillez saisir à nouveau votre nom d'utilisateur et votre mot de passe.",
+      "action": "D'ACCORD"
     },
     "loadingAccountInformation": "Synchronisation des comptes d'utilisateurs",
     "loadingReportCategories": "Synchronisation des catégories d'événements",
@@ -76,12 +74,15 @@
     "topo": "Topo",
     "satellite": "Satellite",
     "street": "Rue",
-    "noUserId": "L'utilisateur ne parvient pas à démarrer le suivi"
+    "noUserId": "L'utilisateur ne parvient pas à démarrer le suivi",
+    "coordinatesCopied": "Coordonnées copiées"
   },
   "patrolDetails": {
     "startLocation": "Lieu de départ",
     "started": "Commencé",
-    "endPatrol": "Fin de la Patrouille"
+    "endPatrol": "Fin de la Patrouille",
+    "distance": "Distance",
+    "duration": "Durée"
   },
   "mainTabBar": {
     "map": "Carte",
@@ -163,7 +164,7 @@
     "high": "Haut",
     "slowestUpload": "Téléchargement le plus lent",
     "fastestUpload": "Téléchargement le plus rapide",
-    "patrolEventDetails": "Détails de la patrouille",
+    "patrolInfo": "Informations de la patrouille",
     "eventType": "Type d'événement"
   },
   "aboutView": {
@@ -190,8 +191,8 @@
     "message": "Message",
     "shareLogsTitle": "Partager les journaux de la semaine dernière",
     "shareLogsDescription": "Cela aidera notre équipe à déterminer comment résoudre le problème.",
-      "shareDbTitle": "Partager la base de données",
-      "shareDbDescription": "Créez une copie de la base de données EarthRanger pour faciliter le dépannage. La base de données partagée ne peut pas être importée directement dans EarthRanger.",
+    "shareDbTitle": "Partager la base de données",
+    "shareDbDescription": "Créez une copie de la base de données EarthRanger pour faciliter le dépannage. La base de données partagée ne peut pas être importée directement dans EarthRanger.",
     "appBarTitle": "Signaler un problème",
     "reportButton": "Signaler un problème",
     "compressTitle": "Compression des journaux",
@@ -221,11 +222,11 @@
       "draft": "Brouillon",
       "error": "Erreur",
       "synced": "Synchronisé"
-  },
-  "statusDetails": {
+    },
+    "statusDetails": {
       "edited": "Édité",
       "submitted": "Soumis"
-  },
+    },
     "notes": "Remarques",
     "addNote": "Ajouter Une Note",
     "editNote": "Note Éditée",
@@ -240,7 +241,7 @@
       "discard": "Jeter",
       "continueEditing": "Continuer l'édition",
       "message": "Voulez-vous enregistrer l'événement ?"
-  },
+    },
     "requiredFieldsAlert": {
       "title": "Les champs obligatoires doivent être remplis pour soumettre cet événement.",
       "subtitle": "Souhaitez-vous Enregistrer en tant que brouillon ou Continuer l'édition ?",
@@ -262,7 +263,9 @@
     "NotAuthorized": "Pas autorisé",
     "defaultPendingSync": "Pas encore synchronisé",
     "wifiDataConnectionRequired": "Connexion Wifi requise pour synchroniser les photos.",
-    "save": "Enregistrer"
+    "save": "Enregistrer",
+    "accuracy": "Précision",
+    "lowAccuracy": "Faible précision"
   },
   "eventList": {
     "emptyEvents": "Aucun événement à afficher"
@@ -395,17 +398,17 @@
     "alertDescription": "La réinitialisation du cache de votre base de données supprimera toutes vos données. Vous ne pouvez pas annuler cette action."
   },
   "eventsListFilterView": {
-      "appBarTitle": "Filtre",
-      "status": {
-        "title": "Statut",
-        "options": {
-            "draft": "Brouillon",
-            "pendingSync":"En attente de synchronisation",
-            "synced": "Synchronisé"
-        }
-      },
-      "title": "Enregistrer les modifications apportées aux filtres ?",
-      "saveAndApply": "Enregistrer et appliquer des filtres",
-      "discard": "Annuler les modifications"
+    "appBarTitle": "Filtre",
+    "status": {
+      "title": "Statut",
+      "options": {
+        "draft": "Brouillon",
+        "pendingSync": "En attente de synchronisation",
+        "synced": "Synchronisé"
+      }
+    },
+    "title": "Enregistrer les modifications apportées aux filtres ?",
+    "saveAndApply": "Enregistrer et appliquer des filtres",
+    "discard": "Annuler les modifications"
   }
 }

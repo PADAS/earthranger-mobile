@@ -6,7 +6,7 @@ import { COLORS_LIGHT } from '../../common/constants/colors';
 
 const styles = StyleSheet.create({
   // General Styles
-  containerSafeArea: {
+  container: {
     flex: 1,
     backgroundColor: COLORS_LIGHT.G7_veryLightGrey,
   },

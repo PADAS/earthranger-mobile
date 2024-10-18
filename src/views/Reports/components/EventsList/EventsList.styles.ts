@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     marginStart: IS_IOS ? -10 : 0,
     marginEnd: IS_IOS ? 80 : 40,
     fontSize: 17,
+    width: 300,
   },
   searchBackIcon: {
     marginRight: IS_IOS ? 0 : 16,

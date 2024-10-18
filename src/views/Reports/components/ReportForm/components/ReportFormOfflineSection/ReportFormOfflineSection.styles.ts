@@ -9,22 +9,19 @@ const styles = StyleSheet.create({
     marginTop: 24,
     flexDirection: 'row',
   },
-  inputContainer: {
+  coordinatesContainer: {
     width: '80%',
     marginStart: 8,
     marginEnd: 20,
-    backgroundColor: COLORS_LIGHT.G7_veryLightGrey,
   },
   textInput: {
     marginStart: 15,
     marginBottom: 6,
-    color: COLORS_LIGHT.G0_black,
     fontSize: 17,
   },
   title: {
     marginTop: 6,
     marginStart: 15,
-    color: COLORS_LIGHT.G2_secondaryMediumGray,
     fontSize: 15,
   },
   icon: {

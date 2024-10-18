@@ -28,6 +28,7 @@ export const ACTIVE_PATROL_KEY = 'activePatrolKey';
 export const LAST_SYNC_PATROLS_TIME_KEY = 'lastSyncPatrolsTimeKey';
 export const LAST_SYNC_REPORTS_TIME_KEY = 'lastSyncReportsTimeKey';
 export const LAST_SYNC_LOCATION_TIME_KEY = 'lastSyncLocationTimeKey';
+export const PATROL_DISTANCE = 'patrolDistance';
 export const LOCATION_STATUS_KEY = 'locationStatusKey';
 export const MERGE_CATEGORIES_KEY = 'mergeCategoriesKey';
 export const PATROL_STATUS_KEY = 'patrolStatusKey';
@@ -52,8 +53,8 @@ export const PHOTO_QUALITY_KEY = 'PhotoQualityKey';
 export const SAVE_TO_CAMERA_ROLL = 'SaveToCameraRoll';
 export const UPLOAD_PHOTOS_WIFI = 'UploadPhotosWifi';
 export const PATROL_START_LOCATION = 'PatrolStartLocation';
-export const PATROL_EVENT_DETAILS = 'PatrolEventDetails';
-export const PATROL_DEFAULT_EVENT_TYPE_VALUE = 'PatrolDefaultEventTypeValue';
+export const PATROL_INFO_ENABLED = 'PatrolInfoEnabled';
+export const PATROL_INFO_EVENT_TYPE_VALUE = 'PatrolInfoEventTypeValue';
 export const IS_STATUS_FILTER_DRAFT_SELECTED = 'StatusFilterDraft';
 export const IS_STATUS_FILTER_PENDING_SELECTED = 'StatusFilterPending';
 export const IS_STATUS_FILTER_SYNCED_SELECTED = 'StatusFilterSynced';
@@ -67,6 +68,7 @@ export const COORDINATES_FORMAT_KEY = 'coordinatesFormatKey';
 export const START_PATROL_EVENT = 'START_PATROL_EVENT';
 export const BOTTOM_SHEET_NAVIGATOR = 'BOTTOM_SHEET_NAVIGATOR';
 export const BOTTOM_SHEET_NAVIGATOR_STATUS_INDEX = 'BOTTOM_SHEET_NAVIGATOR_STATUS';
+export const EVENT_FILTERS_CHANGED = 'EVENT_FILTERS_CHANGED';
 
 // Experimental Features
 export const EXPERIMENTAL_FEATURES_FLAG_KEY = 'experimentalFeaturesGlagKey';

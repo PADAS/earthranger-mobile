@@ -23,7 +23,7 @@ import {
   BASEMAP_TOPO_LOCAL,
   BASEMAP_SATELLITE_LOCAL,
   BASEMAP_STREET_LOCAL,
-  PATROL_EVENT_DETAILS,
+  PATROL_INFO_ENABLED,
   IS_STATUS_FILTER_DRAFT_SELECTED,
   IS_STATUS_FILTER_PENDING_SELECTED,
   IS_STATUS_FILTER_SYNCED_SELECTED,
@@ -38,7 +38,7 @@ export const deleteSession = async () => {
   // Local storage cleaning
   cleanSession();
   setBoolForKey(LOCATION_STATUS_KEY, false);
-  setBoolForKey(PATROL_EVENT_DETAILS, false);
+  setBoolForKey(PATROL_INFO_ENABLED, false);
   setNumberForKey(REPORTS_SUBMITTED_KEY, 0);
   setStringForKey(COORDINATES_FORMAT_KEY, '');
   setStringForKey(PHOTO_QUALITY_KEY, '');

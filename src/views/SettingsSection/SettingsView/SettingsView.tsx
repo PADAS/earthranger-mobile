@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { CommonActions, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import DeviceInfo from 'react-native-device-info';
-import { useMMKVString } from 'react-native-mmkv';
+import { useMMKVBoolean, useMMKVString } from 'react-native-mmkv';
 import NetInfo from '@react-native-community/netinfo';
 
 // Internal Dependencies
@@ -33,19 +33,20 @@ import {
   COORDINATES_FORMAT_KEY,
   EXPERIMENTAL_FEATURES_FLAG_KEY,
   IS_DEVICE_TRACKING,
-  MERGE_CATEGORIES_KEY, PATROL_DEFAULT_EVENT_TYPE_VALUE,
+  MERGE_CATEGORIES_KEY, PATROL_INFO_EVENT_TYPE_VALUE,
   PATROL_STATUS_KEY,
   PHOTO_QUALITY_KEY,
   REMEMBER_ME_CHECKBOX_KEY,
   SAVE_TO_CAMERA_ROLL,
   SETTINGS_VIEW_DISAPPEAR_KEY,
   SITE_VALUE_KEY,
-  PATROL_EVENT_DETAILS,
+  PATROL_INFO_ENABLED,
   TRACKED_BY_SUBJECT_ID_KEY,
   TRACKED_BY_SUBJECT_NAME_KEY,
   TRACKED_BY_SUBJECT_STATUS_KEY,
   UPLOAD_PHOTOS_WIFI,
   USER_NAME_KEY,
+  ACTIVE_USER_HAS_PATROLS_PERMISSION,
 } from '../../../common/constants/constants';
 import { SITE } from '../../../api/EarthRangerService';
 import { getSecuredStringForKey, setSecuredStringForKey } from '../../../common/data/storage/utils';
@@ -65,11 +66,12 @@ import { useGetNumberReportDrafts } from '../../../common/data/reports/useGetNum
 import { useRetrieveReportPendingSync } from '../../../common/data/reports/useRetrieveReportPendingSync';
 import { useRetrievePendingSyncPatrol } from '../../../common/data/patrols/useRetrievePendingSyncPatrol';
 import { getAuthState, setAuthState } from '../../../common/utils/authUtils';
-import { AuthState } from '../../../common/enums/enums';
+import { AuthState, UserType } from '../../../common/enums/enums';
 import { useRetrieveData } from '../../../common/data/hooks/useRetrieveData';
 import { useGetDBConnection } from '../../../common/data/PersistentStore';
 import { SELECT_USER_BY_USERNAME } from '../../../common/data/sql/queries';
 import { useRetrieveReportTypes } from '../../../common/data/reports/useRetrieveReportTypes';
+import { useRetrieveUser } from '../../../common/data/users/useRetrieveUser';
 
 // Icons
 import { icons } from '../../../ui/AssetsUtils';
@@ -123,8 +125,9 @@ export const SettingsView = ({
   const { retrieveData } = useRetrieveData();
   const { getDBInstance } = useGetDBConnection();
   const { retrieveDefaultEventType, retrieveEventTypeDisplayByValue } = useRetrieveReportTypes();
+  const { retrieveUserInfo } = useRetrieveUser();
   // eslint-disable-next-line max-len
-  const [patrolDefaultEventTypeStatus] = useMMKVString(PATROL_DEFAULT_EVENT_TYPE_VALUE, localStorage);
+  const [patrolDefaultEventTypeStatus] = useMMKVString(PATROL_INFO_EVENT_TYPE_VALUE, localStorage);
 
   // components state
   const [siteValue, setSite] = useState('');
@@ -145,8 +148,8 @@ export const SettingsView = ({
   // eslint-disable-next-line max-len
   const [isUploadPhotosWifiEnabled, setIsUploadPhotosWifiEnabled] = useState(getBoolForKey(UPLOAD_PHOTOS_WIFI));
   const [isSwitchTrackBySubjectEnabled, setIsSwitchTrackBySubjectEnabled] = useState(false);
-  const [isPatrolEventDetailsEnabled, setIsPatrolEventDetailsEnabled] = useState(
-    getBoolForKey(PATROL_EVENT_DETAILS) || false,
+  const [isPatrolInfoEnabled, setIsPatrolInfoEnabled] = useState(
+    getBoolForKey(PATROL_INFO_ENABLED) || false,
   );
   const [defaultEventType, setDefaultEventType] = useState('');
   const { t } = useTranslation();
@@ -156,6 +159,10 @@ export const SettingsView = ({
   const [isActivelyTracking, setIsActivelyTracking] = useState(false);
   const [coordinatesFormat] = useMMKVString(COORDINATES_FORMAT_KEY, localStorage);
   const [photoQuality] = useMMKVString(PHOTO_QUALITY_KEY, localStorage);
+  const [isPatrolPermissionAvailable] = useMMKVBoolean(
+    ACTIVE_USER_HAS_PATROLS_PERMISSION,
+    localStorage,
+  );
   const [isDeviceOnline, setIsDeviceOnline] = useState(true);
 
   useEffect(() => {
@@ -210,12 +217,12 @@ export const SettingsView = ({
 
   useEffect(() => {
     const initDefaultEventTypeValueAsync = async () => {
-      if (isPatrolEventDetailsEnabled) {
+      if (isPatrolInfoEnabled) {
         await initDefaultEventTypeValue();
       }
     };
     initDefaultEventTypeValueAsync();
-  }, [patrolDefaultEventTypeStatus, isPatrolEventDetailsEnabled]);
+  }, [patrolDefaultEventTypeStatus, isPatrolInfoEnabled]);
 
   const initSiteValue = () => {
     const host = getSecuredStringForKey(SITE_VALUE_KEY);
@@ -223,14 +230,20 @@ export const SettingsView = ({
   };
 
   const initDefaultEventTypeValue = async () => {
-    const eventTypeValue = getStringForKey(PATROL_DEFAULT_EVENT_TYPE_VALUE);
+    const eventTypeValue = getStringForKey(PATROL_INFO_EVENT_TYPE_VALUE);
     if (eventTypeValue) {
       const eventTypeDisplay = await retrieveEventTypeDisplayByValue(eventTypeValue);
       setDefaultEventType(eventTypeDisplay);
     } else {
-      const eventType = await retrieveDefaultEventType();
-      setDefaultEventType(eventType?.defaultEventTypeDisplay || '');
-      setStringForKey(PATROL_DEFAULT_EVENT_TYPE_VALUE, eventType?.defaultEventTypeValue);
+      const userInfo = await retrieveUserInfo();
+      if (userInfo?.userType && userInfo?.userId) {
+        const profileId = userInfo?.userType === UserType.profile ? userInfo.userId : undefined;
+        const eventType = await retrieveDefaultEventType(userInfo.userType, profileId);
+        if (eventType) {
+          setDefaultEventType(eventType?.defaultEventTypeDisplay || '');
+          setStringForKey(PATROL_INFO_EVENT_TYPE_VALUE, eventType?.defaultEventTypeValue);
+        }
+      }
     }
   };
 
@@ -306,8 +319,8 @@ export const SettingsView = ({
     if (getBoolForKey(SETTINGS_VIEW_DISAPPEAR_KEY)) counterTapsSiteName = 0;
   };
 
-  const resetPatrolEventDetailsSettings = () => {
-    setBoolForKey(PATROL_EVENT_DETAILS, false);
+  const resetPatrolInfoSettings = () => {
+    setBoolForKey(PATROL_INFO_ENABLED, false);
   };
 
   const toggleExperimentalFeatures = async () => {
@@ -317,12 +330,6 @@ export const SettingsView = ({
     setStringForKey(TRACKED_BY_SUBJECT_NAME_KEY, '');
     setStringForKey(TRACKED_BY_SUBJECT_ID_KEY, '');
     setIsSwitchTrackBySubjectEnabled(false);
-
-    if (!toggle) {
-      resetPatrolEventDetailsSettings();
-    }
-
-    setIsPatrolEventDetailsEnabled(getBoolForKey(PATROL_EVENT_DETAILS) || false);
   };
 
   const toggleMergeCategories = () => {
@@ -331,13 +338,13 @@ export const SettingsView = ({
     setBoolForKey(MERGE_CATEGORIES_KEY, toggle);
   };
 
-  const togglePatrolEventDetails = async () => {
-    const toggle = !isPatrolEventDetailsEnabled;
-    setIsPatrolEventDetailsEnabled(toggle);
-    setBoolForKey(PATROL_EVENT_DETAILS, toggle);
+  const togglePatrolInfo = async () => {
+    const toggle = !isPatrolInfoEnabled;
+    setIsPatrolInfoEnabled(toggle);
+    setBoolForKey(PATROL_INFO_ENABLED, toggle);
 
     if (!toggle) {
-      resetPatrolEventDetailsSettings();
+      resetPatrolInfoSettings();
     }
   };
 
@@ -387,12 +394,12 @@ export const SettingsView = ({
     }
   };
 
-  const handleOnPatrolDefaultEventType = () => {
+  const onPatrolEventTypeTapped = () => {
     navigation.navigate('ReportTypesView', {
       title: '',
       categoryId: '',
       coordinates: nullIslandLocation,
-      isDefaultPatrolTypeEnabled: true,
+      isPatrolInfoEventType: true,
     });
   };
 
@@ -460,7 +467,7 @@ export const SettingsView = ({
         {/* End Category Label */}
 
         {/* Patrol Config */}
-        {experimentalFeaturesEnabled && (
+        {isPatrolPermissionAvailable && (
           <View style={style.menuItemContainer}>
             <View style={style.settingContainer}>
               <View style={style.settingIcon}>
@@ -471,18 +478,18 @@ export const SettingsView = ({
                   style={style.textSettingName}
                   numberOfLines={2}
                 >
-                  {t('settingsView.patrolEventDetails')}
+                  {t('settingsView.patrolInfo')}
                 </Text>
               </View>
               <Switch
                 style={style.switchSetting}
                 trackColor={{ false: COLORS_LIGHT.G5_LightGreyLines, true: COLORS_LIGHT.blueLight }}
                 thumbColor={
-                  isPatrolEventDetailsEnabled
+                  isPatrolInfoEnabled
                     ? COLORS_LIGHT.brightBlue : COLORS_LIGHT.G3_secondaryMediumLightGray
                 }
-                onValueChange={togglePatrolEventDetails}
-                value={isPatrolEventDetailsEnabled}
+                onValueChange={togglePatrolInfo}
+                value={isPatrolInfoEnabled}
               />
             </View>
           </View>
@@ -490,9 +497,9 @@ export const SettingsView = ({
         {/* End Patrol Config */}
 
         {/* Patrol Type */}
-        {experimentalFeaturesEnabled && isPatrolEventDetailsEnabled && (
+        {isPatrolInfoEnabled && (
           <View style={style.menuSubItemContainer}>
-            <Pressable onPress={handleOnPatrolDefaultEventType}>
+            <Pressable onPress={onPatrolEventTypeTapped}>
               <View style={style.subSettingContainer}>
                 <View style={style.settingIcon} />
                 <View style={style.textIcon}>

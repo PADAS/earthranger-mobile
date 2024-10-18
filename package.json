@@ -1,6 +1,6 @@
 {
   "name": "earthranger-mobile",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "private": true,
   "scripts": {
     "preinstall": "git config core.hooksPath .githooks",
@@ -21,10 +21,12 @@
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@earthranger/react-native-jsonforms-formatter": "^1.0.1",
     "@gorhom/bottom-sheet": "^4.4.6",
     "@jsonforms/core": "3.0.0",
     "@jsonforms/react": "3.0.0",
     "@react-native-community/checkbox": "^0.5.9",
+    "@react-native-community/clipboard": "^1.5.1",
     "@react-native-community/datetimepicker": "^6.3.2",
     "@react-native-community/netinfo": "^8.0.0",
     "@react-native-firebase/analytics": "^16.5.0",
@@ -68,7 +70,7 @@
     "react-native-geolocation-service": "^5.3.0",
     "react-native-gesture-handler": "^2.6.0",
     "react-native-get-random-values": "^1.8.0",
-    "react-native-image-picker": "^4.8.4",
+    "react-native-image-picker": "^7.1.2",
     "react-native-image-resizer": "^1.4.5",
     "react-native-immersive-mode": "^2.0.1",
     "react-native-localize": "^2.2.2",

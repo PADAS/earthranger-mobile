@@ -16,4 +16,5 @@ export const mapToPatrolDetail = (patrolDetail: PersistedPatrolDetail) => ({
   startTimeFormatted: patrolDetail.start_time
     ? dayjs(patrolDetail.start_time.toString()).format(DATE_FORMAT_YYYY_MM_DD_HH_MM)
     : '',
+  createdAt: patrolDetail.created_at,
 } as unknown as PatrolDetail);

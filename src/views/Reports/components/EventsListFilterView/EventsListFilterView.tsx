@@ -1,7 +1,7 @@
 // External Dependencies
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { Pressable } from 'react-native';
+import { BackHandler, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   ActionSheet,
@@ -13,9 +13,11 @@ import {
 import { useTranslation } from 'react-i18next';
 
 // Internal Dependencies
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ReportFormSubmitButton } from '../ReportForm/components/ReportFormSubmitButton/ReportFormSubmitButton';
 import { COLORS_LIGHT } from '../../../../common/constants/colors';
 import {
+  EVENT_FILTERS_CHANGED,
   IS_STATUS_FILTER_DRAFT_SELECTED,
   IS_STATUS_FILTER_ENABLED,
   IS_STATUS_FILTER_PENDING_SELECTED,
@@ -25,7 +27,9 @@ import { getBoolForKey, setBoolForKey } from '../../../../common/data/storage/ke
 import { CheckmarkIcon } from '../../../../common/icons/CheckmarkIcon';
 import { CloseIcon } from '../../../../common/icons/CloseIcon';
 import { customBackButton, osBackIcon } from '../../../../common/components/header/header';
+import { getEventEmitter } from '../../../../common/utils/AppEventEmitter';
 
+import { RootStackParamList } from '../../../../common/types/types';
 // Styles
 import styles from './EventsListFilterView.styles';
 
@@ -36,7 +40,7 @@ const ActionSheetClose = () => <CloseIcon color={COLORS_LIGHT.G0_black} height="
 const EventsListFilterView = () => {
   // Hooks
   const { t } = useTranslation();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'EventsListFilterView'>>();
 
   // State
   const [isDraftsSelected, setIsDraftsSelected] = useState(
@@ -62,16 +66,22 @@ const EventsListFilterView = () => {
     if (hasSelectionChanged) {
       setShowFilterChangeAlert(true);
     } else {
-      // @ts-ignore
-      navigation.pop();
+      dismissFilterView();
     }
+  };
+
+  const dismissFilterView = () => {
+    if (hasSelectionChanged) {
+      getEventEmitter().emit(EVENT_FILTERS_CHANGED);
+    }
+    navigation.pop();
   };
 
   // Components
   const headerRight = () => (
     <Pressable
       // @ts-ignore
-      onPress={() => navigation.pop()}
+      onPress={() => dismissFilterView()}
       hitSlop={20}
     >
       <ReportFormSubmitButton />
@@ -107,6 +117,7 @@ const EventsListFilterView = () => {
   // Effects
   useEffect(() => {
     navigation.setOptions({
+      // @ts-ignore
       headerRight,
       headerLeft: () => customBackButton(osBackIcon, closeFilterView, false),
       gestureEnabled: false,
@@ -124,6 +135,15 @@ const EventsListFilterView = () => {
     isPendingSyncSelected,
     isSyncedSelected,
   ]);
+
+  useEffect(() => {
+    const backAction = () => {
+      closeFilterView();
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    return () => backHandler.remove();
+  }, [hasSelectionChanged]);
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
@@ -189,8 +209,7 @@ const EventsListFilterView = () => {
             iconSource: () => ActionSheetCheckmark,
             label: t('eventsListFilterView.saveAndApply'),
             onPress: () => {
-              // @ts-ignore
-              navigation.pop();
+              dismissFilterView();
             },
           },
           {
@@ -216,8 +235,7 @@ const EventsListFilterView = () => {
                 IS_STATUS_FILTER_ENABLED,
                 originalFilterState.IS_STATUS_FILTER_ENABLED,
               );
-              // @ts-ignore
-              navigation.pop();
+              dismissFilterView();
             },
           },
         ]}
@@ -261,10 +279,7 @@ const EventsListFilterView = () => {
             ...styles.footerButtonLabel,
             color: COLORS_LIGHT.white,
           }}
-          onPress={() => {
-            // @ts-ignore
-            navigation.pop();
-          }}
+          onPress={() => dismissFilterView()}
           style={[styles.footerButton, styles.footerButtonConfirm]}
           size={Button.sizes.medium}
         />

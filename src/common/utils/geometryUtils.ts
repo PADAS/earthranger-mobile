@@ -1,6 +1,6 @@
 // External Dependencies
 import Config from 'react-native-config';
-import { polygon, Position } from '@turf/helpers';
+import { point as TurfPoint, polygon, Position } from '@turf/helpers';
 import area from '@turf/area';
 import length from '@turf/length';
 import { polygonToLine } from '@turf/polygon-to-line';
@@ -8,6 +8,7 @@ import bbox from '@turf/bbox';
 import { clone } from 'lodash-es';
 import { Dimensions } from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
+import distance from '@turf/distance';
 
 // Internal Dependencies
 import {
@@ -178,4 +179,11 @@ export const getReportAreaValues = (areaInMeters: number, perimeterInMeters: num
   }
 
   return [areaValue, perimeterValue];
+};
+
+export const addDistance = (from: Position, to: Position, currentDistance: number) => {
+  const start = TurfPoint(from);
+  const end = TurfPoint(to);
+
+  return currentDistance + distance(start, end);
 };

@@ -15,7 +15,6 @@ import { Position } from '../types/types';
 // internals
 // ------------------------------------------------------------------------
 
-const OBSERVATION_DISTANCE_THRESHOLD_METERS = 25;
 const LNG_LAT_DECIMAL_PRECISION = 5;
 
 let mapUserLocation: MapboxGL.Location | undefined;
@@ -36,6 +35,7 @@ export enum LocationFormats {
 // public constants
 // ------------------------------------------------------------------------
 
+export const OBSERVATION_DISTANCE_THRESHOLD_METERS = 25;
 export const nullIslandLocation: Position = [0, 0];
 
 // ------------------------------------------------------------------------

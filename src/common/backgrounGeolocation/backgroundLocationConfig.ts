@@ -54,7 +54,7 @@ const getLocationTemplate = (userID: string) => {
   return '{ "location": {"lat":<%= latitude %>,"lon":<%= longitude %>},'
     + '"recorded_at": "<%= timestamp  %>", "subject_subtype_id" : "ranger",'
     + `"manufacturer_id": "${getDeviceUuid()}", ${remoteId},`
-    + '"additional": {"accuracy":<%= accuracy %> },'
+    + '"additional": {"accuracy":<%= accuracy %>, "speed":<%= speed %>, "battery":<%= battery.level %> },'
     + '"source_type": "gps-radio", "message_key": "observation" }';
 };
 

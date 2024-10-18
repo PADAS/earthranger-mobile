@@ -6,8 +6,9 @@ import { enablePromise } from 'react-native-sqlite-storage';
 import { useGetDBConnection } from '../PersistentStore';
 import { useRetrieveData } from '../hooks/useRetrieveData';
 import {
-  SELECT_DEFAULT_EVENT_TYPE,
+  SELECT_DEFAULT_EVENT_TYPE_FOR_PARENT_USER,
   SELECT_DEFAULT_EVENT_TYPE_BY_VALUE,
+  SELECT_DEFAULT_EVENT_TYPE_FOR_PROFILE_USER,
   SELECT_EVENT_TYPE,
   SELECT_EVENT_TYPE_DISPLAY_BY_VALUE,
   SELECT_EVENT_TYPE_FOR_PARENT_USER,
@@ -17,6 +18,7 @@ import {
 import { PersistedEventType } from '../../types/types';
 import { PermissionLevel, UserType } from '../../enums/enums';
 import { bindQueryParams, getCategoryPermissionQueryParams } from '../../utils/dataBaseUtils';
+import { logSQL } from '../../utils/logUtils';
 
 enablePromise(true);
 
@@ -158,27 +160,37 @@ export const useRetrieveReportTypes = () => {
     return null;
   }, []);
 
-  const retrieveDefaultEventType = useCallback(async () => {
-    // Get database connection instance
-    const dbInstance = await getDBInstance();
+  const retrieveDefaultEventType = useCallback(async (
+    userType: UserType,
+    profileId?: string,
+  ) => {
+    try {
+      // Get database connection instance
+      const dbInstance = await getDBInstance();
 
-    if (dbInstance) {
-      // Get information from the local database
+      if (dbInstance) {
+        // Get information from the local database
 
-      const defaultEventType = await retrieveData(
-        dbInstance,
-        SELECT_DEFAULT_EVENT_TYPE,
-        [],
-      );
+        const defaultEventType = await retrieveData(
+          dbInstance,
+          userType === UserType.account && !profileId
+            ? SELECT_DEFAULT_EVENT_TYPE_FOR_PARENT_USER
+            : SELECT_DEFAULT_EVENT_TYPE_FOR_PROFILE_USER,
+          userType === UserType.account && !profileId
+            ? []
+            : [`%[${profileId},%`, `%,${profileId},%`, `%,${profileId}]%`, `[${profileId}]`],
+        );
+        if (defaultEventType && defaultEventType[0].rows?.length > 0) {
+          return {
+            defaultEventTypeDisplay: defaultEventType[0].rows.item(0).display || '',
+            defaultEventTypeValue: defaultEventType[0].rows.item(0).value || '',
+          };
+        }
 
-      if (defaultEventType && defaultEventType[0].rows?.length > 0) {
-        return {
-          defaultEventTypeDisplay: defaultEventType[0].rows.item(0).display || '',
-          defaultEventTypeValue: defaultEventType[0].rows.item(0).value || '',
-        };
+        return null;
       }
-
-      return null;
+    } catch (error) {
+      logSQL.error('[retrieveDefaultEventType] - get defaultEventType ', error);
     }
 
     return null;

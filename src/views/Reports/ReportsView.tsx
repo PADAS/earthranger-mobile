@@ -3,7 +3,6 @@ import React, {
   useCallback, useEffect, useRef, useState,
 } from 'react';
 import { View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useFocusEffect } from '@react-navigation/native';
 import { useMMKVBoolean, useMMKVNumber } from 'react-native-mmkv';
@@ -19,7 +18,7 @@ import {
   REPORTS_SYNCING,
   SESSION_KEY,
 } from '../../common/constants/constants';
-import { Position, RootStackParamList } from '../../common/types/types';
+import { RootStackParamList } from '../../common/types/types';
 import {
   getBoolForKey,
   localStorage,
@@ -32,7 +31,6 @@ import {
   getSession,
 } from '../../common/data/storage/session';
 import { isInternetReachable } from '../../common/utils/NetworkInfoUtils';
-import { getMapUserPosition } from '../../common/utils/locationUtils';
 import { useRefreshToken } from '../../common/utils/useRefreshToken';
 import { localStorageSecured } from '../../common/data/storage/utils';
 import { ApiStatus } from '../../common/types/apiModels';
@@ -138,10 +136,9 @@ const ReportsView = ({
       navigation.navigate('ReportTypesView', {
         title: '',
         categoryId: '',
-        coordinates: getMapUserPosition() as Position,
       });
     } else {
-      navigation.navigate('ReportCategoriesView', { coordinates: getMapUserPosition() as Position });
+      navigation.navigate('ReportCategoriesView', { });
     }
   };
 
@@ -156,7 +153,7 @@ const ReportsView = ({
   }, []);
 
   return (
-    <SafeAreaView style={styles.containerSafeArea} edges={['bottom']}>
+    <View style={styles.container}>
       {/* Main Container */}
       <EventsList
         navigation={navigation}
@@ -166,7 +163,7 @@ const ReportsView = ({
         <AddEventButton onPress={onPressHandler} />
       </View>
       {/* End Main Container */}
-    </SafeAreaView>
+    </View>
   );
 };
 

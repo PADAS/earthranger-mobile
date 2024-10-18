@@ -9,7 +9,6 @@ import { Pressable, TextInput } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Incubator, Text, View } from 'react-native-ui-lib';
 import { useFocusEffect } from '@react-navigation/native';
 import { isEmpty } from 'lodash-es';
@@ -29,6 +28,7 @@ import { createOpenReportDraftEvent, removeReportDraftEvent, undoDeleteDraftEven
 import { osBackIcon } from '../../../../common/components/header/header';
 import { SearchButton } from '../../../../common/components/SearchButton/SearchButton';
 import {
+  EVENT_FILTERS_CHANGED,
   IS_ANDROID,
   IS_STATUS_FILTER_DRAFT_SELECTED,
   IS_STATUS_FILTER_ENABLED,
@@ -40,6 +40,7 @@ import { TuneIcon } from '../../../../common/icons/TuneIcon';
 import { EmptyEventsListView } from './components/EmptyEventsListView/EmptyEventsListView';
 import { getBoolForKey } from '../../../../common/data/storage/keyValue';
 import { useRetrieveReports } from '../../../../common/data/reports/useRetrieveReports';
+import { useEventHandler } from '../../../../common/utils/useEventHandler';
 
 // Styles
 import styles from './EventsList.styles';
@@ -65,15 +66,25 @@ const EventsList = ({
   // Refs
   const inputRef = useRef<TextInput>(null);
   const shouldRemoveEvent = useRef(false);
+  const updatedFilters = useRef(false);
+  const searchedText = useRef('');
 
   // State
   const [displayToast, setDisplayToast] = useState(false);
   const [extraData, setExtraData] = useState<string | null>(null);
   const [removedEventId, setRemovedEventId] = useState<number | null>();
-  const [eventsList, setEventsList] = useState<EventListItem[]>([]);
+  const [events, setEvents] = useState<EventListItem[]>([]);
+  const [eventsDataSource, setEventsDataSource] = useState<EventListItem[]>([]);
   const [isSearchModeEnabled, setIsSearchModeEnabled] = useState(false);
 
   // Helpers
+
+  const filtersUpdated = () => {
+    updatedFilters.current = true;
+  };
+
+  useEventHandler(EVENT_FILTERS_CHANGED, filtersUpdated);
+
   const navigateToReportForm = useCallback(async (reportId: number) => {
     const event = await retrieveReportNotSyncedById(reportId);
 
@@ -106,14 +117,6 @@ const EventsList = ({
       title: viewTitle,
       headerTitle: viewTitle,
     });
-
-    setTimeout(() => {
-      navigation.setOptions({
-        // @ts-ignore
-        headerLeft: null,
-        headerRight: () => (eventsList.length > 0 ? searchIconView() : null),
-      });
-    }, 10);
   };
 
   const updateAppBar = () => {
@@ -130,23 +133,30 @@ const EventsList = ({
     updateAppBar();
     setIsSearchModeEnabled(true);
 
-    setEventsList(eventsList);
+    setEventsDataSource(events);
     setExtraData(Math.random().toString());
   };
 
   const removeSearchInput = () => {
-    initAppBar();
     setIsSearchModeEnabled(false);
 
-    setEventsList(eventsList);
+    setEventsDataSource(events);
     setExtraData(Math.random().toString());
+    initAppBar();
+
+    navigation.setOptions({
+      // @ts-ignore
+      headerLeft: null,
+      headerRight: () => (eventsDataSource.length > 0 ? searchIconView() : null),
+    });
   };
 
   const searchEvents = (text: string) => {
+    searchedText.current = text;
     if (text === '') {
-      setEventsList(eventsList);
+      setEventsDataSource(events);
     } else {
-      setEventsList(eventsList.filter(
+      setEventsDataSource(events.filter(
         (item) => item.title.toLowerCase().includes(text.toLowerCase()),
       ));
     }
@@ -156,7 +166,7 @@ const EventsList = ({
 
   // Handlers
   const onRemoveEventHandler = async (id: number) => {
-    eventsList.forEach((event) => {
+    eventsDataSource.forEach((event) => {
       if (event.id === id) {
         if (event.isDraft) {
           trackAnalyticsEvent(removeReportDraftEvent());
@@ -171,11 +181,11 @@ const EventsList = ({
     });
 
     setDisplayToast(true);
-    setEventsList(eventsList);
+    setEventsDataSource(eventsDataSource);
   };
 
   const onRemoveEventUndo = () => {
-    eventsList.forEach((event) => {
+    eventsDataSource.forEach((event) => {
       if (event.id === removedEventId) {
         // eslint-disable-next-line no-param-reassign
         event.hidden = false;
@@ -210,10 +220,18 @@ const EventsList = ({
 
       if (rowsAffected === 1) {
         setDisplayToast(false);
-        const filteredEvents = await retrieveReports();
-        if (filteredEvents) {
-          setEventsList(filteredEvents);
+        let filteredEvents = await retrieveReports();
+        if (filteredEvents?.length === 0) {
+          removeSearchInput();
         }
+        setEvents(filteredEvents || []);
+
+        if (isSearchModeEnabled && searchedText.current) {
+          filteredEvents = (filteredEvents || []).filter(
+            (item) => item.title.toLowerCase().includes(searchedText.current.toLowerCase()),
+          );
+        }
+        setEventsDataSource(filteredEvents || []);
       }
     } catch (error) {
       logSQL.error(error);
@@ -239,18 +257,38 @@ const EventsList = ({
   // Effects
   useFocusEffect(useCallback(() => {
     const getEvents = async () => {
-      const events = await retrieveReports();
-      if (events) {
-        setEventsList(events);
+      const localEvents = await retrieveReports();
+      if (localEvents) {
+        setEvents(localEvents);
+        setEventsDataSource(localEvents);
       }
     };
-    if (!isSearchModeEnabled) {
+
+    if (!isSearchModeEnabled || updatedFilters.current) {
+      if (isSearchModeEnabled) {
+        removeSearchInput();
+      }
       getEvents();
+      updatedFilters.current = false;
     }
   }, []));
 
+  useFocusEffect(useCallback(() => () => {
+    if (isSearchModeEnabled) {
+      setIsSearchModeEnabled(false);
+      removeSearchInput();
+    }
+  }, [isSearchModeEnabled]));
+
   useEffect(() => {
     initAppBar();
+    setTimeout(() => {
+      navigation.setOptions({
+        // @ts-ignore
+        headerLeft: null,
+        headerRight: () => (eventsDataSource.length > 0 ? searchIconView() : null),
+      });
+    }, 10);
   }, []);
 
   useEffect(() => {
@@ -263,10 +301,13 @@ const EventsList = ({
     if (!isSearchModeEnabled) {
       navigation.setOptions({
         // @ts-ignore
-        headerRight: () => (eventsList.length > 0 ? searchIconView() : null),
+        headerRight: () => (eventsDataSource.length > 0 ? searchIconView() : null),
+        headerLeft: null,
       });
+    } else {
+      updateAppBar();
     }
-  }, [eventsList]);
+  }, [eventsDataSource, events]);
 
   // Additional Components
   const searchIconView = () => (<SearchButton onPress={showSearchInput} additionalMargin />);
@@ -338,12 +379,12 @@ const EventsList = ({
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={['bottom']}>
+    <View style={{ flex: 1 }}>
       {/* eslint-disable-next-line no-nested-ternary, max-len */}
-      { (!isSearchModeEnabled && !getBoolForKey(IS_STATUS_FILTER_ENABLED)) && eventsList.length === 0
+      { (!isSearchModeEnabled && !getBoolForKey(IS_STATUS_FILTER_ENABLED)) && eventsDataSource.length === 0
         ? <EmptyEventsListView />
         // eslint-disable-next-line max-len
-        : (isSearchModeEnabled || getBoolForKey(IS_STATUS_FILTER_ENABLED)) && eventsList.length === 0
+        : (isSearchModeEnabled || getBoolForKey(IS_STATUS_FILTER_ENABLED)) && eventsDataSource.length === 0
           ? (
             <>
               {filterSectionView()}
@@ -353,8 +394,8 @@ const EventsList = ({
             <>
               {filterSectionView()}
               <FlashList
-                data={eventsList}
-                estimatedItemSize={eventsList.length + 1}
+                data={eventsDataSource}
+                estimatedItemSize={eventsDataSource.length + 1}
                 extraData={extraData}
                 getItemType={(item) => Number(item.hidden)}
                 keyExtractor={(item: EventListItem) => item.id.toString()}
@@ -386,7 +427,7 @@ const EventsList = ({
         visible={displayToast}
       />
       {/* End Event Delete Confirmation Toast */}
-    </SafeAreaView>
+    </View>
   );
 };
 

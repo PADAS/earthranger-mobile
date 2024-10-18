@@ -9,7 +9,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useTranslation } from 'react-i18next';
 
 // Internal Dependencies
-import { cleanUpSvg, mapPriorityToBgColor, mapPriorityToColor } from '../../../../common/utils/svgIconsUtils';
+import { cleanUpSvg, mapPriorityToBgColor } from '../../../../common/utils/svgIconsUtils';
 import { EventStatus } from '../../../../common/enums/enums';
 import { COLORS_LIGHT } from '../../../../common/constants/colors';
 
@@ -104,8 +104,8 @@ const EventCell = ({
             }
           >
             {iconImage
-              ? <SvgXml xml={xml} width="24" height="24" fill={mapPriorityToColor(defaultPriority) || 0} />
-              : <DefaultEventTypeIcon color={mapPriorityToColor(defaultPriority) || ''} />}
+              ? <SvgXml xml={xml} width="24" height="24" fill={COLORS_LIGHT.white} />
+              : <DefaultEventTypeIcon color={COLORS_LIGHT.white} />}
           </View>
           {/* End Icon */}
 

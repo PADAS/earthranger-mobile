@@ -78,6 +78,7 @@ const MultiselectPickerRenderer = ({
             migrate
             mode={PickerModes.MULTI}
             onChange={onPickerChangeHandler}
+            showSearch
             topBarProps={{
               title: schema.title,
               doneButtonProps: {

@@ -35,7 +35,7 @@ const ReportCategoriesView = ({
 
   // Component's State
   const [reportTypes, setReportTypes] = useState<EventCategory[]>([]);
-  const [coordinates, setCoordinates] = useState<Position>([0, 0]);
+  const [coordinates, setCoordinates] = useState<Position>();
 
   useEffect(() => {
     getReportCategories();
@@ -56,14 +56,17 @@ const ReportCategoriesView = ({
   };
 
   const initMapCoordinates = () => {
-    setCoordinates(
-      [parseFloat(route.params.coordinates[0].toFixed(6)),
-        parseFloat(route.params.coordinates[1].toFixed(6)),
-      ],
-    );
+    if (route.params.coordinates) {
+      setCoordinates(
+        [
+          parseFloat(route.params.coordinates[0].toFixed(6)),
+          parseFloat(route.params.coordinates[1].toFixed(6)),
+        ],
+      );
+    }
   };
 
-  const onPress = (categoryId: string, fromMap: boolean, title: string) => {
+  const onPress = (categoryId: string, title: string) => {
     navigation.navigate('ReportTypesView', {
       categoryId,
       coordinates,
@@ -80,7 +83,7 @@ const ReportCategoriesView = ({
             data={reportTypes}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => {
-                onPress(item.remote_id, route.params.fromMap, item.display);
+                onPress(item.remote_id, item.display);
               }}
               >
                 <View style={styles.listRow} key={item.id}>

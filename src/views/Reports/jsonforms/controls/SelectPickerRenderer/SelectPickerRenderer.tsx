@@ -63,6 +63,7 @@ const SelectPickerRenderer = ({
             placeholder={label}
             value={value}
             migrate
+            showSearch
             onChange={onPickerChangeHandler}
             // eslint-disable-next-line react/no-unstable-nested-components
             topBarProps={{ title: schema.title, cancelIcon: () => <BackIcon /> }}

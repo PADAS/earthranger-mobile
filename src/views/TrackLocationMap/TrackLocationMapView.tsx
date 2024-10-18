@@ -95,6 +95,7 @@ import {
   LAST_SYNC_REPORTS_TIME_KEY,
   LOCATION_STATUS_KEY,
   MERGE_CATEGORIES_KEY,
+  PATROL_DISTANCE,
   PATROL_START_LOCATION,
   PATROL_STATUS_KEY,
   PATROL_TYPE,
@@ -136,6 +137,8 @@ import {
   BottomSheetNavigatorMethods,
 } from './components/BottomSheetNavigator/BottomSheetNavigator';
 import { BOTTOM_TAB_BAR_HEIGHT, MAP_OVERLAY_BUTTON_BOTTOM_MARGIN, MAP_OVERLAY_BUTTON_SIZE } from '../../common/constants/dimens';
+import { LocationCoordinatesOverlay } from './components/LocationCoordinatesOverlay/LocationCoordinatesOverlay';
+import { addDistance } from '../../common/utils/geometryUtils';
 
 // Icons
 import { LogOutAlertIcon } from '../../common/icons/LogOutAlertIcon';
@@ -209,6 +212,7 @@ const TrackLocationMapView = ({
   const lastTrackedLocation = useRef(nullIslandLocation);
   const isUploadAllowed = useRef(true);
   const isUserIdEmpty = useRef(false);
+  const lastPatrolLocation = useRef<Position>();
 
   // Variables
   const componentId = Math.floor(Math.random() * 10000);
@@ -254,6 +258,8 @@ const TrackLocationMapView = ({
   );
   const [statusBarStyle, setStatusBarStyle] = useState<StatusBarStyle>('dark-content');
   const [displayToast, setDisplayToast] = useState(false);
+  const [displayCoordinatesCopied, setDisplayCoordinatesCopied] = useState(false);
+  const [liveCoordinates, setLiveCoordinates] = useState(nullIslandLocation);
 
   /* Basemap */
   const bottomSheetNavigationRef = useRef<BottomSheetNavigatorMethods>(null);
@@ -479,6 +485,29 @@ const TrackLocationMapView = ({
     updateStatusBarStyle();
   }, [basemapSelected]);
 
+  useEffect(() => {
+    if (isPatrolEnabled) {
+      if (lastPatrolLocation.current) {
+        const tmp = [lastLocation.longitude, lastLocation.latitude];
+
+        const addedDistance = addDistance(
+          lastPatrolLocation.current,
+          tmp,
+          getNumberForKey(PATROL_DISTANCE) || 0,
+        );
+
+        setNumberForKey(PATROL_DISTANCE, addedDistance);
+
+        lastPatrolLocation.current = tmp as Position;
+      } else {
+        // eslint-disable-next-line no-lonely-if
+        if (!isEqual(nullIslandLocation, [lastLocation.longitude, lastLocation.latitude])) {
+          lastPatrolLocation.current = [lastLocation.longitude, lastLocation.latitude];
+        }
+      }
+    }
+  }, [lastLocation.timestamp, isPatrolEnabled]);
+
   const updateStatusBarStyle = () => {
     if (IS_IOS) {
       setStatusBarStyle(basemapSelected === MapboxGL.StyleURL.Satellite ? 'light-content' : 'dark-content');
@@ -631,20 +660,18 @@ const TrackLocationMapView = ({
 
   // Handlers
   const onLongPressHandler = (feature: Feature) => {
-    if (isTrackingEnabled) {
-      if (getBoolForKey(MERGE_CATEGORIES_KEY)) {
-        navigation.navigate('ReportTypesView', {
-          title: '',
-          categoryId: '',
-          // @ts-ignore
-          coordinates: feature.geometry.coordinates as Position,
-        });
-      } else {
-        navigation.navigate('ReportCategoriesView', {
-          // @ts-ignore
-          coordinates: feature.geometry.coordinates,
-        });
-      }
+    if (getBoolForKey(MERGE_CATEGORIES_KEY)) {
+      navigation.navigate('ReportTypesView', {
+        title: '',
+        categoryId: '',
+        // @ts-ignore
+        coordinates: feature.geometry.coordinates as Position,
+      });
+    } else {
+      navigation.navigate('ReportCategoriesView', {
+        // @ts-ignore
+        coordinates: feature.geometry.coordinates,
+      });
     }
   };
 
@@ -710,12 +737,9 @@ const TrackLocationMapView = ({
       navigation.navigate('ReportTypesView', {
         title: '',
         categoryId: '',
-        coordinates: getMapUserPosition() as Position,
       });
     } else {
-      navigation.navigate('ReportCategoriesView', {
-        coordinates: getMapUserPosition() as Position,
-      });
+      navigation.navigate('ReportCategoriesView', {});
     }
   }, [centerCoordinate]);
 
@@ -742,6 +766,7 @@ const TrackLocationMapView = ({
   };
 
   const onMapMoveHandler = (e: Feature<Point, RegionPayload>) => {
+    setLiveCoordinates(e.geometry.coordinates as Position);
     if (e.properties.isUserInteraction) {
       isMapCentered.current = false;
       if (currentMapLocationMode === MapboxGL.UserTrackingModes.FollowWithHeading) {
@@ -787,6 +812,8 @@ const TrackLocationMapView = ({
       resetPatrolTypesModal();
     } else {
       setBoolForKey(PATROL_STATUS_KEY, false);
+      setNumberForKey(PATROL_DISTANCE, 0);
+      lastPatrolLocation.current = undefined;
       await populatePatrolStop(
         lastLocation.latitude.toString(),
         lastLocation.longitude.toString(),
@@ -1086,6 +1113,13 @@ const TrackLocationMapView = ({
     bottomSheetNavigationRef.current?.navigate('Basemap', null, true);
   };
 
+  const liveCoodinatesDisplay = useCallback(() => (
+    <LocationCoordinatesOverlay
+      location={liveCoordinates}
+      displayToast={setDisplayCoordinatesCopied}
+    />
+  ), [liveCoordinates]);
+
   return (
     <>
       {(IS_IOS && <StatusBar translucent barStyle={statusBarStyle} />)}
@@ -1162,6 +1196,10 @@ const TrackLocationMapView = ({
         isPatrolEnabled={isPatrolEnabled}
       />
       {/* End Tracking Overlay (Button + Dropdown Menu) */}
+
+      {/* LocationCoordiantesOverlay */}
+      {isTrackingEnabled && liveCoodinatesDisplay()}
+      {/* End LocationCoordiantesOverlay */}
 
       {/* Add Reports */}
       <Animated.View
@@ -1261,6 +1299,19 @@ const TrackLocationMapView = ({
         visible={displayToast}
       />
       {/* End User missing ID Toast */}
+
+      {/* Coordinates copied to clipboard Toast */}
+      <Incubator.Toast
+        autoDismiss={2000}
+        backgroundColor={COLORS_LIGHT.G0_black}
+        message={t('mapTrackLocation.coordinatesCopied')}
+        messageStyle={{ color: COLORS_LIGHT.white, marginLeft: -24 }}
+        onDismiss={() => setDisplayCoordinatesCopied(false)}
+        position="bottom"
+        style={{ borderRadius: 4 }}
+        visible={displayCoordinatesCopied}
+      />
+      {/* End Coordinates copied to clipboard Toast */}
     </>
   );
 };

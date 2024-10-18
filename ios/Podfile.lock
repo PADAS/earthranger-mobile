@@ -332,7 +332,7 @@ PODS:
     - React
   - react-native-get-random-values (1.8.0):
     - React-Core
-  - react-native-image-picker (4.8.4):
+  - react-native-image-picker (7.1.2):
     - React-Core
   - react-native-image-resizer (1.4.5):
     - React-Core
@@ -440,6 +440,8 @@ PODS:
     - CocoaLumberjack (~> 3.7.2)
     - React-Core
   - RNCCheckbox (0.5.9):
+    - React-Core
+  - RNCClipboard (1.5.1):
     - React-Core
   - RNDateTimePicker (6.3.2):
     - React-Core
@@ -558,6 +560,7 @@ DEPENDENCIES:
   - RNBackgroundFetch (from `../node_modules/react-native-background-fetch`)
   - RNBackgroundGeolocation (from `../node_modules/react-native-background-geolocation`)
   - "RNCCheckbox (from `../node_modules/@react-native-community/checkbox`)"
+  - "RNCClipboard (from `../node_modules/@react-native-community/clipboard`)"
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - "RNFBAnalytics (from `../node_modules/@react-native-firebase/analytics`)"
@@ -689,6 +692,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-background-geolocation"
   RNCCheckbox:
     :path: "../node_modules/@react-native-community/checkbox"
+  RNCClipboard:
+    :path: "../node_modules/@react-native-community/clipboard"
   RNDateTimePicker:
     :path: "../node_modules/@react-native-community/datetimepicker"
   RNDeviceInfo:
@@ -760,7 +765,7 @@ SPEC CHECKSUMS:
   react-native-config: 6502b1879f97ed5ac570a029961fc35ea606cd14
   react-native-geolocation-service: f32ef48fa665bd710207a3ac39bc127cac9cb993
   react-native-get-random-values: a6ea6a8a65dc93e96e24a11105b1a9c8cfe1d72a
-  react-native-image-picker: cffb727cf2f59bd5c0408e30b3dbe0b935f88835
+  react-native-image-picker: 6f8b3ea523b02c622b9e4f9c36f17348aff0909d
   react-native-image-resizer: d9fb629a867335bdc13230ac2a58702bb8c8828f
   react-native-mail: 8fdcd3aef007c33a6877a18eb4cf7447a1d4ce4a
   react-native-mapbox-gl: 955d2c064b56ef058b9cc0fbbf6cf743b05c928e
@@ -785,6 +790,7 @@ SPEC CHECKSUMS:
   RNBackgroundFetch: 4ba650701219cf06fdc08336cc0b010242d2d024
   RNBackgroundGeolocation: 1989317d984f4a2a520ce1a345350c02e78c6764
   RNCCheckbox: 6369808337432cdbd5025d62ceced2480b4c51df
+  RNCClipboard: 41d8d918092ae8e676f18adada19104fa3e68495
   RNDateTimePicker: 4f1fc917f5af9d9ae4c5fc0c63a4474d61338693
   RNDeviceInfo: 0400a6d0c94186d1120c3cbd97b23abc022187a9
   RNFBAnalytics: 116338d7e03126a5782412dbd7410139898cdb35
@@ -804,4 +810,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 6957a3221c0cf9e9cf3458717f1c7877f469cbb6
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.15.2

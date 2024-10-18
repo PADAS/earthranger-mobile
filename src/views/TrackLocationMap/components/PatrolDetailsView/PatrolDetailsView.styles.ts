@@ -42,41 +42,44 @@ export const styles = StyleSheet.create({
 
   /* Header - Maximized Patrol */
   endPatrolButtonMP: {
-    marginTop: 16,
-    marginRight: 'auto',
     backgroundColor: '#FDF2F4',
     borderRadius: 5,
     paddingHorizontal: 10,
-    height: 45,
+    height: 48,
   },
   /* End Header - Maximized Patrol */
 
   dateText: {
     marginTop: 16,
   },
-  locationCardContainer: {
+
+  /* Cards */
+  detailCardsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: 16,
+    alignItems: 'center',
+  },
+  cardContainer: {
     borderColor: COLORS_LIGHT.G5_LightGreyLines,
-    borderWidth: 1,
     borderRadius: 5,
-    flexDirection: 'column',
+    borderWidth: 1,
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    width: '49%',
   },
-  startLocationContainer: {
+  cardContent: {
     flexDirection: 'row',
-    marginTop: 14,
-    marginLeft: 8,
-    alignItems: 'center',
-  },
-  locationContainer: {
     marginTop: 8,
-    marginLeft: 12,
-    marginRight: 12,
-    marginBottom: 16,
+  },
+  /* End Cards */
+
+  locationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 8,
   },
   iconStatusContainer: {
-    marginLeft: 'auto',
-    marginRight: 11,
+    marginLeft: 8,
   },
 });

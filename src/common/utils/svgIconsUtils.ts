@@ -29,16 +29,16 @@ export const mapPriorityToBgColor = (priority: number) => {
 
   switch (priority) {
     case 0:
-      color = COLORS_LIGHT.G7_veryLightGrey;
+      color = COLORS_LIGHT.G2_5_mobileSecondaryGray;
       break;
     case 100:
-      color = '#F5F7F3';
+      color = '#006842';
       break;
     case 200:
-      color = '#FEF7F4';
+      color = '#E76826';
       break;
     case 300:
-      color = '#FDF2F4';
+      color = '#D0031B';
       break;
     default:
       break;

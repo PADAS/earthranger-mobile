@@ -18,7 +18,7 @@ export type RootStackParamList = {
     title: string,
     categoryId: string,
     coordinates?: Position,
-    isDefaultPatrolTypeEnabled?: boolean,
+    isPatrolInfoEventType?: boolean,
   },
   ReportForm: {
     reportId?: number,
@@ -29,7 +29,7 @@ export type RootStackParamList = {
     geometryType: string,
     isEditMode?: boolean,
     createdAt?: string,
-    isDefaultPatrolTypeEnabled?: boolean,
+    isDefaultPatrolInfoEnabled?: boolean,
     geoJson?: GeoJSON.FeatureCollection,
     areaMeters?: number,
     perimeterMeters?: number,
@@ -282,6 +282,7 @@ export type PersistedPatrolDetail = {
   start_longitude: number,
   start_time: number,
   icon_svg: number,
+  created_at: number,
 };
 
 export type PatrolDetail = {
@@ -293,6 +294,7 @@ export type PatrolDetail = {
   startTime: number,
   iconSVG: string
   startTimeFormatted: string,
+  createdAt: number,
 };
 
 export type PersistedUserProfile = {
