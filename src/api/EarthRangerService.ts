@@ -17,6 +17,7 @@ export const SITE = {
 };
 
 export const STATIC_RESOURCES = `https://%host%${SITE.domain}/static/sprite-src/%icon%.svg`;
+export const SUBJECTS_STATIC_RESOURCES = `https://%host%${SITE.domain}%icon%`;
 
 export const USER_AGENT_VALUE = `${DeviceInfo.getApplicationName()}Mobile/${DeviceInfo.getVersion()}.${DeviceInfo.getBuildNumber()}; ${DeviceInfo.getBrand()}; ${DeviceInfo.getModel()}`;
 
@@ -69,6 +70,8 @@ export const API_PATROLS_SEGMENTS = `${API_PATROLS}/segments`;
 export const API_PATROLS_EVENTS = '/events/';
 
 export const API_PATROLS_TRACKED_BY = `${API_PATROLS}/trackedby`;
+
+export const API_SUBJECT_GROUPS = `${API_V1}/subjectgroups`;
 
 export const OAUTH_TOKEN = '/oauth2/token/';
 

@@ -29,7 +29,8 @@
     "loadingAccountInformation": "Inasawazisha Akaunti za Mtumiaji",
     "loadingReportCategories": "Inasawazisha Kategoria za Tukio",
     "loadingTypesOfReports": "Inasawazisha Aina za Tukio",
-    "loadingPatrolTypes": "Kusawazisha Aina za Doria"
+    "loadingPatrolTypes": "Kusawazisha Aina za Doria",
+    "loadingSubjectGroups": "Inasawazisha Vikundi vya Mada"
   },
   "mapTrackLocation": {
     "tracking": "Kufuatilia",
@@ -88,7 +89,8 @@
     "map": "Ramani",
     "status": "Hali",
     "events": "Matukio",
-    "settings": "Mipangilio"
+    "settings": "Mipangilio",
+    "subjects": "Masomo"
   },
   "menuSettingsView": {
     "settings": "MIPANGILIO",
@@ -165,7 +167,15 @@
     "slowestUpload": "Upakiaji wa polepole zaidi",
     "fastestUpload": "Upakiaji wa haraka zaidi",
     "patrolInfo": "Taarifa ya Doria",
-    "eventType": "Aina ya Tukio"
+    "eventType": "Aina ya Tukio",
+    "mapCenterItem": {
+      "main": {
+        "title": "Kituo cha Ramani kwenye Fungua"
+      },
+      "secondary": {
+        "title": "Viratibu vya Kituo"
+      }
+    }
   },
   "aboutView": {
     "version": "Toleo 1.1.9.49",
@@ -264,6 +274,13 @@
     "defaultPendingSync": "Bado haijasawazishwa",
     "wifiDataConnectionRequired": "Muunganisho wa Wifi unahitajika ili kusawazisha picha.",
     "save": "Hifadhi",
+    "errors": {
+      "BadRequest": "Ombi baya",
+      "Unauthorized" : "Haijaidhinishwa",
+      "Forbidden": "Haramu",
+      "NotFound": "Haipatikani",
+      "ServerError": "Hitilafu ya Seva"
+    },
     "accuracy": "Usahihi",
     "lowAccuracy": "Usahihi wa Chini"
   },
@@ -403,5 +420,19 @@
     "title": "Ungependa kuhifadhi mabadiliko kwenye vichujio?",
     "saveAndApply": "Hifadhi na utumie vichujio",
     "discard": "Tupa mabadiliko"
+  },
+  "subjectsView": {
+    "emptyList": "Hakuna mada za kuonyesha",
+    "subject": "somo",
+    "subjects": "masomo",
+    "timeDifference": {
+      "daysAgo": "Siku {{diff}} zilizopita",
+      "dayAgo": "Siku {{diff}} iliyopita",
+      "hoursAgo": "saa {{diff}} zilizopita",
+      "hourAgo": "saa {{diff}} iliyopita",
+      "minutesAgo": "{{diff}} dakika zilizopita",
+      "minuteAgo": "{{diff}} dakika iliyopita",
+      "secondsAgo": "sekunde {{diff}} zilizopita"
+    }
   }
 }

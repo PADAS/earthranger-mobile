@@ -2,7 +2,7 @@
 // Constants
 // ------------------------------------------------------------------------
 
-export const SCHEMA_VERSION = 32;
+export const SCHEMA_VERSION = 39;
 
 // ------------------------------------------------------------------------
 // Tables
@@ -34,7 +34,8 @@ export const TABLE_EVENT_TYPE = `CREATE TABLE IF NOT EXISTS event_type(
   default_priority INTEGER,
   icon TEXT,
   icon_svg TEXT,
-  geometry_type TEXT)`;
+  geometry_type TEXT,
+  is_active INTEGER)`;
 
 export const TABLE_EVENT_CATEGORY = `CREATE TABLE IF NOT EXISTS event_category(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -43,7 +44,8 @@ export const TABLE_EVENT_CATEGORY = `CREATE TABLE IF NOT EXISTS event_category(
   profile_id JSON,
   value TEXT,
   display TEXT,
-  ordernum INTEGER)`;
+  ordernum INTEGER,
+  is_active INTEGER)`;
 
 export const TABLE_EVENTS = `CREATE TABLE IF NOT EXISTS events(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -135,6 +137,38 @@ export const TABLE_USER_SUBJECTS = `CREATE TABLE IF NOT EXISTS user_subjects (
   account_id INTEGER,
   name TEXT,
   content_type TEXT)`;
+
+export const TABLE_SUBJECTS = `CREATE TABLE IF NOT EXISTS subjects (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  remote_id TEXT,
+  name TEXT,
+  is_active INTEGER,
+  updated_at INTEGER,
+  tracks_available INTEGER,
+  last_position_date INTEGER,
+  last_position TEXT,
+  icon_svg TEXT)`;
+
+export const TABLE_SUBJECT_GROUPS = `CREATE TABLE IF NOT EXISTS subject_groups (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  remote_id TEXT,
+  account_id INTEGER,
+  parent_id INTEGER,
+  name TEXT,
+  is_visible INTEGER,
+  FOREIGN KEY(parent_id) REFERENCES subject_groups(id) ON DELETE CASCADE)`;
+
+export const TABLE_SUBJECT_GROUP_MEMBERSHIPS = `CREATE TABLE IF NOT EXISTS subject_group_memberships (
+  subject_group_id TEXT REFERENCES subject_groups(id) ON DELETE CASCADE,
+  subject_id TEXT REFERENCES subjects(id) ON DELETE CASCADE,
+  PRIMARY KEY (subject_group_id, subject_id))`;
+
+export const TABLE_PROFILE_SUBJECT_GROUPS = `CREATE TABLE IF NOT EXISTS profile_subject_groups (
+  profile_id INTEGER,
+  subject_group_id INTEGER,
+  PRIMARY KEY (profile_id, subject_group_id),
+  FOREIGN KEY(profile_id) REFERENCES user_profiles(id) ON DELETE CASCADE,
+  FOREIGN KEY(subject_group_id) REFERENCES subject_groups(id) ON DELETE CASCADE)`;
 
 // ------------------------------------------------------------------------
 // Versioning

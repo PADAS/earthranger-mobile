@@ -1,20 +1,32 @@
+/* eslint-disable arrow-body-style */
 // External Dependencies
+import Config from 'react-native-config';
+import Mapbox, {
+  Camera,
+  Images,
+  MapState,
+  MapView,
+  ShapeSource,
+  SymbolLayer,
+  UserLocation,
+  UserTrackingMode,
+  UserLocationRenderMode as UserLocationRenderModeType,
+} from '@rnmapbox/maps';
 import React, {
   useCallback, useEffect, useRef, useState,
 } from 'react';
 import {
   AppState, AppStateStatus, Pressable, StatusBar, StatusBarStyle, View,
 } from 'react-native';
-import Config from 'react-native-config';
-import MapboxGL, { RegionPayload } from '@react-native-mapbox-gl/maps';
 import BottomSheet from '@gorhom/bottom-sheet';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import Geolocation from 'react-native-geolocation-service';
-import { Feature } from 'geojson';
+import {
+  Feature, FeatureCollection, Geometry, GeoJsonProperties,
+} from 'geojson';
 import NetInfo, { useNetInfo } from '@react-native-community/netinfo';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Point } from '@turf/helpers';
 import { Button, Incubator } from 'react-native-ui-lib';
 import { useFocusEffect } from '@react-navigation/native';
 import { useMMKVBoolean, useMMKVString } from 'react-native-mmkv';
@@ -45,8 +57,7 @@ import {
   createLocationPermissionAllowedEvent,
   createLocationPermissionDeniedEvent,
   createStartTrackingLocationEvent,
-  createSwitchTrackingLocationOffEvent,
-  createSwitchTrackingLocationOnEvent,
+  createStopTrackingLocationEvent,
 } from '../../analytics/locationTrack/locationTrackAnalytics';
 import { API_TRACK_OBSERVATIONS, getApiUrl, USER_AGENT_VALUE } from '../../api/EarthRangerService';
 import { getSession } from '../../common/data/storage/session';
@@ -54,7 +65,7 @@ import {
   backgroundLocationConfig,
   getLocationTemplate,
 } from '../../common/backgrounGeolocation/backgroundLocationConfig';
-import { syncPendingObservations } from '../../common/utils/trackingUtils';
+import { getNextTrackingMode, syncPendingObservations } from '../../common/utils/trackingUtils';
 import {
   LastLocation,
   Patrol,
@@ -71,8 +82,11 @@ import { usePopulatePatrolStop } from '../../common/data/patrols/usePopulatePatr
 import { getEventEmitter } from '../../common/utils/AppEventEmitter';
 import { createStartTrackingEvent } from '../../analytics/tracking/trackingAnalytics';
 import { createStartPatrolEvent, createStopPatrolEvent } from '../../analytics/patrols/patrolsAnalytics';
-import { BottomSheetAction, BottomSheetComponentAction, PatrolResult } from '../../common/enums/enums';
+import {
+  BottomSheetAction, BottomSheetComponentAction, PatrolResult, UserType,
+} from '../../common/enums/enums';
 import { isSyncing } from '../../common/utils/syncUtils';
+import { useRetrieveSubjectsGeoJson } from '../../common/data/subjects/useRetrieveSubjectsGeoJson';
 
 // Common Components
 import { CustomAlert } from '../../common/components/CustomAlert/CustomAlert';
@@ -86,6 +100,9 @@ import {
   ALERT_BUTTON_BACKGROUND_COLOR_BLUE,
   BASEMAP_KEY,
   BOTTOM_SHEET_NAVIGATOR,
+  CUSTOM_CENTER_COORDS_ENABLED,
+  CUSTOM_CENTER_COORDS_LAT,
+  CUSTOM_CENTER_COORDS_LON,
   DATE_FORMAT_HHMM_DD_MMM_YYYY,
   IS_ANDROID,
   IS_DEVICE_TRACKING,
@@ -101,6 +118,7 @@ import {
   PATROL_TYPE,
   PROMINENT_DISCLOSURE_KEY,
   REPORTS_SUBMITTED_KEY,
+  SELECTED_SUBJECT_IN_MAP,
   SESSION_KEY,
   SHOW_USER_TRAILS_ENABLED_KEY,
   START_PATROL_EVENT,
@@ -132,13 +150,21 @@ import { getTopAreaInsets } from '../../common/utils/safeAreaInsets';
 import { useRetrieveUserProfiles } from '../../common/data/users/useRetrieveUserProfiles';
 import { useUploadReports } from '../../common/data/reports/useUploadReports';
 import { useRetrieveReportPendingSync } from '../../common/data/reports/useRetrieveReportPendingSync';
+import { useRetrieveUser } from '../../common/data/users/useRetrieveUser';
 import {
   BottomSheetNavigator,
   BottomSheetNavigatorMethods,
 } from './components/BottomSheetNavigator/BottomSheetNavigator';
-import { BOTTOM_TAB_BAR_HEIGHT, MAP_OVERLAY_BUTTON_BOTTOM_MARGIN, MAP_OVERLAY_BUTTON_SIZE } from '../../common/constants/dimens';
+import {
+  BOTTOM_TAB_BAR_HEIGHT,
+  MAP_OVERLAY_BUTTON_BOTTOM_MARGIN,
+  MAP_OVERLAY_BUTTON_SIZE,
+} from '../../common/constants/dimens';
 import { LocationCoordinatesOverlay } from './components/LocationCoordinatesOverlay/LocationCoordinatesOverlay';
 import { addDistance } from '../../common/utils/geometryUtils';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import subjectsStorage from '../../common/data/storage/subjectsStorage';
+import { SubjectsMapLayer } from './components/SubjectsMapLayer/SubjectsMapLayer';
 
 // Icons
 import { LogOutAlertIcon } from '../../common/icons/LogOutAlertIcon';
@@ -153,11 +179,15 @@ import { LayersIcon } from '../../common/icons/LayersIcon';
 // Styles
 import styles from './TrackLocationMapView.styles';
 
-MapboxGL.setAccessToken(Config.MAPBOX_API_KEY);
+Mapbox.setAccessToken(Config.MAPBOX_API_KEY);
 
 // Constants
 const MAX_SYNC_RETRY_ATTEMPTS = 5;
 const ZOOM_LEVEL = 16;
+const COMPASS_TOP_OFFSET = 64;
+const COMPASS_RIGHT_OFFSET = 12;
+const SCALE_BAR_BOTTOM_OFFSET = 100;
+const SCALE_BAR_LEFT_OFFSET = 16;
 const VIEW_NAME = 'TrackLocationMapView';
 const MAP_ANIMATION_DURATION = 3000;
 const RESOURCE_ICONS = {
@@ -199,6 +229,8 @@ const TrackLocationMapView = ({
   const { isConnected } = useNetInfo();
   const { retrieveReportPendingSyncCount } = useRetrieveReportPendingSync();
   const animatedPosition = useSharedValue(0);
+  const { retrieveSubjectsGeoJson } = useRetrieveSubjectsGeoJson();
+  const { retrieveUserInfo } = useRetrieveUser();
 
   // References
   const isComponentLoaded = useRef(false);
@@ -218,8 +250,6 @@ const TrackLocationMapView = ({
   const componentId = Math.floor(Math.random() * 10000);
 
   // Component's State
-  const [randomKey, setRandomKey] = useState(0);
-  const [shapeSourceRandomKey, setShapeSourceRandomKey] = useState(1);
   const [patrolStartIconFeature, setPatrolStartIconFeature] = useState(
     getPatrolStartIconGeoJson(false, nullIslandLocation),
   );
@@ -229,6 +259,7 @@ const TrackLocationMapView = ({
   const [isTrackingEnabled, setIsTrackingEnabled] = useState(false);
   const [isPatrolEnabled, setIsPatrolEnabled] = useState(false);
   const [patrolTypes, setPatrolTypes] = useState<PersistedPatrolType[]>([]);
+  const [subjectsGeoJson, setSubjectsGeoJson] = useState<FeatureCollection<Geometry, GeoJsonProperties> | null>();
   const [isDeviceOnline, setIsDeviceOnline] = useState(false);
   const [isGPSEnabled, setIsGPSEnabled] = useState(true);
   const [showConfirmationTrackLocation, setShowConfirmationTrackLocation] = useState(false);
@@ -238,11 +269,7 @@ const TrackLocationMapView = ({
     IS_ANDROID ? <LocationOnAndroid /> : <LocationOnForIos />,
   );
   // eslint-disable-next-line max-len
-  const [currentMapLocationMode, setCurrentMapLocationMode] = useState<MapboxGL.UserTrackingModes>();
-  // eslint-disable-next-line max-len
-  const [selectedMapLocationMode, setSelectedMapLocationMode] = useState<MapboxGL.UserTrackingModes | null>(
-    MapboxGL.UserTrackingModes.Follow,
-  );
+  const [currentMapLocationMode, setCurrentMapLocationMode] = useState<UserTrackingMode>();
   const [centerCoordinate, setCenterCoordinate] = useState(nullIslandLocation);
   const [lastLocation, setLastLocation] = useState<LastLocation>({
     timestamp: '',
@@ -254,12 +281,13 @@ const TrackLocationMapView = ({
   const [activePatrolId, setActivePatrolId] = useState(0);
   const [hasActivePatrolUploaded, setHasActivePatrolUploaded] = useState(false);
   const [basemapSelected, setBasemapSelected] = useState(
-    getStringForKey(BASEMAP_KEY) || MapboxGL.StyleURL.Outdoors,
+    getStringForKey(BASEMAP_KEY) || Mapbox.StyleURL.Outdoors,
   );
   const [statusBarStyle, setStatusBarStyle] = useState<StatusBarStyle>('dark-content');
   const [displayToast, setDisplayToast] = useState(false);
   const [displayCoordinatesCopied, setDisplayCoordinatesCopied] = useState(false);
   const [liveCoordinates, setLiveCoordinates] = useState(nullIslandLocation);
+  const [isCompassMode, setIsCompassMode] = useState(false);
 
   /* Basemap */
   const bottomSheetNavigationRef = useRef<BottomSheetNavigatorMethods>(null);
@@ -267,6 +295,9 @@ const TrackLocationMapView = ({
   const [trackedBySubjectID] = useMMKVString(TRACKED_BY_SUBJECT_ID_KEY, localStorage);
   const [persistedPatrolStatus] = useMMKVBoolean(PATROL_STATUS_KEY, localStorage);
   const [basemapStatus] = useMMKVString(BASEMAP_KEY, localStorage);
+  const [isCustomCenterCoordsEnabled] = useMMKVBoolean(CUSTOM_CENTER_COORDS_ENABLED, localStorage);
+  const [customCenterLat] = useMMKVString(CUSTOM_CENTER_COORDS_LAT, localStorage);
+  const [customCenterLon] = useMMKVString(CUSTOM_CENTER_COORDS_LON, localStorage);
 
   // Component's Life-cycle
   useEffect(() => {
@@ -327,7 +358,9 @@ const TrackLocationMapView = ({
   }, [basemapStatus]);
 
   useEffect(() => {
-    setBoolForKey(ACTIVE_PATROL_KEY, persistedPatrolStatus);
+    if (persistedPatrolStatus !== undefined) {
+      setBoolForKey(ACTIVE_PATROL_KEY, persistedPatrolStatus);
+    }
   }, [persistedPatrolStatus]);
 
   useEffect(() => {
@@ -388,8 +421,8 @@ const TrackLocationMapView = ({
   }, [isTrackingEnabled]);
 
   useEffect(() => {
-    const toggleTrackingSwitchHandlerAsync = async () => {
-      await onToggleTrackingSwitchHandler();
+    const onStopTrackingButtonPressHandlerAsync = async () => {
+      await onStopTrackingButtonPressHandler();
     };
 
     const onTrackingButtonPressHandlerAsync = async () => {
@@ -417,7 +450,7 @@ const TrackLocationMapView = ({
           bottomSheetRef.current?.close();
           break;
         case BottomSheetComponentAction.stopTracking:
-          toggleTrackingSwitchHandlerAsync();
+          onStopTrackingButtonPressHandlerAsync();
           break;
         default:
           break;
@@ -430,19 +463,9 @@ const TrackLocationMapView = ({
   }, [bottomSheetRef.current]);
 
   useEffect(() => {
-    const uploadPatrol = async () => {
-      if (isConnected && !hasActivePatrolUploaded) {
-        try {
-          const apiStatus = await uploadPatrols(accessToken.current);
-          if (isExpiredTokenStatus(apiStatus)) {
-            await handleRefreshToken(navigation);
-          } else if (apiStatus === ApiStatus.Succeeded) {
-            logTracking.info(`${VIEW_NAME} :: Active patrol uploaded`);
-          }
-        } catch (uploadActivePatrolError: any) {
-          logTracking.error(`${VIEW_NAME} :: Active patrol upload failed: error`, uploadActivePatrolError);
-        }
-      }
+    const uploadData = async () => {
+      await uploadPatrolsData();
+      await uploadReports();
     };
 
     const patrolStatus = getBoolForKey(PATROL_STATUS_KEY);
@@ -452,34 +475,10 @@ const TrackLocationMapView = ({
     setIsPatrolEnabled(patrolStatus);
     setIsUserTrailEnabled(userTrailsValue && trackingStatus);
 
-    if (activePatrolId !== 0 || getNumberForKey(ACTIVE_PATROL_ID_KEY)) {
-      uploadPatrol();
+    if (isConnected) {
+      uploadData();
     }
   }, [isConnected]);
-
-  useFocusEffect(useCallback(() => {
-    setIsPatrolEnabled(getBoolForKey(PATROL_STATUS_KEY));
-    setBasemapSelected(getStringForKey(BASEMAP_KEY) || MapboxGL.StyleURL.Outdoors);
-    updateStatusBarStyle();
-
-    uploadReports();
-
-    // Place Patrol Start pin when loading the view
-    if (getBoolForKey(PATROL_STATUS_KEY) && getStringForKey(PATROL_START_LOCATION)) {
-      // @ts-ignore
-      const startLocation = getStringForKey(PATROL_START_LOCATION).split(',');
-      setPatrolStartIconFeature(
-        getPatrolStartIconGeoJson(
-          true,
-          [parseFloat(startLocation[0]), parseFloat(startLocation[1])],
-        ),
-      );
-    }
-
-    return () => {
-      setStatusBarStyle('dark-content');
-    };
-  }, [isConnected]));
 
   useEffect(() => {
     updateStatusBarStyle();
@@ -508,13 +507,60 @@ const TrackLocationMapView = ({
     }
   }, [lastLocation.timestamp, isPatrolEnabled]);
 
+  useFocusEffect(useCallback(() => {
+    setIsPatrolEnabled(getBoolForKey(PATROL_STATUS_KEY));
+    setBasemapSelected(getStringForKey(BASEMAP_KEY) || Mapbox.StyleURL.Outdoors);
+    updateStatusBarStyle();
+
+    // Place Patrol Start pin when loading the view
+    if (getBoolForKey(PATROL_STATUS_KEY) && getStringForKey(PATROL_START_LOCATION)) {
+      // @ts-ignore
+      const startLocation = getStringForKey(PATROL_START_LOCATION).split(',');
+      setPatrolStartIconFeature(
+        getPatrolStartIconGeoJson(
+          true,
+          [parseFloat(startLocation[0]), parseFloat(startLocation[1])],
+        ),
+      );
+    }
+
+    return () => {
+      setStatusBarStyle('dark-content');
+    };
+  }, [isConnected]));
+
+  useFocusEffect(useCallback(() => {
+    const initSubjectsGeoJson = async () => {
+      const userInfo = await retrieveUserInfo();
+      // @ts-ignore
+      const visibleSubjects = JSON.parse(subjectsStorage.subjectsKey.get() || '[]').map((item) => `'${item}'`).join(',');
+
+      if (visibleSubjects.length === 0) {
+        setSubjectsGeoJson(null);
+        return;
+      }
+
+      let profileId: number | undefined;
+
+      if (userInfo && userInfo.userType === UserType.profile) {
+        const profileIdString = userInfo.userId;
+        profileId = profileIdString ? parseInt(profileIdString, 10) : undefined;
+      }
+
+      const geoJson = await retrieveSubjectsGeoJson(visibleSubjects, profileId);
+      setSubjectsGeoJson(geoJson);
+    };
+
+    initSubjectsGeoJson();
+  }, []));
+
+  // Utility Functions
   const updateStatusBarStyle = () => {
     if (IS_IOS) {
-      setStatusBarStyle(basemapSelected === MapboxGL.StyleURL.Satellite ? 'light-content' : 'dark-content');
+      setStatusBarStyle(basemapSelected === Mapbox.StyleURL.Satellite ? 'light-content' : 'dark-content');
     }
   };
 
-  // Utility Functions
   const uploadReports = async () => {
     if (isConnected && isUploadAllowed.current && !isSyncing()) {
       isUploadAllowed.current = false;
@@ -523,9 +569,26 @@ const TrackLocationMapView = ({
     }
   };
 
+  const uploadPatrolsData = async () => {
+    if (activePatrolId !== 0 || getNumberForKey(ACTIVE_PATROL_ID_KEY)) {
+      if (isConnected && !hasActivePatrolUploaded) {
+        try {
+          const apiStatus = await uploadPatrols(accessToken.current);
+          if (isExpiredTokenStatus(apiStatus)) {
+            await handleRefreshToken(navigation);
+          } else if (apiStatus === ApiStatus.Succeeded) {
+            logTracking.info(`${VIEW_NAME} :: Active patrol uploaded`);
+          }
+        } catch (uploadActivePatrolError: any) {
+          logTracking.error(`${VIEW_NAME} :: Active patrol upload failed: error`, uploadActivePatrolError);
+        }
+      }
+    }
+  };
+
   const requestMapLocationPermissions = async () => {
     if (IS_ANDROID) {
-      const isLocationPermissionGranted = await MapboxGL.requestAndroidLocationPermissions();
+      const isLocationPermissionGranted = await Mapbox.requestAndroidLocationPermissions();
       if (isLocationPermissionGranted) {
         moveCameraToCurrentLocation();
       }
@@ -539,10 +602,10 @@ const TrackLocationMapView = ({
     const response = await uploadReportAndAttachments();
 
     if (response.reportStatus === ApiStatus.Unauthorized
-        || response.attachmentStatus === ApiStatus.Unauthorized) {
+      || response.attachmentStatus === ApiStatus.Unauthorized) {
       await handleRefreshToken(navigation);
     } else if (response.reportStatus === ApiStatus.Succeeded
-        || response.attachmentStatus === ApiStatus.Succeeded) {
+      || response.attachmentStatus === ApiStatus.Succeeded) {
       const lastSyncDate = dayjs().format(DATE_FORMAT_HHMM_DD_MMM_YYYY);
       setNumberForKey(
         REPORTS_SUBMITTED_KEY,
@@ -557,10 +620,13 @@ const TrackLocationMapView = ({
       (position) => {
         setCenterCoordinate([position.coords.longitude, position.coords.latitude]);
         isMapZoomAdjusted.current = true;
-        setRandomKey(Math.random());
       },
       (positionError: any) => {
-        logTracking.error(`${VIEW_NAME} :: Error getting coordinates for map ->`, positionError.code, positionError.message);
+        logTracking.error(
+          `${VIEW_NAME} :: Error getting coordinates for map ->`,
+          positionError.code,
+          positionError.message,
+        );
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
     );
@@ -577,33 +643,16 @@ const TrackLocationMapView = ({
 
     logTracking.debug(`${VIEW_NAME} :: Location disabled by user`);
 
-    resetMapTrackingMode();
+    toggleLocationMode(UserTrackingMode.Follow);
 
     try {
       await syncPendingObservations();
     } catch (syncPendingObservationsError: any) {
-      logTracking.error(`${VIEW_NAME} :: Could not sync observations after turning off tracking: error`, syncPendingObservationsError);
+      logTracking.error(
+        `${VIEW_NAME} :: Could not sync observations after turning off tracking: error`,
+        syncPendingObservationsError,
+      );
     }
-  };
-
-  const getNextMapTrackingMode = (trackingMode: MapboxGL.UserTrackingModes) => {
-    const trackingModes = [
-      MapboxGL.UserTrackingModes.Follow,
-      MapboxGL.UserTrackingModes.FollowWithHeading,
-    ];
-
-    const currentTrackingModeIndex = trackingModes.indexOf(trackingMode);
-    if (currentTrackingModeIndex < trackingModes.length - 1) {
-      return trackingModes[currentTrackingModeIndex + 1];
-    }
-
-    return trackingModes[0];
-  };
-
-  const resetMapTrackingMode = () => {
-    setSelectedMapLocationMode(null);
-    setLocationIcon(getLocationIcon(MapboxGL.UserTrackingModes.Follow));
-    setRandomKey(Math.random());
   };
 
   const getLocationIcon = (trackingMode: string) => {
@@ -642,7 +691,9 @@ const TrackLocationMapView = ({
       if (immediateSyncRetryAttempts.current < MAX_SYNC_RETRY_ATTEMPTS) {
         BackgroundLocation.sync();
         immediateSyncRetryAttempts.current += 1;
-        logTracking.debug(`[Immediate retry, attempt ${immediateSyncRetryAttempts.current}] - Manually sync observations...`);
+        logTracking.debug(
+          `[Immediate retry, attempt ${immediateSyncRetryAttempts.current}] - Manually sync observations...`,
+        );
       } else {
         logTracking.debug('[Immediate retry] Max attempts reached');
       }
@@ -651,7 +702,7 @@ const TrackLocationMapView = ({
 
   const addEventsReanimatedStyle = useAnimatedStyle(() => ({
     top: animatedPosition.value - SAFE_AREA_INSETS_BOTTOM - BOTTOM_TAB_BAR_HEIGHT
-    - MAP_OVERLAY_BUTTON_SIZE - MAP_OVERLAY_BUTTON_BOTTOM_MARGIN,
+      - MAP_OVERLAY_BUTTON_SIZE - MAP_OVERLAY_BUTTON_BOTTOM_MARGIN,
   }), []);
 
   const trackModeReanimatedStyle = useAnimatedStyle(() => ({
@@ -660,6 +711,7 @@ const TrackLocationMapView = ({
 
   // Handlers
   const onLongPressHandler = (feature: Feature) => {
+    logTracking.debug(JSON.stringify(feature));
     if (getBoolForKey(MERGE_CATEGORIES_KEY)) {
       navigation.navigate('ReportTypesView', {
         title: '',
@@ -675,7 +727,7 @@ const TrackLocationMapView = ({
     }
   };
 
-  const onUserLocationUpdateHandler = (location: MapboxGL.Location) => {
+  const onUserLocationUpdateHandler = (location: Mapbox.Location) => {
     setMapUserLocation(location);
     const data: Track = {
       position: [location.coords.longitude, location.coords.latitude],
@@ -695,11 +747,9 @@ const TrackLocationMapView = ({
       return;
     }
 
-    setSelectedMapLocationMode(MapboxGL.UserTrackingModes.Follow);
     isMapCentered.current = true;
-    setLocationIcon(getLocationIcon(MapboxGL.UserTrackingModes.Follow));
+    toggleLocationMode(UserTrackingMode.FollowWithHeading);
     toggleTracking(!isTrackingEnabled);
-    setRandomKey(Math.random());
     setBoolForKey(IS_DEVICE_TRACKING, true);
     logTracking.debug(`${VIEW_NAME} :: Location enabled by the user`);
 
@@ -707,30 +757,11 @@ const TrackLocationMapView = ({
     trackAnalyticsEvent(createStartTrackingEvent());
   }, [isTrackingEnabled, isGPSEnabled]);
 
-  const onToggleTrackingSwitchHandler = useCallback(async () => {
-    if (isTrackingEnabled) {
-      if (!isPatrolEnabled) {
-        logTracking.debug('Switch off location');
-        trackAnalyticsEvent(createSwitchTrackingLocationOffEvent());
-        setShowConfirmationTrackLocation(true);
-      }
-    } else {
-      const observationsCount = await BackgroundLocation.getCount();
-
-      if (isUserIdEmpty.current && observationsCount === 0) {
-        setDisplayToast(true);
-        return;
-      }
-
-      logTracking.debug('Switch on location');
-      trackAnalyticsEvent(createSwitchTrackingLocationOnEvent());
-      setSelectedMapLocationMode(MapboxGL.UserTrackingModes.Follow);
-      isMapCentered.current = true;
-      setLocationIcon(getLocationIcon(MapboxGL.UserTrackingModes.Follow));
-      toggleTracking(!isTrackingEnabled);
-      setRandomKey(Math.random());
-    }
-  }, [isTrackingEnabled, isPatrolEnabled, isGPSEnabled]);
+  const onStopTrackingButtonPressHandler = useCallback(async () => {
+    logTracking.debug('End Tracking Button Pressed');
+    trackAnalyticsEvent(createStopTrackingLocationEvent());
+    setShowConfirmationTrackLocation(true);
+  }, []);
 
   const onCreateReportButtonTappedHandler = useCallback(() => {
     if (getBoolForKey(MERGE_CATEGORIES_KEY)) {
@@ -744,14 +775,15 @@ const TrackLocationMapView = ({
   }, [centerCoordinate]);
 
   const onTrackModeButtonPressHandler = () => {
-    let trackMode: MapboxGL.UserTrackingModes;
+    let trackMode: UserTrackingMode;
 
     if (!isMapCentered.current) {
-      trackMode = currentMapLocationMode || MapboxGL.UserTrackingModes.Follow;
+      trackMode = currentMapLocationMode || UserTrackingMode.Follow;
     } else {
-      trackMode = getNextMapTrackingMode(
-        currentMapLocationMode || MapboxGL.UserTrackingModes.Follow,
+      trackMode = getNextTrackingMode(
+        currentMapLocationMode || UserTrackingMode.Follow,
       );
+      toggleLocationMode();
     }
 
     if (!lastLocation) {
@@ -759,23 +791,19 @@ const TrackLocationMapView = ({
     }
 
     isMapCentered.current = true;
-    setSelectedMapLocationMode(trackMode);
     setCurrentMapLocationMode(trackMode);
     setLocationIcon(getLocationIcon(trackMode));
-    setRandomKey(Math.random());
   };
 
-  const onMapMoveHandler = (e: Feature<Point, RegionPayload>) => {
-    setLiveCoordinates(e.geometry.coordinates as Position);
-    if (e.properties.isUserInteraction) {
+  const onCameraChangedHandler = (state: MapState) => {
+    setLiveCoordinates(state.properties.center as Position);
+    if (state.gestures.isGestureActive) {
       isMapCentered.current = false;
-      if (currentMapLocationMode === MapboxGL.UserTrackingModes.FollowWithHeading) {
-        setSelectedMapLocationMode(MapboxGL.UserTrackingModes.Follow);
-        setCurrentMapLocationMode(MapboxGL.UserTrackingModes.Follow);
-        setLocationIcon(getLocationIcon(MapboxGL.UserTrackingModes.Follow));
+      if (currentMapLocationMode === UserTrackingMode.FollowWithHeading) {
+        toggleLocationMode(UserTrackingMode.Follow);
       } else {
         // eslint-disable-next-line max-len
-        setLocationIcon(getLocationIcon(currentMapLocationMode || MapboxGL.UserTrackingModes.Follow));
+        setLocationIcon(getLocationIcon(currentMapLocationMode || UserTrackingMode.Follow));
       }
     }
   };
@@ -794,7 +822,7 @@ const TrackLocationMapView = ({
   const onPatrolTypesToggleHandler = async (continueTracking: boolean = false) => {
     if (isTrackingEnabled && isPatrolEnabled && !continueTracking) {
       toggleTracking(false);
-      resetMapTrackingMode();
+      toggleLocationMode(UserTrackingMode.Follow);
     } else if (!isPatrolEnabled) {
       const observationsCount = await BackgroundLocation.getCount();
 
@@ -820,11 +848,15 @@ const TrackLocationMapView = ({
       );
       // attempts to upload when online and not syncing
       if (isDeviceOnline && !isSyncing()) {
-        await stopPatrol(accessToken.current, getNumberForKey(ACTIVE_PATROL_ID_KEY).toString());
-        setStringForKey(LAST_SYNC_PATROLS_TIME_KEY, dayjs().format(DATE_FORMAT_HHMM_DD_MMM_YYYY));
-        setHasActivePatrolUploaded(true);
-        setActivePatrolId(0);
-        setNumberForKey(ACTIVE_PATROL_ID_KEY, 0);
+        if (activePatrolId !== undefined) {
+          await stopPatrol(accessToken.current, activePatrolId.toString());
+          setStringForKey(LAST_SYNC_PATROLS_TIME_KEY, dayjs().format(DATE_FORMAT_HHMM_DD_MMM_YYYY));
+          setHasActivePatrolUploaded(true);
+          setActivePatrolId(0);
+          setNumberForKey(ACTIVE_PATROL_ID_KEY, 0);
+        } else {
+          throw new Error('[Patrol Stop]: No active patrol ID found');
+        }
       }
     }
   };
@@ -885,8 +917,6 @@ const TrackLocationMapView = ({
     );
 
     setStringForKey(PATROL_START_LOCATION, `${location[0]},${location[1]}`);
-
-    setShapeSourceRandomKey(Math.random());
   };
 
   const onPatrolTypeSelectHandler = async (patrol: Patrol) => {
@@ -929,7 +959,9 @@ const TrackLocationMapView = ({
     BackgroundLocation.onHttp((response) => { onHttp(response); });
     BackgroundLocation.onProviderChange((event) => { onProviderChange(event); });
     BackgroundLocation.onConnectivityChange((event) => { logTracking.info('onConnectivityChange', event); });
+    // eslint-disable-next-line max-len
     BackgroundLocation.onPowerSaveChange((isPowerSaveMode) => { logTracking.info('onPowerSaveChange: is enabled?', isPowerSaveMode); });
+    // eslint-disable-next-line max-len
     BackgroundLocation.onEnabledChange((isEnabled) => { logTracking.info('onEnabledChanged: location services are enabled?', isEnabled); });
     BackgroundLocation.onAuthorization((event) => { logTracking.info('onAuthorization', event); });
 
@@ -1067,7 +1099,10 @@ const TrackLocationMapView = ({
     switch (event.status) {
       case BackgroundLocation.AUTHORIZATION_STATUS_ALWAYS:
       case BackgroundLocation.AUTHORIZATION_STATUS_WHEN_IN_USE:
-        logTracking.info(`${VIEW_NAME} :: [zoom issue] Location permission accepted, tracking enabled ->`, isTrackingEnabled);
+        logTracking.info(
+          `${VIEW_NAME} :: [zoom issue] Location permission accepted, tracking enabled ->`,
+          isTrackingEnabled,
+        );
 
         trackAnalyticsEvent(createLocationPermissionAllowedEvent());
 
@@ -1102,7 +1137,6 @@ const TrackLocationMapView = ({
     setPatrolStartIconFeature(
       getPatrolStartIconGeoJson(false, [lastLocation.longitude, lastLocation.latitude]),
     );
-    setShapeSourceRandomKey(Math.random());
   };
 
   const handleOnPatrolPinPress = () => {
@@ -1113,6 +1147,24 @@ const TrackLocationMapView = ({
     bottomSheetNavigationRef.current?.navigate('Basemap', null, true);
   };
 
+  const handleOnSubjectPress = (event: any) => {
+    // Ignore taps on cluster circles
+    if (event.features[0].properties.cluster) {
+      return;
+    }
+
+    const selectedSubjectData = {
+      name: event.features[0].properties.title,
+      coordinates: event.coordinates,
+      lastUpdate: event.features[0].properties.coordinateProperties.time,
+      id: event.features[0].properties.id,
+    };
+
+    setStringForKey(SELECTED_SUBJECT_IN_MAP, JSON.stringify(selectedSubjectData));
+
+    bottomSheetNavigationRef.current?.navigate('SubjectDetailsView', null, true);
+  };
+
   const liveCoodinatesDisplay = useCallback(() => (
     <LocationCoordinatesOverlay
       location={liveCoordinates}
@@ -1120,35 +1172,67 @@ const TrackLocationMapView = ({
     />
   ), [liveCoordinates]);
 
+  const toggleLocationMode = (locationMode?: UserTrackingMode) => {
+    if (locationMode) {
+      setIsCompassMode(locationMode === UserTrackingMode.FollowWithHeading);
+      setLocationIcon(getLocationIcon(locationMode));
+      setCurrentMapLocationMode(locationMode);
+    } else {
+      setIsCompassMode(!isCompassMode);
+    }
+  };
+
   return (
     <>
       {(IS_IOS && <StatusBar translucent barStyle={statusBarStyle} />)}
       {/* Map */}
-      <MapboxGL.MapView
+      <MapView
+        compassEnabled
+        compassFadeWhenNorth={!IS_ANDROID}
+        compassPosition={{ top: COMPASS_TOP_OFFSET, right: COMPASS_RIGHT_OFFSET }}
+        scaleBarEnabled
+        scaleBarPosition={{ bottom: SCALE_BAR_BOTTOM_OFFSET, left: SCALE_BAR_LEFT_OFFSET }}
+        attributionPosition={{ bottom: SCALE_BAR_BOTTOM_OFFSET + 8, left: SCALE_BAR_LEFT_OFFSET }}
         onLongPress={onLongPressHandler}
-        onRegionWillChange={(e) => onMapMoveHandler(e)}
+        onCameraChanged={isTrackingEnabled ? (state) => onCameraChangedHandler(state) : undefined}
         style={styles.map}
         styleURL={basemapSelected}
       >
-        <MapboxGL.Camera
-          key={randomKey}
-          zoomLevel={ZOOM_LEVEL}
+        <Camera
+          defaultSettings={{
+            zoomLevel: ZOOM_LEVEL,
+          }}
           animationMode="flyTo"
           animationDuration={MAP_ANIMATION_DURATION}
           // eslint-disable-next-line max-len
-          centerCoordinate={selectedMapLocationMode === null ? [lastLocation.longitude, lastLocation.latitude] : centerCoordinate}
-          followUserLocation={selectedMapLocationMode !== null}
-          followUserMode={selectedMapLocationMode || MapboxGL.UserTrackingModes.Follow}
+          centerCoordinate={
+            // eslint-disable-next-line no-nested-ternary
+            isCustomCenterCoordsEnabled
+              ? [
+                parseFloat(customCenterLon || '0'),
+                parseFloat(customCenterLat || '0'),
+              ]
+              : centerCoordinate
+          }
+          followUserLocation={isCustomCenterCoordsEnabled ? false : isCompassMode}
+          followUserMode={isCompassMode ? UserTrackingMode.FollowWithHeading : UserTrackingMode.Follow}
+          followZoomLevel={ZOOM_LEVEL}
         />
-        <MapboxGL.Images images={RESOURCE_ICONS} />
-        <MapboxGL.ShapeSource
-          key={shapeSourceRandomKey}
+        <Images images={RESOURCE_ICONS} />
+
+        {/* Subjects */}
+        {subjectsGeoJson ? (
+          <SubjectsMapLayer subjectsGeoJson={subjectsGeoJson} onPress={(event) => { handleOnSubjectPress(event); }} />
+        ) : null}
+        {/* End Subjects */}
+
+        <ShapeSource
           id="patrolStartLocation"
           // @ts-ignore
           shape={{ ...patrolStartIconFeature }}
           onPress={handleOnPatrolPinPress}
         >
-          <MapboxGL.SymbolLayer
+          <SymbolLayer
             id="startPatrolSymbolLayer"
             filter={['==', 'display', true]}
             style={{
@@ -1158,23 +1242,26 @@ const TrackLocationMapView = ({
               iconOffset: [0, -23],
             }}
           />
-        </MapboxGL.ShapeSource>
+        </ShapeSource>
         {(userLocationTrack.length > 0 && isUserTrailEnabled)
           && (<UserTrailsMapLayer track={userLocationTrack} />)}
         {(observationsTrack.length > 0 && isUserTrailEnabled)
           && (<UserTrailPointsMapLayer track={observationsTrack} />)}
-        <MapboxGL.UserLocation
+        <UserLocation
+          renderMode={isCompassMode ? UserLocationRenderModeType.Native : UserLocationRenderModeType.Normal}
+          visible
           showsUserHeadingIndicator
           onUpdate={onUserLocationUpdateHandler}
+          requestsAlwaysUse
           minDisplacement={10}
         />
-      </MapboxGL.MapView>
+      </MapView>
       {/* End Map */}
 
       {/* Basemap layer button */}
       {(isDeviceOnline) && (
         <Button
-          style={[styles.basemapButton, { top: getTopAreaInsets() + (IS_ANDROID ? 66 : 64) }]}
+          style={[styles.basemapButton, { top: getTopAreaInsets() + (IS_ANDROID ? 18 : 16) }]}
           round
           enableShadow
           iconSource={getBasemapIcon}
@@ -1212,18 +1299,18 @@ const TrackLocationMapView = ({
 
       {/* Track Mode Button */}
       {(isGPSEnabled) && (
-      <Animated.View style={[styles.TrackModeButtonContainer, trackModeReanimatedStyle]}>
-        <Pressable
-          onPress={() => {
-            trackAnalyticsEvent(createStartTrackingLocationEvent());
-            onTrackModeButtonPressHandler();
-          }}
-        >
-          <View style={styles.iconContainer}>
-            {locationIcon}
-          </View>
-        </Pressable>
-      </Animated.View>
+        <Animated.View style={[styles.TrackModeButtonContainer, trackModeReanimatedStyle]}>
+          <Pressable
+            onPress={() => {
+              trackAnalyticsEvent(createStartTrackingLocationEvent());
+              onTrackModeButtonPressHandler();
+            }}
+          >
+            <View style={styles.iconContainer}>
+              {locationIcon}
+            </View>
+          </Pressable>
+        </Animated.View>
       )}
       {/* End Track Mode Button */}
 

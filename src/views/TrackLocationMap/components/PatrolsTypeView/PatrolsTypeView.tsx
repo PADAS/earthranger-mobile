@@ -1,22 +1,18 @@
 // External Dependencies
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { Dimensions } from 'react-native';
+import React, { useCallback, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { DataProvider, LayoutProvider, RecyclerListView } from 'recyclerlistview';
+import { FlashList } from '@shopify/flash-list';
 
 // Internal Dependencies
 import { PatrolTypesCell } from './components/PatrolTypesCell/PatrolTypesCell';
 import { useRetrievePatrolTypes } from '../../../../common/data/patrols/useRetrievePatrolTypes';
-import { Position } from '../../../../common/types/types';
+import { PersistedPatrolType, Position } from '../../../../common/types/types';
 import log from '../../../../common/utils/logUtils';
+import { ELEMENT_INSPECTOR_WIDTH } from '../../../../common/constants/constants';
 
 // Styles
 import styles from './PatrolsTypeView.styles';
-
-// Constants
-const GRID_TYPE = 'DEFAULT_TYPE';
-const DEFAULT_HEIGHT = 131;
 
 // Types
 type RouteParams = {
@@ -28,41 +24,27 @@ const PatrolsTypeView = () => {
   const { retrievePatrolTypes } = useRetrievePatrolTypes();
   const navigation = useNavigation();
 
-  // Variables
-  const itemSize = (Dimensions.get('window').width) / 3 - 1;
-
   // Get route parameters
   const {
     coordinates,
   }: RouteParams = navigation.getState().routes[navigation.getState().index].params;
 
   // Component's State
-  const [dataProvider, setDataProvider] = useState(new DataProvider((r1, r2) => r1 !== r2));
-  const [layoutProvider] = useState<LayoutProvider>(
-    new LayoutProvider(
-      () => GRID_TYPE,
-      (_, dim) => {
-        // eslint-disable-next-line no-param-reassign
-        dim.width = itemSize;
-        // eslint-disable-next-line no-param-reassign
-        dim.height = DEFAULT_HEIGHT;
-      },
-    ),
-  );
+  const [dataProvider, setDataProvider] = useState<PersistedPatrolType[]>([]);
 
   // Component's Life-cycle events
-  useFocusEffect(() => {
+  useFocusEffect(useCallback(() => {
     const initData = async () => {
       try {
         const patrolTypesList = await retrievePatrolTypes();
-        setDataProvider(dataProvider.cloneWithRows(patrolTypesList));
+        setDataProvider(patrolTypesList);
       } catch (error: any) {
         log.error(`ERROR - ${error}`);
       }
     };
 
     initData();
-  });
+  }, []));
 
   // Handlers
   const onPressHandler = (
@@ -80,26 +62,25 @@ const PatrolsTypeView = () => {
   };
 
   // Additional Components
-  const rowRenderer = (type: any, data: any) => (
+  const renderItem = ({ item }: any) => (
     <PatrolTypesCell
-      typeId={data.id.toString()}
-      title={data.display}
-      iconImage={data.icon_svg}
+      typeId={item.id.toString()}
+      title={item.display}
+      iconImage={item.icon_svg}
       onPress={() => {
-        onPressHandler(data.value, data.id.toString(), data.display);
+        onPressHandler(item.value, item.id.toString(), item.display);
       }}
     />
   );
 
   return (
     <SafeAreaView style={styles.mainContainer} edges={['bottom']}>
-      <RecyclerListView
-        canChangeSize={false}
-        dataProvider={dataProvider}
-        disableRecycling
-        layoutProvider={layoutProvider}
-        rowRenderer={rowRenderer}
-        style={styles.recyclerListView}
+      <FlashList
+        data={dataProvider}
+        estimatedItemSize={ELEMENT_INSPECTOR_WIDTH}
+        keyExtractor={(item: PersistedPatrolType) => item.id.toString()}
+        renderItem={renderItem}
+        numColumns={3}
       />
     </SafeAreaView>
   );

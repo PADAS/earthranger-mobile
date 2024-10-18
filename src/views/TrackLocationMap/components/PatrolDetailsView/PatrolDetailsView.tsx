@@ -264,7 +264,11 @@ const PatrolDetailsView = () => {
             <Text label secondaryMediumGray>{t('patrolDetails.distance')}</Text>
             <View style={styles.cardContent}>
               <DistanceIcon />
-              <Text heading2 marginL-8>{`${getNumberForKey(PATROL_DISTANCE).toFixed(1)} km`}</Text>
+              <Text heading2 marginL-8>
+                {getNumberForKey(PATROL_DISTANCE) !== undefined
+                  ? `${getNumberForKey(PATROL_DISTANCE)!.toFixed(1)} km`
+                  : 0}
+              </Text>
             </View>
           </View>
           {/* End Distance */}

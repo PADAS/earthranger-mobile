@@ -24,9 +24,15 @@ import { FormTextField } from '../components/FormTextField/FormTextField';
 
 // Utility Functions
 const convertToNumber = (value: string) => {
+  // Replace , with a . (This avoids loosing data, since , is not supported)
+  if (value.includes(',')) {
+    return parseFloat(value.replace(',', '.'));
+  }
+
   if (value.indexOf('.') !== -1) {
     return parseFloat(value);
   }
+
   return parseInt(value, 10);
 };
 
@@ -82,7 +88,7 @@ const NumberInputRenderer = ({
   const onChangeTextHandler = (inputValue: string) => {
     if (parseFloat(inputValue) || !isEmpty(inputValue)) {
       handleChange(path, convertToNumber(inputValue));
-      setValue(inputValue);
+      setValue(inputValue.replace(',', '.'));
     } else if (isEmpty(inputValue)) {
       handleChange(path, undefined);
       setValue('');

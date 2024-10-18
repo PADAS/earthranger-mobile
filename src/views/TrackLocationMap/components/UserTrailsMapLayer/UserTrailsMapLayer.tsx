@@ -1,6 +1,6 @@
 // External Dependencies
 import React from 'react';
-import MapboxGL from '@react-native-mapbox-gl/maps';
+import Mapbox from '@rnmapbox/maps';
 
 // Internal Dependencies
 import { Track } from '../../../models/Observation';
@@ -12,7 +12,7 @@ interface UserTrailsMapLayerProps {
 }
 
 export const UserTrailsMapLayer = ({ track }: UserTrailsMapLayerProps) => (
-  <MapboxGL.ShapeSource
+  <Mapbox.ShapeSource
     id="line"
     lineMetrics
     shape={{
@@ -24,7 +24,7 @@ export const UserTrailsMapLayer = ({ track }: UserTrailsMapLayerProps) => (
       properties: {},
     }}
   >
-    <MapboxGL.LineLayer
+    <Mapbox.LineLayer
       id="lineLayer"
       layerIndex={110}
       style={{
@@ -34,5 +34,5 @@ export const UserTrailsMapLayer = ({ track }: UserTrailsMapLayerProps) => (
         lineWidth: 4,
       }}
     />
-  </MapboxGL.ShapeSource>
+  </Mapbox.ShapeSource>
 );

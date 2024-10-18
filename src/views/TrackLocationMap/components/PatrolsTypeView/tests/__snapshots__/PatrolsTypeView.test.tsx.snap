@@ -1,0 +1,778 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PatrolsTypeView matches snapshot 1`] = `
+<RNCSafeAreaView
+  edges={
+    Array [
+      "bottom",
+    ]
+  }
+  style={
+    Object {
+      "backgroundColor": "#FFFFFF",
+      "flex": 1,
+    }
+  }
+>
+  <View
+    style={
+      Object {
+        "flex": 1,
+        "overflow": "hidden",
+      }
+    }
+  >
+    <RCTScrollView
+      applyWindowCorrection={[Function]}
+      canChangeSize={true}
+      contentContainerStyle={
+        Object {
+          "backgroundColor": undefined,
+          "minHeight": 1,
+          "minWidth": 1,
+          "paddingLeft": 0,
+          "paddingRight": 0,
+        }
+      }
+      contentHeight={140}
+      contentWidth={400}
+      data={
+        Array [
+          Object {
+            "account_id": 1,
+            "default_priority": 0,
+            "display": "Boat Patrol",
+            "icon": "boat-patrol-icon",
+            "icon_svg": "",
+            "id": 1,
+            "is_active": 1,
+            "is_selected": false,
+            "remote_id": "634eb8e5-94e9-4b23-823a-e612e1aaaa01",
+            "value": "Travel",
+          },
+          Object {
+            "account_id": 1,
+            "default_priority": 0,
+            "display": "Routine Patrol",
+            "icon": "routine-patrol-icon",
+            "icon_svg": "",
+            "id": 2,
+            "is_active": 1,
+            "is_selected": false,
+            "remote_id": "634eb8e5-94e9-4b23-823a-e612e1aaaa02",
+            "value": "bicycle-patrol",
+          },
+          Object {
+            "account_id": 1,
+            "default_priority": 0,
+            "display": "Fence Patrol",
+            "icon": "vehicle-patrol-icon",
+            "icon_svg": "",
+            "id": 3,
+            "is_active": 1,
+            "is_selected": false,
+            "remote_id": "634eb8e5-94e9-4b23-823a-e612e1aaaa03",
+            "value": "fence_patrol",
+          },
+        ]
+      }
+      dataProvider={
+        DataProvider {
+          "_data": Array [
+            Object {
+              "account_id": 1,
+              "default_priority": 0,
+              "display": "Boat Patrol",
+              "icon": "boat-patrol-icon",
+              "icon_svg": "",
+              "id": 1,
+              "is_active": 1,
+              "is_selected": false,
+              "remote_id": "634eb8e5-94e9-4b23-823a-e612e1aaaa01",
+              "value": "Travel",
+            },
+            Object {
+              "account_id": 1,
+              "default_priority": 0,
+              "display": "Routine Patrol",
+              "icon": "routine-patrol-icon",
+              "icon_svg": "",
+              "id": 2,
+              "is_active": 1,
+              "is_selected": false,
+              "remote_id": "634eb8e5-94e9-4b23-823a-e612e1aaaa02",
+              "value": "bicycle-patrol",
+            },
+            Object {
+              "account_id": 1,
+              "default_priority": 0,
+              "display": "Fence Patrol",
+              "icon": "vehicle-patrol-icon",
+              "icon_svg": "",
+              "id": 3,
+              "is_active": 1,
+              "is_selected": false,
+              "remote_id": "634eb8e5-94e9-4b23-823a-e612e1aaaa03",
+              "value": "fence_patrol",
+            },
+          ],
+          "_firstIndexToProcess": 0,
+          "_hasStableIds": true,
+          "_requiresDataChangeHandling": false,
+          "_size": 3,
+          "getStableId": [Function],
+          "rowHasChanged": [Function],
+        }
+      }
+      disableRecycling={false}
+      estimatedItemSize={140}
+      extendedState={Object {}}
+      externalScrollView={[Function]}
+      finalRenderAheadOffset={250}
+      forceNonDeterministicRendering={true}
+      horizontal={false}
+      initialOffset={0}
+      initialRenderIndex={0}
+      isHorizontal={false}
+      keyExtractor={[Function]}
+      layoutProvider={
+        GridLayoutProviderWithProps {
+          "_acceptableRelayoutDelta": 1,
+          "_getHeightOrWidth": [Function],
+          "_getLayoutTypeForIndex": [Function],
+          "_getSpan": [Function],
+          "_hasExpired": false,
+          "_isHorizontal": false,
+          "_lastLayoutManager": GridLayoutManager {
+            "_acceptableRelayoutDelta": 1,
+            "_getSpan": [Function],
+            "_isGridHorizontal": false,
+            "_isHorizontal": false,
+            "_layoutProvider": [Circular],
+            "_layouts": Array [
+              Object {
+                "height": 140,
+                "type": 0,
+                "width": 133.33333333333334,
+                "x": 0,
+                "y": 0,
+              },
+              Object {
+                "height": 140,
+                "type": 0,
+                "width": 133.33333333333334,
+                "x": 133.33333333333334,
+                "y": 0,
+              },
+              Object {
+                "height": 140,
+                "type": 0,
+                "width": 133.33333333333334,
+                "x": 266.6666666666667,
+                "y": 0,
+              },
+            ],
+            "_maxSpan": 3,
+            "_renderWindowSize": Object {
+              "height": 900,
+              "width": 400,
+            },
+            "_totalHeight": 140,
+            "_totalWidth": 400,
+            "_window": Object {
+              "height": 900,
+              "width": 400,
+            },
+          },
+          "_maxSpan": 3,
+          "_renderWindowSize": Object {
+            "height": 900,
+            "width": 400,
+          },
+          "_setLayoutForType": [Function],
+          "_tempDim": Object {
+            "height": 0,
+            "width": 0,
+          },
+          "averageWindow": AverageWindow {
+            "currentAverage": 140,
+            "currentCount": 1,
+            "inputValues": Array [
+              140,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+              ,
+            ],
+            "nextIndex": 1,
+          },
+          "defaultEstimatedItemSize": 100,
+          "layoutObject": Object {
+            "size": undefined,
+            "span": undefined,
+          },
+          "props": Object {
+            "data": Array [
+              Object {
+                "account_id": 1,
+                "default_priority": 0,
+                "display": "Boat Patrol",
+                "icon": "boat-patrol-icon",
+                "icon_svg": "",
+                "id": 1,
+                "is_active": 1,
+                "is_selected": false,
+                "remote_id": "634eb8e5-94e9-4b23-823a-e612e1aaaa01",
+                "value": "Travel",
+              },
+              Object {
+                "account_id": 1,
+                "default_priority": 0,
+                "display": "Routine Patrol",
+                "icon": "routine-patrol-icon",
+                "icon_svg": "",
+                "id": 2,
+                "is_active": 1,
+                "is_selected": false,
+                "remote_id": "634eb8e5-94e9-4b23-823a-e612e1aaaa02",
+                "value": "bicycle-patrol",
+              },
+              Object {
+                "account_id": 1,
+                "default_priority": 0,
+                "display": "Fence Patrol",
+                "icon": "vehicle-patrol-icon",
+                "icon_svg": "",
+                "id": 3,
+                "is_active": 1,
+                "is_selected": false,
+                "remote_id": "634eb8e5-94e9-4b23-823a-e612e1aaaa03",
+                "value": "fence_patrol",
+              },
+            ],
+            "estimatedItemSize": 140,
+            "keyExtractor": [Function],
+            "numColumns": 3,
+            "renderItem": [Function],
+          },
+          "renderWindowInsets": Object {
+            "height": 0,
+            "width": 0,
+          },
+          "shouldRefreshWithAnchoring": true,
+        }
+      }
+      maxRenderAhead={750}
+      numColumns={3}
+      onEndReached={[Function]}
+      onEndReachedThreshold={0}
+      onEndReachedThresholdRelative={0}
+      onItemLayout={[Function]}
+      onLayout={[Function]}
+      onScroll={[Function]}
+      onScrollBeginDrag={[Function]}
+      onSizeChanged={[Function]}
+      onVisibleIndicesChanged={[Function]}
+      removeClippedSubviews={false}
+      renderAheadOffset={0}
+      renderAheadStep={250}
+      renderContentContainer={[Function]}
+      renderItem={[Function]}
+      renderItemContainer={[Function]}
+      rowRenderer={[Function]}
+      scrollEventThrottle={16}
+      scrollThrottle={16}
+      scrollViewProps={
+        Object {
+          "contentContainerStyle": Object {
+            "backgroundColor": undefined,
+            "minHeight": 1,
+            "minWidth": 1,
+            "paddingLeft": 0,
+            "paddingRight": 0,
+          },
+          "onLayout": [Function],
+          "onScrollBeginDrag": [Function],
+          "refreshControl": undefined,
+          "style": Object {
+            "minHeight": 1,
+            "minWidth": 1,
+          },
+        }
+      }
+      style={
+        Object {
+          "minHeight": 1,
+          "minWidth": 1,
+        }
+      }
+      suppressBoundedSizeException={true}
+      windowCorrectionConfig={
+        Object {
+          "applyToInitialOffset": true,
+          "applyToItemScroll": true,
+          "value": Object {
+            "endCorrection": 0,
+            "startCorrection": 0,
+            "windowShift": -0,
+          },
+        }
+      }
+    >
+      <View>
+        <View
+          style={
+            Object {
+              "flexDirection": "column",
+            }
+          }
+        >
+          <View
+            style={
+              Object {
+                "paddingLeft": 0,
+                "paddingTop": 0,
+              }
+            }
+          />
+          <View
+            style={
+              Array [
+                undefined,
+                undefined,
+              ]
+            }
+          />
+          <AutoLayoutView
+            enableInstrumentation={false}
+            horizontal={false}
+            onBlankAreaEvent={[Function]}
+            onLayout={[Function]}
+            renderAheadOffset={0}
+            scrollOffset={0}
+            style={
+              Object {
+                "height": 140,
+                "width": 400,
+              }
+            }
+            windowSize={900}
+          >
+            <CellContainer
+              index={0}
+              onLayout={[Function]}
+              style={
+                Object {
+                  "alignItems": "stretch",
+                  "flexDirection": "column",
+                  "left": 0,
+                  "position": "absolute",
+                  "top": 0,
+                  "width": 133.33333333333334,
+                }
+              }
+            >
+              <View
+                style={
+                  Object {
+                    "flexDirection": "row",
+                  }
+                }
+              >
+                <View
+                  accessible={true}
+                  collapsable={false}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    Object {
+                      "opacity": 1,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      Object {
+                        "alignItems": "center",
+                        "borderBottomWidth": 1,
+                        "borderColor": "#DDDDDD",
+                        "borderRightWidth": 1,
+                        "flexDirection": "column",
+                        "height": 131,
+                        "justifyContent": "center",
+                        "paddingBottom": 8,
+                        "paddingLeft": 8,
+                        "paddingRight": 8,
+                        "paddingTop": 16,
+                        "width": 250,
+                      }
+                    }
+                  >
+                    <View
+                      style={
+                        Object {
+                          "alignItems": "center",
+                          "display": "flex",
+                          "height": 40,
+                          "justifyContent": "center",
+                          "marginBottom": 16,
+                        }
+                      }
+                    >
+                      <RNSVGSvgView
+                        bbHeight="24"
+                        bbWidth="24"
+                        focusable={false}
+                        height="24"
+                        style={
+                          Array [
+                            Object {
+                              "backgroundColor": "transparent",
+                              "borderWidth": 0,
+                            },
+                            Object {
+                              "flex": 0,
+                              "height": 24,
+                              "width": 24,
+                            },
+                          ]
+                        }
+                        width="24"
+                      >
+                        <RNSVGGroup>
+                          <RNSVGGroup>
+                            <RNSVGCircle
+                              cx={12}
+                              cy={12}
+                              fill={4285953654}
+                              propList={
+                                Array [
+                                  "fill",
+                                ]
+                              }
+                              r={12}
+                            />
+                          </RNSVGGroup>
+                        </RNSVGGroup>
+                      </RNSVGSvgView>
+                    </View>
+                    <Text
+                      numberOfLines={3}
+                      style={
+                        Object {
+                          "fontSize": 15,
+                          "height": 54,
+                          "lineHeight": 17,
+                          "textAlign": "center",
+                        }
+                      }
+                    >
+                      Boat Patrol
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </CellContainer>
+            <CellContainer
+              index={1}
+              onLayout={[Function]}
+              style={
+                Object {
+                  "alignItems": "stretch",
+                  "flexDirection": "column",
+                  "left": 133.33333333333334,
+                  "position": "absolute",
+                  "top": 0,
+                  "width": 133.33333333333334,
+                }
+              }
+            >
+              <View
+                style={
+                  Object {
+                    "flexDirection": "row",
+                  }
+                }
+              >
+                <View
+                  accessible={true}
+                  collapsable={false}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    Object {
+                      "opacity": 1,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      Object {
+                        "alignItems": "center",
+                        "borderBottomWidth": 1,
+                        "borderColor": "#DDDDDD",
+                        "borderRightWidth": 1,
+                        "flexDirection": "column",
+                        "height": 131,
+                        "justifyContent": "center",
+                        "paddingBottom": 8,
+                        "paddingLeft": 8,
+                        "paddingRight": 8,
+                        "paddingTop": 16,
+                        "width": 250,
+                      }
+                    }
+                  >
+                    <View
+                      style={
+                        Object {
+                          "alignItems": "center",
+                          "display": "flex",
+                          "height": 40,
+                          "justifyContent": "center",
+                          "marginBottom": 16,
+                        }
+                      }
+                    >
+                      <RNSVGSvgView
+                        bbHeight="24"
+                        bbWidth="24"
+                        focusable={false}
+                        height="24"
+                        style={
+                          Array [
+                            Object {
+                              "backgroundColor": "transparent",
+                              "borderWidth": 0,
+                            },
+                            Object {
+                              "flex": 0,
+                              "height": 24,
+                              "width": 24,
+                            },
+                          ]
+                        }
+                        width="24"
+                      >
+                        <RNSVGGroup>
+                          <RNSVGGroup>
+                            <RNSVGCircle
+                              cx={12}
+                              cy={12}
+                              fill={4285953654}
+                              propList={
+                                Array [
+                                  "fill",
+                                ]
+                              }
+                              r={12}
+                            />
+                          </RNSVGGroup>
+                        </RNSVGGroup>
+                      </RNSVGSvgView>
+                    </View>
+                    <Text
+                      numberOfLines={3}
+                      style={
+                        Object {
+                          "fontSize": 15,
+                          "height": 54,
+                          "lineHeight": 17,
+                          "textAlign": "center",
+                        }
+                      }
+                    >
+                      Routine Patrol
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </CellContainer>
+            <CellContainer
+              index={2}
+              onLayout={[Function]}
+              style={
+                Object {
+                  "alignItems": "stretch",
+                  "flexDirection": "column",
+                  "left": 266.6666666666667,
+                  "position": "absolute",
+                  "top": 0,
+                  "width": 133.33333333333334,
+                }
+              }
+            >
+              <View
+                style={
+                  Object {
+                    "flexDirection": "row",
+                  }
+                }
+              >
+                <View
+                  accessible={true}
+                  collapsable={false}
+                  focusable={true}
+                  onClick={[Function]}
+                  onResponderGrant={[Function]}
+                  onResponderMove={[Function]}
+                  onResponderRelease={[Function]}
+                  onResponderTerminate={[Function]}
+                  onResponderTerminationRequest={[Function]}
+                  onStartShouldSetResponder={[Function]}
+                  style={
+                    Object {
+                      "opacity": 1,
+                    }
+                  }
+                >
+                  <View
+                    style={
+                      Object {
+                        "alignItems": "center",
+                        "borderBottomWidth": 1,
+                        "borderColor": "#DDDDDD",
+                        "borderRightWidth": 1,
+                        "flexDirection": "column",
+                        "height": 131,
+                        "justifyContent": "center",
+                        "paddingBottom": 8,
+                        "paddingLeft": 8,
+                        "paddingRight": 8,
+                        "paddingTop": 16,
+                        "width": 250,
+                      }
+                    }
+                  >
+                    <View
+                      style={
+                        Object {
+                          "alignItems": "center",
+                          "display": "flex",
+                          "height": 40,
+                          "justifyContent": "center",
+                          "marginBottom": 16,
+                        }
+                      }
+                    >
+                      <RNSVGSvgView
+                        bbHeight="24"
+                        bbWidth="24"
+                        focusable={false}
+                        height="24"
+                        style={
+                          Array [
+                            Object {
+                              "backgroundColor": "transparent",
+                              "borderWidth": 0,
+                            },
+                            Object {
+                              "flex": 0,
+                              "height": 24,
+                              "width": 24,
+                            },
+                          ]
+                        }
+                        width="24"
+                      >
+                        <RNSVGGroup>
+                          <RNSVGGroup>
+                            <RNSVGCircle
+                              cx={12}
+                              cy={12}
+                              fill={4285953654}
+                              propList={
+                                Array [
+                                  "fill",
+                                ]
+                              }
+                              r={12}
+                            />
+                          </RNSVGGroup>
+                        </RNSVGGroup>
+                      </RNSVGSvgView>
+                    </View>
+                    <Text
+                      numberOfLines={3}
+                      style={
+                        Object {
+                          "fontSize": 15,
+                          "height": 54,
+                          "lineHeight": 17,
+                          "textAlign": "center",
+                        }
+                      }
+                    >
+                      Fence Patrol
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </CellContainer>
+          </AutoLayoutView>
+          <CellContainer
+            index={-1}
+            style={
+              Array [
+                undefined,
+                undefined,
+              ]
+            }
+          />
+          <View
+            style={
+              Object {
+                "paddingBottom": 0,
+                "paddingRight": 0,
+              }
+            }
+          />
+        </View>
+      </View>
+    </RCTScrollView>
+  </View>
+</RNCSafeAreaView>
+`;

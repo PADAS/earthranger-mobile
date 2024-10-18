@@ -24,6 +24,7 @@ import {
   LAST_SYNC_LOCATION_TIME_KEY,
   LAST_SYNC_PATROLS_TIME_KEY,
   LAST_SYNC_REPORTS_TIME_KEY,
+  LAST_SYNC_SUBJECTS_TIME,
   PATROLS_SYNCING,
   REPORTS_SUBMITTED_KEY,
   REPORTS_SYNCING,
@@ -87,6 +88,7 @@ export const StatusView = ({ navigation }: StatusViewProps) => {
     onSynchronizeEventsCategories,
     onSynchronizeEventsTypes,
     onSyncPatrolTypes,
+    onSyncSubjects,
   } = useOnSynchronizeData();
   const { updateSyncState } = useSyncState();
   const { isPermissionAvailable } = useRetrievePatrolPermissions();
@@ -114,9 +116,12 @@ export const StatusView = ({ navigation }: StatusViewProps) => {
   const [patrolsPendingSyncCount, setPatrolsPendingSyncCount] = useState(0);
 
   // Last Sync
-  const [lastSyncValue, setLastSync] = useState<string>(getStringForKey(LAST_SYNC_LOCATION_TIME_KEY) || t('statusView.defaultPendingSync'));
+  const [lastSyncValue, setLastSync] = useState<string>(
+    getStringForKey(LAST_SYNC_LOCATION_TIME_KEY) || t('statusView.defaultPendingSync'),
+  );
   const [lastSyncedReport, setLastSyncedReport] = useState(getStringForKey(LAST_SYNC_REPORTS_TIME_KEY) || '');
   const [lastSyncedPatrol, setLastSyncedPatrol] = useState(getStringForKey(LAST_SYNC_PATROLS_TIME_KEY) || '');
+  const [lastSyncedSubjects, setLastSyncedSubjects] = useState(getStringForKey(LAST_SYNC_SUBJECTS_TIME) || '');
 
   // Report errors
   const reportTypeErrors = useRef<string[]>([]).current;
@@ -178,7 +183,7 @@ export const StatusView = ({ navigation }: StatusViewProps) => {
       // Sync Local DB
       await handleSyncResources();
     } catch (error) {
-      logSync.error(`[${VIEW_NAME}] :: Error uploading data [onSync] ${error}`);
+      logSync.error(`[${VIEW_NAME}] :: Error uploading data [onSync] ${JSON.stringify(error)}`);
     }
     setSyncButtonDisabled(false);
   };
@@ -226,15 +231,27 @@ export const StatusView = ({ navigation }: StatusViewProps) => {
       switch (type) {
         case SyncScope.Users:
         case SyncScope.Profiles:
-          authErrors.push(await sync(() => onSynchronizeUser(accessToken), 'Auth error during onSynchronizeUser'));
+          authErrors.push(await sync(
+            () => onSynchronizeUser(accessToken),
+            'Auth error during onSynchronizeUser',
+          ));
           if (isParentUserActive()) {
-            authErrors.push(await sync(() => onSynchronizeProfiles(accessToken), 'Auth error during onSynchronizeProfiles'));
+            authErrors.push(await sync(
+              () => onSynchronizeProfiles(accessToken),
+              'Auth error during onSynchronizeProfiles',
+            ));
           }
           break;
 
         case SyncScope.EventTypes:
-          authErrors.push(await sync(() => onSynchronizeEventsCategories(accessToken), 'Auth error during onSynchronizeEventsCategories'));
-          authErrors.push(await sync(() => onSynchronizeEventsTypes(accessToken, onReportError), 'Auth error during onSynchronizeEventsTypes'));
+          authErrors.push(await sync(
+            () => onSynchronizeEventsCategories(accessToken),
+            'Auth error during onSynchronizeEventsCategories',
+          ));
+          authErrors.push(await sync(
+            () => onSynchronizeEventsTypes(accessToken, onReportError),
+            'Auth error during onSynchronizeEventsTypes',
+          ));
           break;
 
         case SyncScope.PatrolTypes:
@@ -243,18 +260,27 @@ export const StatusView = ({ navigation }: StatusViewProps) => {
           }
           break;
 
+        case SyncScope.Subjects:
+          authErrors.push(await sync(() => onSyncSubjects(accessToken), 'Auth error during onSyncSubjects'));
+          break;
+
         default:
           break;
       }
 
       if (authErrors.every((error) => isEmpty(error))) {
-        await updateSyncState(type, scope);
+        // @TODO: Remove conditional as soon as server starts sending an eTag for Subjects
+        if (type !== SyncScope.Subjects) {
+          await updateSyncState(type, scope);
+        }
         if (type === SyncScope.EventTypes) {
           saveLastSyncTimeReport();
         }
         if (type === SyncScope.Users || type === SyncScope.Profiles) {
           await updateAuthState();
         }
+
+        setStringForKey(LAST_SYNC_SUBJECTS_TIME, dayjs().format(DATE_FORMAT_HHMM_DD_MMM_YYYY));
       } else {
         logSync.error(`[${VIEW_NAME}] :: Error updateSyncState ${authErrors}`);
       }
@@ -301,6 +327,10 @@ export const StatusView = ({ navigation }: StatusViewProps) => {
         } else if (authState === AuthState.required) {
           setAuthState(AuthState.authenticated);
         }
+      }
+      // @TODO: To be replaced as soon as server returns an eTag for Subjects
+      if (eTag === '500' && syncScope === SyncScope.Subjects) {
+        await syncResource('NO_ETAG', syncScope, accessToken);
       }
     }
   };
@@ -414,6 +444,7 @@ export const StatusView = ({ navigation }: StatusViewProps) => {
     initInformation();
     setLastSyncedReport(getStringForKey(LAST_SYNC_REPORTS_TIME_KEY) || '');
     setLastSyncedPatrol(getStringForKey(LAST_SYNC_PATROLS_TIME_KEY) || '');
+    setLastSyncedSubjects(getStringForKey(LAST_SYNC_SUBJECTS_TIME) || '');
 
     async function initReportsInformation() {
       await updateReportsData();
@@ -446,7 +477,7 @@ export const StatusView = ({ navigation }: StatusViewProps) => {
         title={t('mainTabBar.events')}
         type="reports"
         pendingSync={reportsPendingSyncCount.toString()}
-        uploaded={reportsSubmitted.toString()}
+        uploaded={typeof reportsSubmitted === 'number' ? reportsSubmitted.toString() : '0'}
         lastSync={lastSyncedReport !== '' ? lastSyncedReport : t('statusView.defaultPendingSync')}
         syncing={isReportSyncing}
       />
@@ -462,6 +493,14 @@ export const StatusView = ({ navigation }: StatusViewProps) => {
           syncing={isPatrolSyncing}
         />
       )}
+
+      {/* Subjects */}
+      <DetailedInfoCard
+        title={t('mainTabBar.subjects')}
+        type="subjects"
+        lastSync={lastSyncedSubjects !== '' ? lastSyncedSubjects : t('statusView.defaultPendingSync')}
+        syncing={false}
+      />
 
       <Pressable
         onPress={() => setInfoAlertVisible(true)}

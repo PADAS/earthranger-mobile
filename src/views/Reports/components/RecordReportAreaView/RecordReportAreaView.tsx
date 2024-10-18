@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { Pressable, StyleProp } from 'react-native';
-import MapboxGL, { CircleLayerStyle, FillLayerStyle, LineLayerStyle } from '@react-native-mapbox-gl/maps';
+import Mapbox, { CircleLayerStyle, FillLayerStyle, LineLayerStyle } from '@rnmapbox/maps';
 import Geolocation from 'react-native-geolocation-service';
 import { useNavigation } from '@react-navigation/native';
 import bbox from '@turf/bbox';
@@ -20,14 +20,21 @@ import { ReportFormSubmitButton } from '../ReportForm/components/ReportFormSubmi
 import { PolygonState, Position } from '../../../../common/types/types';
 import log from '../../../../common/utils/logUtils';
 import { polygonReducer } from '../../../../common/reducers/polygonReducer';
-import { calculatePolygonArea, calculatePolygonPerimeter, calculatePolygonPointsList } from '../../../../common/utils/geometryUtils';
+import {
+  calculatePolygonArea,
+  calculatePolygonPerimeter,
+  calculatePolygonPointsList,
+} from '../../../../common/utils/geometryUtils';
 import { CustomAlert } from '../../../../common/components/CustomAlert/CustomAlert';
 import { TrashIcon } from '../../../../common/icons/TrashIcon';
 import { getBoolForKey, getStringForKey, setBoolForKey } from '../../../../common/data/storage/keyValue';
 import { AREA_INSTRUCTIONS_VIEWED, BASEMAP_KEY } from '../../../../common/constants/constants';
 import AnalyticsEvent, { analyticsEventToHashMap } from '../../../../analytics/model/analyticsEvent';
 import { logEvent } from '../../../../analytics/wrapper/analyticsWrapper';
-import { createRecordReportAreaStartEvent, createRecordReportAreaSubmitEvent } from '../../../../analytics/reports/reportsAnalytics';
+import {
+  createRecordReportAreaStartEvent,
+  createRecordReportAreaSubmitEvent,
+} from '../../../../analytics/reports/reportsAnalytics';
 
 import { StartRecordingButton } from './components/StartRecordingButton/StartRecordingButton';
 import { PolygonManagementButtons } from './components/PolygonManagementButtons/PolygonManagementButtons';
@@ -40,7 +47,7 @@ import { AreaInstructionsDialog } from './components/AreaInstructionsDialog/Area
 import styles from './RecordReportAreaView.styles';
 
 // Constants
-const ZOOM_LEVEL = 16;
+const ZOOM_LEVEL = 18;
 const ANIMATION_MODE = 'flyTo';
 const ANIMATION_DURATION = 2000;
 const MIN_POINTS_FOR_POLYGON = 3;
@@ -74,7 +81,7 @@ const RecordReportAreaView = () => {
     !getBoolForKey(AREA_INSTRUCTIONS_VIEWED),
   );
   const [basemapSelected] = useState(
-    getStringForKey(BASEMAP_KEY) || MapboxGL.StyleURL.Outdoors,
+    getStringForKey(BASEMAP_KEY) || Mapbox.StyleURL.Outdoors,
   );
 
   const [areaMeters, setAreaMeters] = useState(0);
@@ -84,7 +91,7 @@ const RecordReportAreaView = () => {
   const coordinatesCounter = useRef(0);
 
   const [followUserMode, setFollowUserMode] = useState(
-    MapboxGL.UserTrackingModes.Follow,
+    Mapbox.UserTrackingMode.Follow,
   );
   const [geoJson, setGeoJson] = useState<GeoJSON.FeatureCollection>({
     type: 'FeatureCollection',
@@ -135,7 +142,7 @@ const RecordReportAreaView = () => {
       const currentCoordinates = await setCurrentLocation();
       setIsRecording(true);
       setFollowUserLocation(true);
-      setFollowUserMode(MapboxGL.UserTrackingModes.FollowWithCourse);
+      setFollowUserMode(Mapbox.UserTrackingMode.FollowWithCourse);
       setRandomKey(Math.random());
       setIsBottomBarAvailable(true);
       const newPolygonState = polygonReducer({
@@ -155,7 +162,10 @@ const RecordReportAreaView = () => {
       Geolocation.getCurrentPosition(
         (position) => {
           // Add new coordinates to the polygon
-          const newPolygonState = polygonReducer(clone(polygonState), { type: 'ADD', value: [position.coords.longitude, position.coords.latitude] });
+          const newPolygonState = polygonReducer(
+            clone(polygonState),
+            { type: 'ADD', value: [position.coords.longitude, position.coords.latitude] },
+          );
           setPolygonState(newPolygonState);
 
           // Increase coordinates counter to trigger useEffect
@@ -206,7 +216,7 @@ const RecordReportAreaView = () => {
       setPerimeterMeters(parseFloat(calculatePolygonPerimeter([polygonState.current]).toFixed(2)));
     }
     setIsSaveButtonEnabled(true);
-    setFollowUserMode(MapboxGL.UserTrackingModes.Follow);
+    setFollowUserMode(Mapbox.UserTrackingMode.Follow);
     setFollowUserLocation(false);
     setRandomKey(Math.random());
     setIsBottomBarAvailable(false);
@@ -406,13 +416,12 @@ const RecordReportAreaView = () => {
   return (
     <>
       {/* Map */}
-      <MapboxGL.MapView
+      <Mapbox.MapView
         style={styles.mapContainer}
         compassViewMargins={{ x: 10, y: 60 }}
-        onDidFinishRenderingMapFully={() => setFollowUserLocation(true)}
         styleURL={basemapSelected}
       >
-        <MapboxGL.Camera
+        <Mapbox.Camera
           zoomLevel={ZOOM_LEVEL}
           animationMode={ANIMATION_MODE}
           animationDuration={ANIMATION_DURATION}
@@ -430,32 +439,32 @@ const RecordReportAreaView = () => {
           } : undefined}
           key={randomKey}
         />
-        <MapboxGL.ShapeSource id="areaPolygon" shape={geoJson} key={shapeSourceKey}>
-          <MapboxGL.CircleLayer
+        <Mapbox.ShapeSource id="areaPolygon" shape={geoJson} key={shapeSourceKey}>
+          <Mapbox.CircleLayer
             id="areaCircleLayer"
             sourceID="areaPolygon"
             style={circleLayerStyles}
           />
-          <MapboxGL.LineLayer
+          <Mapbox.LineLayer
             id="areaLineLayer"
             sourceID="areaPolygon"
             style={lineLayerStyles}
           />
           {isSaveButtonEnabled && (
-            <MapboxGL.FillLayer
+            <Mapbox.FillLayer
               id="areaFillLayer"
               sourceID="areaPolygon"
               style={fillLayerStyles}
             />
           )}
-        </MapboxGL.ShapeSource>
-        <MapboxGL.UserLocation
+        </Mapbox.ShapeSource>
+        <Mapbox.UserLocation
           onUpdate={
             (location) => onLocationUpdate([location.coords.latitude, location.coords.longitude])
           }
           showsUserHeadingIndicator
         />
-      </MapboxGL.MapView>
+      </Mapbox.MapView>
       {/* End Map */}
 
       {/* Bottom Toolbar */}

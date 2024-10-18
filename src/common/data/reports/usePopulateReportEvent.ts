@@ -42,7 +42,7 @@ export const usePopulateReportEvent = () => {
         eventData.event_values,
         eventData.isDraft.toString(),
         eventData.createdAt || timestamp,
-        timestamp,
+        Date.now().toString(),
         eventData.patrol_segment_id?.toString() ?? ''];
 
       const userParams = [accountId,
@@ -54,7 +54,7 @@ export const usePopulateReportEvent = () => {
         eventData.event_values,
         eventData.isDraft.toString(),
         eventData.createdAt || timestamp,
-        timestamp,
+        Date.now().toString(),
         eventData.patrol_segment_id?.toString() ?? ''];
 
       if (dbInstance && userInfo) {

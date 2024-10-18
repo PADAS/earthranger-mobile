@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 import { USER_ID_KEY } from '../../constants/constants';
 import { useGetDBConnection } from '../PersistentStore';
 import { useInsertData } from '../hooks/useInsertData';
-import { INSERT_USER_SUBJECTS } from '../sql/queries';
+import { INSERT_USER_SUBJECTS } from '../sql/userQueries';
 import { getPatrolTrackedBy } from '../../../api/patrolsAPI';
 import { getSecuredStringForKey } from '../storage/utils';
 import { logSQL } from '../../utils/logUtils';

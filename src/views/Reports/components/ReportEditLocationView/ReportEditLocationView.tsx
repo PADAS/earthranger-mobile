@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import MapboxGL, { Point, RegionPayload } from '@react-native-mapbox-gl/maps';
+import Mapbox, { MapState } from '@rnmapbox/maps';
 import Geolocation from 'react-native-geolocation-service';
 
 // Internal Dependencies
@@ -17,7 +17,7 @@ import { Position } from '../../../../common/types/types';
 import { COLORS_LIGHT } from '../../../../common/constants/colors';
 import { EditIcon } from '../../../../common/icons/EditIcon';
 import { ReportFormSubmitButton } from '../ReportForm/components/ReportFormSubmitButton/ReportFormSubmitButton';
-import log from '../../../../common/utils/logUtils';
+import { logGeneral } from '../../../../common/utils/logUtils';
 import { TargetIcon } from '../../../../common/icons/TargetIcon';
 import { EditLocationDialog } from '../../../../common/components/EditLocationDialog/EditLocationDialog';
 import { LocationOnAndroid } from '../../../../common/icons/LocationOnAndroid';
@@ -27,7 +27,7 @@ import { LocationOffAndroid } from '../../../../common/icons/LocationOffAndroid'
 import { BASEMAP_KEY, COORDINATES_FORMAT_KEY, IS_ANDROID } from '../../../../common/constants/constants';
 import { osBackIcon } from '../../../../common/components/header/header';
 import { getStringForKey } from '../../../../common/data/storage/keyValue';
-import { LocationFormats, formatCoordinates } from '../../../../common/utils/locationUtils';
+import { LocationFormats, formatCoordinates, isNullIslandPosition } from '../../../../common/utils/locationUtils';
 
 // Styles
 import styles from './ReportEditLocationView.styles';
@@ -36,6 +36,8 @@ import styles from './ReportEditLocationView.styles';
 const ZOOM_LEVEL = 16;
 const ANIMATION_MODE = 'flyTo';
 const ANIMATION_DURATION = 2000;
+const SCALE_BAR_BOTTOM_OFFSET = 32;
+const SCALE_BAR_LEFT_OFFSET = 16;
 
 export const ReportEditLocationView = () => {
   // Hooks
@@ -52,10 +54,10 @@ export const ReportEditLocationView = () => {
   const [isDeviceLocation, setIsDeviceLocation] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(ZOOM_LEVEL);
   const [basemapSelected] = useState(
-    getStringForKey(BASEMAP_KEY) || MapboxGL.StyleURL.Outdoors,
+    getStringForKey(BASEMAP_KEY) || Mapbox.StyleURL.Outdoors,
   );
 
-  // Utility Functions
+  // app bar
   const headerRight = useCallback(() => {
     return (
       <Pressable onPress={onSubmitButtonPress} hitSlop={20}>
@@ -75,19 +77,24 @@ export const ReportEditLocationView = () => {
     );
   }, []);
 
-  const setCurrentLocation = useCallback(() => {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        setCoordinates([position.coords.longitude, position.coords.latitude]);
-        setCenterCoordinates([position.coords.longitude, position.coords.latitude]);
-        setIsDeviceLocation(true);
-      },
-      (error) => {
-        log.error(`[ReportEditLocationView] - Get current position - ${error}`);
-      },
-      { enableHighAccuracy: true },
-    );
-  }, []);
+  // Component's Life-cycle
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight,
+      headerLeft,
+    });
+  }, [coordinates]);
+
+  useEffect(() => {
+    if (
+      centerCoordinates
+      && coordinates[0].toFixed(4) !== centerCoordinates[0].toFixed(4)
+      && coordinates[1].toFixed(4) !== centerCoordinates[1].toFixed(4)
+    ) {
+      logGeneral.debug(`center ${centerCoordinates[0]} | ${centerCoordinates[1]}`);
+      setIsDeviceLocation(false);
+    }
+  }, [coordinates]);
 
   // Handlers
   const onSubmitButtonPress = () => {
@@ -115,35 +122,27 @@ export const ReportEditLocationView = () => {
   };
 
   // @ts-ignore
-  const onMapMove = (features: Feature<Point, RegionPayload>) => {
-    if (features.geometry.coordinates[0] !== 0 && features.geometry.coordinates[1] !== 0) {
-      setCoordinates(
-        [
-          parseFloat(features.geometry.coordinates[0].toFixed(6)),
-          parseFloat(features.geometry.coordinates[1].toFixed(6)),
-        ],
-      );
-      setZoomLevel(features.zoomLevel);
+  const onMapMoveHandler = (state: MapState) => {
+    if (!isNullIslandPosition(state.properties.center as Position)) {
+      setCoordinates([state.properties.center[0], state.properties.center[1]]);
+      setZoomLevel(state.properties.zoom);
     }
   };
 
-  // Component's Life-cycle
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight,
-      headerLeft,
-    });
-  }, [coordinates]);
-
-  useEffect(() => {
-    if (
-      centerCoordinates
-      && coordinates[0].toFixed(4) !== centerCoordinates[0].toFixed(4)
-      && coordinates[1].toFixed(4) !== centerCoordinates[1].toFixed(4)
-    ) {
-      setIsDeviceLocation(false);
-    }
-  }, [coordinates]);
+  // Utility Functions
+  const setCurrentLocation = useCallback(() => {
+    Geolocation.getCurrentPosition(
+      (position) => {
+        setCoordinates([position.coords.longitude, position.coords.latitude]);
+        setCenterCoordinates([position.coords.longitude, position.coords.latitude]);
+        setIsDeviceLocation(true);
+      },
+      (error) => {
+        logGeneral.error(`[ReportEditLocationView] - Get current position - ${error}`);
+      },
+      { enableHighAccuracy: true },
+    );
+  }, []);
 
   return (
     <>
@@ -197,19 +196,21 @@ export const ReportEditLocationView = () => {
       )}
       {/* End Edit Location Dialog */}
       {/* Map */}
-      <MapboxGL.MapView
+      <Mapbox.MapView
+        scaleBarEnabled
+        scaleBarPosition={{ bottom: SCALE_BAR_BOTTOM_OFFSET, left: SCALE_BAR_LEFT_OFFSET }}
         style={styles.mapContainer}
-        onRegionDidChange={onMapMove}
+        onMapIdle={(state) => onMapMoveHandler(state)}
         styleURL={basemapSelected}
       >
-        <MapboxGL.Camera
+        <Mapbox.Camera
           animationMode={ANIMATION_MODE}
           animationDuration={ANIMATION_DURATION}
           centerCoordinate={coordinates}
           zoomLevel={zoomLevel}
         />
-        <MapboxGL.UserLocation />
-      </MapboxGL.MapView>
+        <Mapbox.UserLocation />
+      </Mapbox.MapView>
       {/* End Map */}
     </>
   );

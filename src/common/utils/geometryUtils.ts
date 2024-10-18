@@ -7,8 +7,8 @@ import { polygonToLine } from '@turf/polygon-to-line';
 import bbox from '@turf/bbox';
 import { clone } from 'lodash-es';
 import { Dimensions } from 'react-native';
-import MapboxGL from '@react-native-mapbox-gl/maps';
 import distance from '@turf/distance';
+import Mapbox from '@rnmapbox/maps';
 
 // Internal Dependencies
 import {
@@ -27,18 +27,16 @@ const defaultStaticImageSize = {
 
 export const calculatePolygonArea = (coords: Position[][]) => area(polygon(coords));
 
-export const calculatePolygonPerimeter = (coordinates: any) => parseFloat(
+export const calculatePolygonPerimeter = (coordinates: Position[][]) => parseFloat(
   length(
     polygonToLine(
-      createPolygon(
+      polygon(
         coordinates,
       ),
     ),
     { units: 'meters' },
   ).toFixed(2),
 );
-
-export const createPolygon = (coords: Position[][]) => polygon(coords);
 
 export const convertCoordinateToPoint = (coordinate: Position) => {
   const [longitude, latitude] = coordinate;
@@ -89,7 +87,7 @@ export const calculatePolygonPointsList = (coordinates: Position[]) => {
 };
 
 export const createMapBoxPointMapURL = (coordinates: Position) => {
-  const baseMap = getBaseMapId(getStringForKey(BASEMAP_KEY) || MapboxGL.StyleURL.Street);
+  const baseMap = getBaseMapId(getStringForKey(BASEMAP_KEY) || Mapbox.StyleURL.Street);
 
   // Base url with basemap
   let url = getMapBoxStaticImageUrl(baseMap);
@@ -157,28 +155,24 @@ export const createMapBoxPolygonMapURL = (geometry: any, size: Size = defaultSta
   // Append Access Token to request
   const mapboxStaticImageAPIQuery = `padding=30&access_token=${Config.MAPBOX_API_KEY}`;
 
-  const baseMap = getBaseMapId(getStringForKey(BASEMAP_KEY) || MapboxGL.StyleURL.Street);
+  const baseMap = getBaseMapId(getStringForKey(BASEMAP_KEY) || Mapbox.StyleURL.Street);
 
+  // eslint-disable-next-line max-len
   return `${getMapBoxStaticImageUrl(baseMap)}/${eventGeoJSONEncoded}/${areaForGeometryBBOX}/${staticImageDimensions}?${mapboxStaticImageAPIQuery}`;
 };
 
-export const getReportAreaValues = (areaInMeters: number, perimeterInMeters: number) => {
-  let areaValue = '';
-  let perimeterValue = '';
+export const convertAreaToSqKM = (areaInMeters: number) => {
+  // There are 1,000,000 square meters in a square kilometer
+  const METERS_IN_KM = 1000000;
 
-  if (areaInMeters > 1000) {
-    areaValue = `${(areaInMeters / 1000).toFixed(2)} sqkm`;
-  } else {
-    areaValue = `${areaInMeters} sqm`;
-  }
+  return (areaInMeters / METERS_IN_KM).toFixed(2);
+};
 
-  if (perimeterInMeters > 1000) {
-    perimeterValue = `${(perimeterInMeters / 1000).toFixed(2)} km`;
-  } else {
-    perimeterValue = `${perimeterInMeters} m`;
-  }
+export const convertPerimeterToKM = (perimeterInMeters: number) => {
+  // There are 1,000 meters in a kilometer
+  const METERS_IN_KM = 1000;
 
-  return [areaValue, perimeterValue];
+  return (perimeterInMeters / METERS_IN_KM).toFixed(2);
 };
 
 export const addDistance = (from: Position, to: Position, currentDistance: number) => {

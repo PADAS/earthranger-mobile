@@ -106,6 +106,11 @@ export const EditLocationDialog = ({
     }
   }, [latitude, longitude, hasLatitudeError, hasLongitudeError]);
 
+  useEffect(() => {
+    setLatitude(coordinates[1].toString());
+    setLongitude(coordinates[0].toString());
+  }, [coordinates]);
+
   return (
     <Modal visible={displayEditDialog} transparent animationType="fade">
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>

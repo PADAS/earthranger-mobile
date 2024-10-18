@@ -27,8 +27,7 @@ export const MAP_TAB_SELECTED = 'map_tab_selected';
 
 // Observation Tracking
 export const START_TRACKING_LOCATION = 'start_tracking_location';
-export const SWITCH_TRACKING_LOCATION_ON = 'switch_tracking_location_on';
-export const SWITCH_TRACKING_LOCATION_OFF = 'switch_tracking_location_off';
+export const STOP_TRACKING_LOCATION = 'stop_tracking_location';
 export const START_TRACKING_OVERLAY = 'start_tracking_overlay';
 
 // Patrol

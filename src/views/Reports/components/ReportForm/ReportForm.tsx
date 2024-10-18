@@ -21,6 +21,7 @@ import {
 import RNFS, { moveFile } from 'react-native-fs';
 import { v4 as uuidv4 } from 'uuid';
 import {
+  difference,
   isEmpty, isEqual, isFunction, last, omit, replace,
 } from 'lodash-es';
 import NetInfo from '@react-native-community/netinfo';
@@ -67,6 +68,8 @@ import {
   calculatePolygonPointsList,
   createMapBoxPointMapURL,
   createMapBoxPolygonMapURL,
+  convertAreaToSqKM,
+  convertPerimeterToKM,
 } from '../../../../common/utils/geometryUtils';
 import { useUpdateReportAttachments } from '../../../../common/data/reports/useUpdateReportAttachments';
 import { cropHeaderTitleText } from '../../../../common/utils/stringUtils';
@@ -91,6 +94,7 @@ import {
   ALERT_BUTTON_BACKGROUND_COLOR_RED,
   COORDINATES_FORMAT_KEY,
   IS_ANDROID,
+  PATROL_INFO_ENABLED,
   PHOTO_QUALITY_KEY,
   SAVE_TO_CAMERA_ROLL,
   USER_ID_KEY,
@@ -166,7 +170,7 @@ const ReportForm = () => {
   const { getLocationWithRetries } = useGetLocation();
 
   const {
-    reportId, title, schema, typeId, geometryType, isEditMode,
+    reportId, title, schema, typeId, geometryType, isEditMode, isPatrolInfoEvent,
   } = route.params;
 
   // References
@@ -289,6 +293,7 @@ const ReportForm = () => {
     setSchemaFilteredErrors(requiredFieldError
       ? schemaErrors.filter((item: any) => (item.keyword !== 'required')) || []
       : schemaErrors);
+    setShowSchemaErrorMessage(!((!schemaFilteredErrors || schemaFilteredErrors.length === 0)));
   }, [schemaErrors]);
 
   useLayoutEffect(() => {
@@ -455,10 +460,10 @@ const ReportForm = () => {
   };
 
   const onReportDiscardPressHandler = async () => {
-    if (images.length > 0 || thumbnails.length > 0) {
+    if (draftNewImages.length > 0 || draftNewthumbnails.length > 0) {
       try {
-        await removeFiles(images);
-        await removeFiles(thumbnails);
+        await removeFiles(draftNewImages);
+        await removeFiles(draftNewthumbnails);
       } catch (error) {
         log.error(`[ReportForm] - Error discarding report - ${error}`);
       }
@@ -602,25 +607,6 @@ const ReportForm = () => {
     setImages(draftImages);
     setThumbnails(draftThumbnails);
     setNotesDataSource(notes);
-  };
-
-  const getReportAreaValues = (areaInMeters: number, perimeterInMeters: number) => {
-    let areaValue = '';
-    let perimeterValue = '';
-
-    if (areaInMeters > 1000) {
-      areaValue = `${(areaInMeters / 1000).toFixed(2)} sqkm ${t('reports.area')}`;
-    } else {
-      areaValue = `${areaInMeters} sqm ${t('reports.area')}`;
-    }
-
-    if (perimeterInMeters > 1000) {
-      perimeterValue = `${(perimeterInMeters / 1000).toFixed(2)} km ${t('reports.perimeter')}`;
-    } else {
-      perimeterValue = `${perimeterInMeters} m ${t('reports.perimeter')}`;
-    }
-
-    return `${areaValue}, ${perimeterValue}`;
   };
 
   // Handler Functions
@@ -870,6 +856,10 @@ const ReportForm = () => {
       log.debug(`[ReportForm] :: Could not save draft report - ${error}`);
     }
     saveReportSnapshot();
+
+    if (getBoolForKey(PATROL_INFO_ENABLED) && isPatrolInfoEvent) {
+      navigation.popToTop();
+    }
   };
 
   const getCreatedAt = () => (isDefaultPatrolInfoEnabled ? patrolCreatedAt : '');
@@ -884,12 +874,9 @@ const ReportForm = () => {
     await updateReportEvent(reportEvent, eventDraftId.toString());
 
     if (reportSnapshot.current.photoCount < images.length) {
-      const newImages = images.filter(
-        (a) => !reportSnapshot.current.images.some((b) => a === b),
-      );
-      const newThumbnails = thumbnails.filter(
-        (a) => !reportSnapshot.current.thumbnails.some((b) => a === b),
-      );
+      const newImages = difference(images, reportSnapshot.current.images);
+      const newThumbnails = difference(thumbnails, reportSnapshot.current.thumbnails);
+
       await updateReportAttachments({
         type: 'photo',
         attachments: {
@@ -969,6 +956,8 @@ const ReportForm = () => {
       data: formData || {},
       notes: notesDataSource || [],
       photoCount: images.length,
+      images: images || [],
+      thumbnails: thumbnails || [],
     } as ReportDataSnapshot;
   };
 
@@ -1033,7 +1022,8 @@ const ReportForm = () => {
                     )}
 
                     <ReportFormPolygonInfo
-                      data={`${getReportAreaValues(area, perimeter)}`}
+                      // eslint-disable-next-line max-len
+                      data={`${area > 20000 ? `${convertAreaToSqKM(area)} sqkm` : `${area} sqm`}, ${convertPerimeterToKM(perimeter)} km`}
                     />
                   </View>
                 ) : (

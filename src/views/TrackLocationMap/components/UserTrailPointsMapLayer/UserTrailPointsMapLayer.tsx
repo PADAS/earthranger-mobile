@@ -1,6 +1,6 @@
 // External Dependencies
 import React from 'react';
-import MapboxGL, { SymbolLayerStyle } from '@react-native-mapbox-gl/maps';
+import Mapbox, { SymbolLayerStyle } from '@rnmapbox/maps';
 import { Feature } from 'geojson';
 
 // Internal Dependencies
@@ -35,7 +35,7 @@ const getFeature = (location: Track) => ({
 });
 
 export const UserTrailPointsMapLayer = ({ track }: UserTrailPointsMapLayerProps) => (
-  <MapboxGL.ShapeSource
+  <Mapbox.ShapeSource
     id="points"
     lineMetrics
     shape={{
@@ -44,11 +44,11 @@ export const UserTrailPointsMapLayer = ({ track }: UserTrailPointsMapLayerProps)
       features: track.map((location) => getFeature(location)),
     }}
   >
-    <MapboxGL.SymbolLayer
+    <Mapbox.SymbolLayer
       id="pointsLayer"
       layerIndex={111}
       // @ts-ignore
       style={TRACK_ICON_STYLES}
     />
-  </MapboxGL.ShapeSource>
+  </Mapbox.ShapeSource>
 );

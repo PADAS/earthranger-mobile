@@ -215,6 +215,7 @@ const StartPatrolView = () => {
         geometryType: defaultEventType.geometry_type,
         createdAt: timestamp,
         isDefaultPatrolInfoEnabled: true,
+        isPatrolInfoEvent: true,
       });
     } else {
       navigation.popToTop();
@@ -290,7 +291,7 @@ const StartPatrolView = () => {
           editable={false}
           onPressIn={() => {
             if (getBoolForKey(EXPERIMENTAL_FEATURES_FLAG_KEY)) {
-              navigation.navigate('SubjectsView', {});
+              navigation.navigate('TrackedBySubjectsView', {});
             }
           }}
         />

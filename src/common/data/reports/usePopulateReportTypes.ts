@@ -33,7 +33,7 @@ export const usePopulateReportTypes = () => {
   // Hooks
   const { getDBInstance } = useGetDBConnection();
   const { executeSql } = useExecuteSql();
-  const { retrieveUserProfiles } = useRetrieveUserProfiles();
+  const { retrieveUserProfilesRemoteID } = useRetrieveUserProfiles();
   const { retrieveReportTypesProfileByValue } = useRetrieveReportTypes();
 
   const populateReportTypes = useCallback(async (accessToken: string) => {
@@ -54,7 +54,13 @@ export const usePopulateReportTypes = () => {
             try {
               const icon = await getReportTypeIcon(type.icon_id) || '';
               const schema = await getReportTypeSchema(accessToken, type.value);
-              const typeArray = parseToProfileArray(type, accountId, undefined, icon, JSON.stringify(schema.data || ''));
+              const typeArray = parseToProfileArray(
+                type,
+                accountId,
+                undefined,
+                icon,
+                JSON.stringify(schema.data || ''),
+              );
               await executeSql(dbInstance, INSERT_EVENT_TYPE, typeArray);
             } catch (error) {
               logSQL.error(`Report type ${type.value} could not be inserted into the local database`, error);
@@ -71,7 +77,7 @@ export const usePopulateReportTypes = () => {
   const populateProfileReportTypes = useCallback(async (accessToken: string) => {
     try {
       // Fetch user profiles in local database
-      const userProfiles = await retrieveUserProfiles();
+      const userProfiles = await retrieveUserProfilesRemoteID();
 
       // Get database connection instance
       const dbInstance = await getDBInstance();
@@ -100,7 +106,13 @@ export const usePopulateReportTypes = () => {
                 } else {
                   const icon = await getReportTypeIcon(type.icon_id) || '';
                   const schema = await getReportTypeSchema(accessToken, type.value);
-                  const typeArray = parseToProfileArray(type, undefined, `[${profile.id}]`, icon, JSON.stringify(schema.data || ''));
+                  const typeArray = parseToProfileArray(
+                    type,
+                    undefined,
+                    `[${profile.id}]`,
+                    icon,
+                    JSON.stringify(schema.data || ''),
+                  );
                   await executeSql(dbInstance, INSERT_EVENT_TYPE, typeArray);
                 }
               } catch (error) {
@@ -135,16 +147,24 @@ export const usePopulateReportTypes = () => {
           try {
             const icon = await getReportTypeIcon(type.icon_id) || '';
             const schema = await getReportTypeSchema(accessToken, type.value);
+
             if (user.type === UserType.account) {
               const typeArray = parseToActiveUserArray(type, accountId, icon, JSON.stringify(schema.data || ''));
+
               await executeSql(dbInstance, UPSERT_EVENT_TYPE_USER, typeArray);
             } else {
               const persistedReportType = await retrieveReportTypesProfileByValue(type.value);
-              // eslint-disable-next-line max-len
-              const profileId = hasEventCategoryAccess(user.permissions, type.category.value, PermissionLevel.add)
+
+              const profileId = hasEventCategoryAccess(
+                user.permissions,
+                type.category.value,
+                PermissionLevel.add,
+              )
                 ? appendArrayProfileId(user.id, persistedReportType?.profileId || [])
                 : JSON.parse(persistedReportType?.profileId || []);
+
               const typeArray = parseToActiveUserArray(type, JSON.stringify(profileId), icon, JSON.stringify(schema.data || ''));
+
               await executeSql(dbInstance, UPSERT_EVENT_TYPE_PROFILE, typeArray);
             }
           } catch (error) {
@@ -159,7 +179,7 @@ export const usePopulateReportTypes = () => {
 
   // eslint-disable-next-line max-len
   const appendArrayProfileId = (userId: number, profileIdArray: any) => {
-    if (profileIdArray) {
+    if (profileIdArray && profileIdArray.length > 0) {
       const profiles = JSON.parse(profileIdArray);
       return profiles.includes(userId) ? profiles : [...profiles, userId];
     }

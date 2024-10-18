@@ -39,7 +39,9 @@ interface EventCellProps {
   text: string,
   title: string;
   type: EventStatus;
-  isEditable: boolean
+  isEditable: boolean;
+  errorMsg?: string;
+  hasErrorOnEvent: boolean;
 }
 
 const EventCell = ({
@@ -56,6 +58,8 @@ const EventCell = ({
   title,
   type,
   isEditable,
+  errorMsg,
+  hasErrorOnEvent,
 }: EventCellProps) => {
   // Hooks
   const { t } = useTranslation();
@@ -84,7 +88,11 @@ const EventCell = ({
       <Pressable onPress={
           () => {
             if (
-              (type === EventStatus.draft || type === EventStatus.pendingSync)
+              (
+                type === EventStatus.draft
+                || type === EventStatus.pendingSync
+                || (type === EventStatus.error && hasErrorOnEvent)
+              )
               && isEditable
             ) {
               navigateToReportForm(id);
@@ -122,6 +130,9 @@ const EventCell = ({
                 {badgeIcon}
                 <Text bodySmall style={{ color: fgColor, marginLeft: 4 }}>{labelText}</Text>
               </View>
+              <Text marginL-8>
+                {errorMsg}
+              </Text>
             </View>
             {/* End Badge */}
 
@@ -133,8 +144,14 @@ const EventCell = ({
           <View style={styles.caretContainer}>
             {
               (
-                (((type === EventStatus.pendingSync) && !isSyncingReports())
-                || type === EventStatus.draft) && isEditable
+                (
+                  (
+                    (type === EventStatus.pendingSync && !isSyncingReports())
+                    || type === EventStatus.draft
+                    || (type === EventStatus.error && hasErrorOnEvent)
+                  )
+                  && isEditable
+                )
               )
               && <ReportsArrowIcon />
             }

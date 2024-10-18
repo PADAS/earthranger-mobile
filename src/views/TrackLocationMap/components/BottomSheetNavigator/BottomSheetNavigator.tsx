@@ -35,9 +35,11 @@ import { TrackingStatusView } from '../TrackingStatusView/TrackingStatusView';
 import {
   PATROL_DETAILS_CONTENT_HEIGHT,
   PATROL_DETAILS_TITLE_HEIGHT,
+  SUBJECT_DETAILS_CONTENT_HEIGHT,
   TRACKING_STATUS_INLINE_BUTTONS_HEIGHT, TRACKING_STATUS_STACKED_BUTTONS_HEIGHT,
   TRACKING_STATUS_TITLE_HEIGHT,
 } from '../../../../common/constants/dimens';
+import { SubjectDetailsView } from './components/SubjectDetails/SubjectDetailsView';
 
 // Styles
 import styles, { navigationTheme } from './BottomSheetNavigator.styles';
@@ -127,6 +129,10 @@ const BottomSheetNavigator = ({
           TRACKING_STATUS_TITLE_HEIGHT,
           isButtonStacked ? TRACKING_STATUS_STACKED_BUTTONS_HEIGHT
             : TRACKING_STATUS_INLINE_BUTTONS_HEIGHT,
+        ];
+      case 'SubjectDetailsView':
+        return [
+          SUBJECT_DETAILS_CONTENT_HEIGHT,
         ];
       default:
         return [250];
@@ -241,6 +247,14 @@ const BottomSheetNavigator = ({
               <Stack.Screen
                 name="PatrolDetailsView"
                 component={PatrolDetailsView}
+                options={{
+                  ...hiddenHeaderOption,
+                  animation: 'none',
+                }}
+              />
+              <Stack.Screen
+                name="SubjectDetailsView"
+                component={SubjectDetailsView}
                 options={{
                   ...hiddenHeaderOption,
                   animation: 'none',

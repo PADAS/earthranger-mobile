@@ -29,7 +29,8 @@
     "loadingAccountInformation": "Synchronisation des comptes d'utilisateurs",
     "loadingReportCategories": "Synchronisation des catégories d'événements",
     "loadingTypesOfReports": "Synchronisation des types d'événements",
-    "loadingPatrolTypes": "Synchronisation des types de patrouille"
+    "loadingPatrolTypes": "Synchronisation des types de patrouille",
+    "loadingSubjectGroups": "Synchronisation des groupes de sujets"
   },
   "mapTrackLocation": {
     "tracking": "Suivi",
@@ -88,7 +89,8 @@
     "map": "Carte",
     "status": "Statut",
     "events": "Événements",
-    "settings": "Réglages"
+    "settings": "Réglages",
+    "subjects": "Sujets"
   },
   "menuSettingsView": {
     "settings": "RÉGLAGES",
@@ -165,7 +167,15 @@
     "slowestUpload": "Téléchargement le plus lent",
     "fastestUpload": "Téléchargement le plus rapide",
     "patrolInfo": "Informations de la patrouille",
-    "eventType": "Type d'événement"
+    "eventType": "Type d'événement",
+    "mapCenterItem": {
+      "main": {
+        "title": "Centre de la carte à l'ouverture"
+      },
+      "secondary": {
+        "title": "Coordonnées du centre"
+      }
+    }
   },
   "aboutView": {
     "version": "Version 1.1.9.49",
@@ -264,6 +274,13 @@
     "defaultPendingSync": "Pas encore synchronisé",
     "wifiDataConnectionRequired": "Connexion Wifi requise pour synchroniser les photos.",
     "save": "Enregistrer",
+    "errors": {
+      "BadRequest": "Mauvaise demande",
+      "Unauthorized" : "Non autorisé",
+      "Forbidden": "Interdit",
+      "NotFound": "Pas trouvé",
+      "ServerError": "Erreur du serveur"
+    },
     "accuracy": "Précision",
     "lowAccuracy": "Faible précision"
   },
@@ -410,5 +427,19 @@
     "title": "Enregistrer les modifications apportées aux filtres ?",
     "saveAndApply": "Enregistrer et appliquer des filtres",
     "discard": "Annuler les modifications"
+  },
+  "subjectsView": {
+    "emptyList": "Aucun sujet à afficher",
+    "subject": "sujet",
+    "subjects": "sujets",
+    "timeDifference": {
+      "daysAgo": "il y a {{diff}} jours",
+      "dayAgo": "il y a {{diff}} jour",
+      "hoursAgo": "il y a {{diff}} heures",
+      "hourAgo": "il y a {{diff}} heure",
+      "minutesAgo": "il y a {{diff}} minutes",
+      "minuteAgo": "il y a {{diff}} minute",
+      "secondsAgo": "il y a {{diff}} secondes"
+    }
   }
 }

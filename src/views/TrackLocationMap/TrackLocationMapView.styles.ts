@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   },
   basemapButton: {
     position: 'absolute',
-    right: 10,
+    right: 16,
     width: 36,
     height: 36,
     backgroundColor: COLORS_LIGHT.white,

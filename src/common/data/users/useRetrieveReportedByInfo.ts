@@ -3,10 +3,7 @@ import { useCallback } from 'react';
 
 // Internal Dependencies
 import { useGetDBConnection } from '../PersistentStore';
-import {
-  SELECT_PROFILE_BY_ID,
-  SELECT_USER_BY_ID,
-} from '../sql/queries';
+import { SELECT_USER_PROFILE_BY_ID, SELECT_USER_BY_ID } from '../sql/userQueries';
 import { logSQL } from '../../utils/logUtils';
 import { useRetrieveData } from '../hooks/useRetrieveData';
 
@@ -60,7 +57,7 @@ export const useRetrieveReportedByInfo = () => {
       if (dbInstance && profileId) {
         const userData = await retrieveData(
           dbInstance,
-          SELECT_PROFILE_BY_ID,
+          SELECT_USER_PROFILE_BY_ID,
           [profileId?.toString() || ''],
         );
 

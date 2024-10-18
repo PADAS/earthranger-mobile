@@ -1,0 +1,11 @@
+diff --git a/node_modules/@rnmapbox/maps/ios/RNMBX/rnmapbox_maps-Swift.pre.h b/node_modules/@rnmapbox/maps/ios/RNMBX/rnmapbox_maps-Swift.pre.h
+index a4ecb1c..c3ed1aa 100644
+--- a/node_modules/@rnmapbox/maps/ios/RNMBX/rnmapbox_maps-Swift.pre.h
++++ b/node_modules/@rnmapbox/maps/ios/RNMBX/rnmapbox_maps-Swift.pre.h
+@@ -10,5 +10,5 @@
+ #if RNMBX_USE_FRAMEWORKS
+ #import <rnmapbox_maps/rnmapbox_maps-Swift.h>
+ #else
+-#import <rnmapbox_maps-Swift.h>
++#import <rnmapbox_maps/rnmapbox_maps-Swift.h>
+ #endif

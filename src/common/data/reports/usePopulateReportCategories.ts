@@ -26,7 +26,7 @@ export const usePopulateReportCategories = () => {
   // Hooks
   const { getDBInstance } = useGetDBConnection();
   const { insertData } = useInsertData();
-  const { retrieveUserProfiles } = useRetrieveUserProfiles();
+  const { retrieveUserProfilesRemoteID } = useRetrieveUserProfiles();
   const {
     retrieveReportCategory,
     retrieveReportCategoriesByUserType,
@@ -59,7 +59,7 @@ export const usePopulateReportCategories = () => {
   const populateReportCategoriesForProfiles = useCallback(async (accessToken: string) => {
     try {
       // Fetch user profiles in local database
-      const userProfiles = await retrieveUserProfiles();
+      const userProfiles = await retrieveUserProfilesRemoteID();
 
       // Get database connection instance
       const dbInstance = await getDBInstance();
@@ -196,7 +196,11 @@ export const usePopulateReportCategories = () => {
             );
 
             if (reportCategory) {
-              if (hasEventCategoryAccess(userProfileInfo.permissions || '', remoteCategory.value, PermissionLevel.add)) {
+              if (hasEventCategoryAccess(
+                userProfileInfo.permissions || '',
+                remoteCategory.value,
+                PermissionLevel.add,
+              )) {
                 if (reportCategory.profile_id) {
                   if (!reportCategory.profile_id.includes(profileId)) {
                     reportCategory.profile_id.push(
@@ -219,7 +223,11 @@ export const usePopulateReportCategories = () => {
                 UPDATE_EVENT_CATEGORY_BY_VALUE,
                 [JSON.stringify(reportCategory.profile_id), remoteCategory.value],
               );
-            } else if (hasEventCategoryAccess(userProfileInfo.permissions || '', remoteCategory.value, PermissionLevel.add)) {
+            } else if (hasEventCategoryAccess(
+              userProfileInfo.permissions || '',
+              remoteCategory.value,
+              PermissionLevel.add,
+            )) {
               remoteCategory.profile_id = [profileId];
 
               const parsedReportCategory = parseReportCategories(

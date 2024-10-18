@@ -47,4 +47,9 @@ export const mapPriorityToBgColor = (priority: number) => {
   return color;
 };
 
-export const cleanUpSvg = (svg: string) => svg.replace(/fill="#[a-z0-9]{1,}"/g, '');
+export const cleanUpSvg = (svg: string) => svg
+  .replace(/fill="#[a-z0-9]{1,}"/g, '')
+  .replace(/fill="[a-z]{1,}"/g, '')
+  .replace(/<defs>.*<\/defs>/gi, '')
+  .replace(/<title>.*<\/title>/gi, '')
+  .replace(/<g class="a">.*<\/g>/gi, '');

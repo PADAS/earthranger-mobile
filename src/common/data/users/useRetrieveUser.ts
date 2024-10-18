@@ -4,17 +4,17 @@ import { useCallback } from 'react';
 // Internal Dependencies
 import { useGetDBConnection } from '../PersistentStore';
 import {
-  SELECT_PROFILE_BY_REMOTE_ID,
   SELECT_USER_BY_ID,
   SELECT_USER_BY_PIN,
   SELECT_USER_BY_REMOTE_ID,
   SELECT_USER_BY_USERNAME,
+  SELECT_USER_PROFILE_BY_REMOTE_ID,
   SELECT_USER_PROFILE_BY_USERNAME,
-} from '../sql/queries';
+} from '../sql/userQueries';
 import { logSQL } from '../../utils/logUtils';
 import { useRetrieveData } from '../hooks/useRetrieveData';
-import { getSecuredStringForKey, setSecuredStringForKey } from '../storage/utils';
-import { PARENT_USER_REMOTE_ID_KEY, USER_ID_KEY, USER_REMOTE_ID_KEY } from '../../constants/constants';
+import { getSecuredStringForKey } from '../storage/utils';
+import { USER_REMOTE_ID_KEY } from '../../constants/constants';
 import { UserType } from '../../enums/enums';
 import { PersistedUserSubject } from '../../types/types';
 
@@ -55,7 +55,7 @@ export const useRetrieveUser = () => {
 
         const userProfile = await retrieveData(
           dbInstance,
-          SELECT_PROFILE_BY_REMOTE_ID,
+          SELECT_USER_PROFILE_BY_REMOTE_ID,
           [userRemoteId],
         );
 
@@ -120,32 +120,6 @@ export const useRetrieveUser = () => {
     return null;
   }, []);
 
-  const retrieveParentUserRemoteId = useCallback(async () => {
-    try {
-      // Get database connection instance
-      const dbInstance = await getDBInstance();
-
-      const accountId = getSecuredStringForKey(USER_ID_KEY) || '';
-
-      if (dbInstance) {
-        const accountUser = await retrieveData(
-          dbInstance,
-          SELECT_USER_BY_ID,
-          [accountId],
-        );
-
-        if (accountUser && accountUser.length > 0) {
-          setSecuredStringForKey(PARENT_USER_REMOTE_ID_KEY, accountUser[0].rows.item(0).remote_id);
-          return accountUser[0].rows.item(0).remote_id;
-        }
-        return '';
-      }
-    } catch (error) {
-      logSQL.error('[retrieveParentUserRemoteId] - error:', error);
-    }
-    return '';
-  }, []);
-
   const retrieveActiveUserDetails = useCallback(async (
     activeUserName: string,
     activeUserType: UserType,
@@ -200,7 +174,6 @@ export const useRetrieveUser = () => {
   return {
     retrieveUserInfo,
     retrieveUserByPin,
-    retrieveParentUserRemoteId,
     retrieveUserById,
     retrieveActiveUserDetails,
   };

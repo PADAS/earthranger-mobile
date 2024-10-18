@@ -11,6 +11,7 @@ import { ReportsSyncNotRequiredIcon } from '../../icons/ReportsSyncNotRequiredIc
 import { ReportsSyncRequiredIcon } from '../../icons/ReportsSyncRequiredIcon';
 import { SyncIcon } from '../../icons/SyncIcon';
 import { PatrolIcon } from '../../icons/PatrolIcon';
+import { SubjectsIcon } from '../../icons/SubjectsIcon';
 
 // Styles
 import styles from './DetailedInfoCard.styles';
@@ -19,7 +20,7 @@ import styles from './DetailedInfoCard.styles';
 interface DetailedInfoCardProps {
   title: string;
   type: string;
-  pendingSync: string;
+  pendingSync?: string;
   uploaded?: string;
   lastSync: string;
   syncing: boolean;
@@ -48,6 +49,9 @@ export const DetailedInfoCard = ({
     case 'patrols':
       icon = <PatrolIcon color={COLORS_LIGHT.magenta} />;
       break;
+    case 'subjects':
+      icon = <SubjectsIcon />;
+      break;
     default:
       break;
   }
@@ -56,7 +60,7 @@ export const DetailedInfoCard = ({
     if (syncing) {
       return <SyncIcon width="11" height="16" />;
     }
-    if (parseInt(pendingSync, 10) > 0) {
+    if (parseInt(pendingSync || '', 10) > 0) {
       return <ReportsSyncRequiredIcon width="16" height="12" />;
     }
     return <ReportsSyncNotRequiredIcon width="16" height="10.5" />;
@@ -78,17 +82,19 @@ export const DetailedInfoCard = ({
 
       {/* Body */}
       <View style={styles.bodyContainer}>
-        <View style={styles.infoContainer}>
-          <Text style={styles.text}>{`${t('statusView.pendingSync')}: `}</Text>
-          <Text style={styles.value}>{pendingSync}</Text>
-        </View>
+        {pendingSync && (
+          <View style={styles.infoContainer}>
+            <Text style={styles.text}>{`${t('statusView.pendingSync')}: `}</Text>
+            <Text style={styles.value}>{pendingSync}</Text>
+          </View>
+        )}
         {uploaded && (
           <View style={styles.infoContainer}>
             <Text style={styles.text}>{`${t('statusView.submittedSession')}: `}</Text>
             <Text style={styles.value}>{uploaded}</Text>
           </View>
         )}
-        <View style={[styles.infoContainer, styles.infoContainerLongLine]}>
+        <View style={styles.infoContainer}>
           <Text style={styles.text}>{`${t('statusView.lastSync')}: `}</Text>
           <Text style={styles.value}>{lastSync}</Text>
         </View>

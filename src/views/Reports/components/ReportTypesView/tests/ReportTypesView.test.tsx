@@ -48,17 +48,6 @@ jest.mock('react-native-geolocation-service', () => ({
   }),
 }));
 
-jest.mock('recyclerlistview', () => ({
-  ...jest.requireActual('recyclerlistview'),
-  RecyclerListView: ({ dataProvider, layoutProvider, rowRenderer }) => {
-    const data = dataProvider.getAllData();
-    return data.map((datum, index) => rowRenderer(
-      layoutProvider.getLayoutTypeForIndex(index),
-      datum,
-    ));
-  },
-}));
-
 describe('ReportTypesView', () => {
   let navigation: Pick<StackNavigationPropAlias, 'setOptions' >;
   const route = {

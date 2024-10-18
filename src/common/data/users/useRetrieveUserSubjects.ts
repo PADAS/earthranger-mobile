@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 
 // Internal Dependencies
 import { useGetDBConnection } from '../PersistentStore';
-import { SELECT_USER_SUBJECTS } from '../sql/queries';
+import { SELECT_USER_SUBJECTS } from '../sql/userQueries';
 import { useRetrieveData } from '../hooks/useRetrieveData';
 import { PersistedUserSubject } from '../../types/types';
 import { logSQL } from '../../utils/logUtils';

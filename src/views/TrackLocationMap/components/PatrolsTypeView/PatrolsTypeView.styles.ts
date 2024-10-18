@@ -9,9 +9,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS_LIGHT.white,
   },
-  recyclerListView: {
-    zIndex: 0,
-  },
 });
 
 export default styles;

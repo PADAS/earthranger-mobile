@@ -28,6 +28,9 @@ import {
   IS_STATUS_FILTER_PENDING_SELECTED,
   IS_STATUS_FILTER_SYNCED_SELECTED,
   IS_STATUS_FILTER_ENABLED,
+  CUSTOM_CENTER_COORDS_ENABLED,
+  CUSTOM_CENTER_COORDS_LAT,
+  CUSTOM_CENTER_COORDS_LON,
 } from '../constants/constants';
 import { setSecuredStringForKey } from '../data/storage/utils';
 
@@ -52,6 +55,9 @@ export const deleteSession = async () => {
   setStringForKey(BASEMAP_TOPO_LOCAL, '');
   setStringForKey(BASEMAP_SATELLITE_LOCAL, '');
   setStringForKey(BASEMAP_STREET_LOCAL, '');
+  setBoolForKey(CUSTOM_CENTER_COORDS_ENABLED, false);
+  setStringForKey(CUSTOM_CENTER_COORDS_LAT, '');
+  setStringForKey(CUSTOM_CENTER_COORDS_LON, '');
   resetUserEventFilters();
 
   const checkBoxValue = getBoolForKey(REMEMBER_ME_CHECKBOX_KEY);

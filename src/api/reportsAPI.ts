@@ -182,6 +182,7 @@ export const parseToActiveUserArray = (
   type.default_priority,
   type.icon_id,
   icon,
+  type.is_active,
 ];
 
 export const parseToProfileArray = (
@@ -202,6 +203,7 @@ export const parseToProfileArray = (
   type.default_priority,
   type.icon_id,
   icon,
+  type.is_active,
 ];
 
 export const isReportTypeVisible = (type: Type) => !type.readonly

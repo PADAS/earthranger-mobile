@@ -25,6 +25,9 @@ import { LocationIconHollow } from '../../common/icons/LocationIconHollow';
 import { StatusIconHollow } from '../../common/icons/StatusIconHollow';
 import { ReportsIconHollow } from '../../common/icons/ReportsIconHollow';
 import { SettingsIconHollow } from '../../common/icons/SettingsIconHollow';
+import { SubjectsIcon } from '../../common/icons/SubjectsIcon';
+import { SubjectsIconHollow } from '../../common/icons/SubjectsIconHollow';
+import { SubjectsListView } from '../SubjectsView/SubjectsListView';
 
 const Tab = createBottomTabNavigator();
 
@@ -57,6 +60,13 @@ const MainTabBar = () => {
       return <ReportsIcon color={color} />;
     }
     return <ReportsIconHollow color={color} />;
+  };
+
+  const subjectsIcon = (color: string, focused: boolean) => {
+    if (focused) {
+      return <SubjectsIcon color={color} />;
+    }
+    return <SubjectsIconHollow color={color} />;
   };
 
   const trackScreenView = async (routeName: string) => {
@@ -124,6 +134,19 @@ const MainTabBar = () => {
           headerShown: true,
           headerTitleAlign: 'left',
           tabBarAccessibilityLabel: 'Events Button Bar',
+          tabBarItemStyle: { ...tabBarItemStyle },
+          tabBarLabelStyle,
+        }}
+      />
+      <Tab.Screen
+        name={t('mainTabBar.subjects')}
+        component={SubjectsListView}
+        options={{
+          ...headerBigText(),
+          tabBarIcon: ({ color, focused }) => subjectsIcon(color, focused),
+          headerShown: true,
+          headerTitleAlign: 'left',
+          tabBarAccessibilityLabel: 'Subjects Button Bar',
           tabBarItemStyle: { ...tabBarItemStyle },
           tabBarLabelStyle,
         }}

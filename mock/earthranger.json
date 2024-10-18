@@ -134,6 +134,31 @@
       "responseMode": null
     },
     {
+      "uuid": "gb1f3fb7-e508-46db-b4be-0d409c704b1a",
+      "documentation": "Upload event",
+      "method": "post",
+      "endpoint": "activity/event/",
+      "responses": [
+        {
+          "uuid": "ad155ce0-69dd-48dc-baef-3a9e5ec57a19",
+          "body": "{\n  \"status\": {\n    \"code\": 500,\n    \"message\": \"Internal Server Error\",\n    \"detail\": \"Internal Server Error.\"\n  }\n}",
+          "latency": 0,
+          "statusCode": 500,
+          "label": "",
+          "headers": [],
+          "filePath": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
       "uuid": "a2e8eeb2-6f6e-4c73-9c7a-eb16f3813c9e",
       "documentation": "",
       "method": "post",

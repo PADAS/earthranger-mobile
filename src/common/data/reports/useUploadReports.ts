@@ -11,7 +11,7 @@ import { isEmpty, isNumber } from 'lodash-es';
 import { useRetrieveReportPendingSync } from './useRetrieveReportPendingSync';
 import { useUpdateEventRemoteId } from './useUpdateReportRemoteId';
 import { postEvent, postPatrolSegmentEvent } from '../../../api/reportsAPI';
-import log, { logGeneral, logSync } from '../../utils/logUtils';
+import { logGeneral, logSync } from '../../utils/logUtils';
 import { useRetrieveUnsyncedEventsAttachments } from './useRetrieveUnsyncedEventsAttachments';
 import { useReportUploadFile } from './userReportUploadFile';
 import { ApiStatus, FileRequest } from '../../types/apiModels';
@@ -53,6 +53,7 @@ export const useUploadReports = () => {
     if (session?.access_token) {
       let reportStatus = null;
       const pendingSyncReports = await retrieveReportsPendingSync();
+
       if (pendingSyncReports?.length > 0) {
         reportStatus = await uploadReportEvents(
           session.access_token,
@@ -194,7 +195,7 @@ export const useUploadReports = () => {
 
       return ApiStatus.Succeeded;
     } catch (error) {
-      log.debug(`[${TAG}] - Could not upload event(s) - ${error}`);
+      logSync.debug(`[${TAG}] - Could not upload event(s) - ${error}`);
       return getApiStatus(error);
     }
   }, []);
@@ -264,7 +265,7 @@ export const useUploadReports = () => {
 
       return ApiStatus.Succeeded;
     } catch (error) {
-      log.debug(`[${TAG}] - Could not upload event attachment - ${error}`);
+      logSync.debug(`[${TAG}] - Could not upload event attachment - ${error}`);
       return getApiStatus(error);
     }
   }, []);

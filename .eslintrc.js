@@ -24,6 +24,7 @@ module.exports = {
     '@typescript-eslint',
   ],
   rules: {
+    "max-len": [1, 120],
     'react/function-component-definition': [
       2,
       {

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Colors, Text, View } from 'react-native-ui-lib';
 
 // Internal Dependencies
-import { getReportAreaValues } from '../../../../../../common/utils/geometryUtils';
+import { convertAreaToSqKM, convertPerimeterToKM } from '../../../../../../common/utils/geometryUtils';
 
 // Styles
 import styles from './AreaStatisticsBar.styles';
@@ -28,10 +28,8 @@ const AreaStatisticsBar = ({
 
   // Lifecycle Events
   useEffect(() => {
-    const [formattedArea, formattedPerimeter] = getReportAreaValues(areaMeters, perimeterMeters);
-
-    setPerimeter(formattedPerimeter);
-    setArea(formattedArea);
+    setPerimeter(convertPerimeterToKM(perimeterMeters));
+    setArea(areaMeters > 20000 ? convertAreaToSqKM(areaMeters) : areaMeters.toString());
   }, [areaMeters.toString(), perimeterMeters.toString()]);
 
   return (
@@ -39,14 +37,14 @@ const AreaStatisticsBar = ({
       {/* Perimeter */}
       <View style={styles.statisticContainer}>
         <Text label color={Colors.white}>{t('reports.perimeter')}</Text>
-        <Text label color={Colors.white}>{perimeter}</Text>
+        <Text label color={Colors.white}>{`${perimeter} km`}</Text>
       </View>
       {/* End Perimeter */}
 
       {/* Area */}
       <View style={styles.statisticContainer}>
         <Text label color={Colors.white}>{t('reports.area')}</Text>
-        <Text label color={Colors.white}>{area}</Text>
+        <Text label color={Colors.white}>{`${area} ${areaMeters > 20000 ? 'sqkm' : 'sqm'}`}</Text>
       </View>
       {/* End Area */}
     </View>

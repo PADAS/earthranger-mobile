@@ -15,8 +15,7 @@ export const TAP_SWITCH_ACTIVE_USER = 'tap_switch_active_user';
 
 // Tracking
 export const TAP_START_TRACKING = 'tap_start_tracking';
-export const SWITCH_TRACKING_ON = 'switch_tracking_on';
-export const SWITCH_TRACKING_OFF = 'switch_tracking_off';
+export const TAP_STOP_TRACKING = 'tap_stop_tracking';
 export const TAP_TRACKING_ON = 'tap_tracking_on';
 export const TAP_TRACKING_OFF = 'tap_tracking_off';
 

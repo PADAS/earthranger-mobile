@@ -6,110 +6,92 @@ import React, {
   useState,
 } from 'react';
 import {
-  Dimensions,
   TextInput,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { FlashList } from '@shopify/flash-list';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useTranslation } from 'react-i18next';
-import {
-  DataProvider,
-  LayoutProvider,
-  RecyclerListView,
-} from 'recyclerlistview';
-import { View } from 'react-native-ui-lib';
 import { RouteProp } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
+import { View } from 'react-native-ui-lib';
 
 // Internal Dependencies
-import { MERGE_CATEGORIES_KEY, PATROL_INFO_EVENT_TYPE_VALUE } from '../../../../common/constants/constants';
-import { useRetrieveReportTypesByCategory } from '../../../../common/data/reports/useRetrieveReportTypesByCategory';
+import { COLORS_LIGHT } from '../../../../common/constants/colors';
+import { cropHeaderTitleText } from '../../../../common/utils/stringUtils';
+import { customBackButton, osBackIcon } from '../../../../common/components/header/header';
+import { EmptySearchResultsView } from '../../../../common/components/EmptySearchResults/EmptySearchResultsView';
 import { EventType } from '../../../../common/types/reportsResponse';
 import { getBoolForKey, setStringForKey } from '../../../../common/data/storage/keyValue';
-import { ReportTypesCell } from './components/ReportTypesCell/ReportTypesCell';
-import { Position, RootStackParamList } from '../../../../common/types/types';
-import { customBackButton, osBackIcon } from '../../../../common/components/header/header';
-import { useFilterReportTypesByDisplay } from '../../../../common/data/reports/useFilterReportTypesByDisplay';
-import { COLORS_LIGHT } from '../../../../common/constants/colors';
-import { EmptySearchResultsView } from '../../../../common/components/EmptySearchResults/EmptySearchResultsView';
-import { cropHeaderTitleText } from '../../../../common/utils/stringUtils';
-import { SearchButton } from '../../../../common/components/SearchButton/SearchButton';
+import {
+  ELEMENT_INSPECTOR_WIDTH,
+  MERGE_CATEGORIES_KEY,
+  PATROL_INFO_EVENT_TYPE_VALUE,
+} from '../../../../common/constants/constants';
 import { PermissionView } from '../../../Permission/PermissionView';
+import { PersistedEventType, Position, RootStackParamList } from '../../../../common/types/types';
+import { ReportTypesCell } from './components/ReportTypesCell/ReportTypesCell';
+import { SearchButton } from '../../../../common/components/SearchButton/SearchButton';
+import { useFilterReportTypesByDisplay } from '../../../../common/data/reports/useFilterReportTypesByDisplay';
+import { useRetrieveEventPermissions } from '../../../../common/data/permissions/useRetrievePermissions';
+import { useRetrieveReportTypes } from '../../../../common/data/reports/useRetrieveReportTypes';
+import { useRetrieveReportTypesByCategory } from '../../../../common/data/reports/useRetrieveReportTypesByCategory';
 import { useRetrieveUser } from '../../../../common/data/users/useRetrieveUser';
 import { UserType } from '../../../../common/enums/enums';
-import { useRetrieveReportTypes } from '../../../../common/data/reports/useRetrieveReportTypes';
-import { useRetrieveEventPermissions } from '../../../../common/data/permissions/useRetrievePermissions';
 
 // Styles
 import styles from './ReportTypesView.styles';
 
-// Constants
-const GRID_TYPE = 'DEFAULT_TYPE';
-const DEFAULT_HEIGHT = 131;
-
 // Interfaces + Types
-interface ReportTypesViewProps {
+interface EventTypesViewProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'ReportTypesView'>;
-  route: RouteProp<{ params: { title: string, categoryId: string, coordinates?: Position, isPatrolInfoEventType?: boolean, } }, 'params'>,
+  route: RouteProp<{
+    params: {
+      categoryId: string,
+      coordinates?: Position,
+      isPatrolInfoEventType?: boolean,
+      title: string,
+    }
+  },
+  'params'>,
 }
 
-// @ts-ignore
-const ReportTypesView = ({ route, navigation }: ReportTypesViewProps) => {
+const ReportTypesView = ({ route, navigation }: EventTypesViewProps) => {
   // Hooks
-  const { t } = useTranslation();
-  const { retrieveReportTypesByCategory } = useRetrieveReportTypesByCategory();
   const { filterReportTypesByDisplay } = useFilterReportTypesByDisplay();
+  const { retrieveReportTypesByCategory } = useRetrieveReportTypesByCategory();
   const { retrieveReportTypesByUserType } = useRetrieveReportTypes();
   const { retrieveUserInfo } = useRetrieveUser();
+  const { t } = useTranslation();
   const { userHasEventsPermissions } = useRetrieveEventPermissions();
 
   // References
   const inputRef = useRef<TextInput>(null);
-  // eslint-disable-next-line max-len
-  const mergeCategories = useRef(route.params.isPatrolInfoEventType || getBoolForKey(MERGE_CATEGORIES_KEY));
+  const mergeCategories = useRef(
+    route.params.isPatrolInfoEventType || getBoolForKey(MERGE_CATEGORIES_KEY),
+  );
   const isSearching = useRef(false);
 
-  // Variables
-  const itemSize = (Dimensions.get('window').width) / 3 - 1;
-
-  // Component's State
-  const [reportTypes, setReportTypes] = useState<EventType[]>([]);
-  const [dataProvider, setDataProvider] = useState(new DataProvider((r1, r2) => r1 !== r2));
-  const [layoutProvider] = useState<LayoutProvider>(new LayoutProvider(
-    () => GRID_TYPE,
-    (type, dim) => {
-      switch (type) {
-        case 'DEFAULT_TYPE':
-        default:
-          // eslint-disable-next-line no-param-reassign
-          dim.width = itemSize;
-          // eslint-disable-next-line no-param-reassign
-          dim.height = DEFAULT_HEIGHT;
-          break;
-      }
-    },
-  ));
-  const [filteredReportTypes, setFilteredReportTypes] = useState<EventType[]>([]);
-  const [coordinates, setCoordinates] = useState<Position>([0, 0]);
+  // State
+  const [coordinates, setCoordinates] = useState<Position>(route.params.coordinates || [0, 0]);
+  const [emptyEventCategory, setEmptyEventCategory] = useState(false);
+  const [eventTypes, setEventTypes] = useState<EventType[] | PersistedEventType[]>([]);
+  const [filteredEventTypes, setFilteredEventTypes] = useState<EventType[]>([]);
   const [isSearchModeEnabled, setIsSearchModeEnabled] = useState(false);
   const [showPermissionView, setShowPermissionView] = useState(false);
-  const [emptyEventCategory, setEmptyEventCategory] = useState(false);
 
-  // Component's Lifecycle Events
+  // Lifecycle Events
   useEffect(() => {
     initAppBar();
     initCoordinates();
-    getReportTypes();
+    getEventTypes();
   }, []);
 
   useEffect(() => {
-    if ((isSearching.current && filteredReportTypes.length > 0)
-      || (!isSearching.current && reportTypes.length > 0)) {
-      setDataProvider(
-        // eslint-disable-next-line max-len
-        new DataProvider((r1, r2) => (r1 !== r2)).cloneWithRows(isSearching.current ? filteredReportTypes : reportTypes),
-      );
+    if ((isSearching.current && filteredEventTypes.length > 0)
+      || (!isSearching.current && eventTypes.length > 0)) {
+      setEventTypes(isSearching.current ? filteredEventTypes : eventTypes);
     }
-  }, [isSearching, reportTypes, filteredReportTypes]);
+  }, [isSearching, eventTypes, filteredEventTypes]);
 
   useEffect(() => {
     if (isSearchModeEnabled && inputRef.current) {
@@ -124,6 +106,7 @@ const ReportTypesView = ({ route, navigation }: ReportTypesViewProps) => {
   }, [showPermissionView]);
 
   // Utility Functions
+
   const initAppBar = () => {
     let viewTitle = t('reports.appBarTitle');
 
@@ -132,6 +115,7 @@ const ReportTypesView = ({ route, navigation }: ReportTypesViewProps) => {
     }
 
     navigation.setOptions({
+      // @ts-ignore
       title: viewTitle,
       headerTitle: viewTitle,
       headerLeft: () => customBackButton(
@@ -144,13 +128,61 @@ const ReportTypesView = ({ route, navigation }: ReportTypesViewProps) => {
     // Workaround found in https://github.com/software-mansion/react-native-screens/issues/1570#issuecomment-1362794902
     setTimeout(() => {
       navigation.setOptions({
+        // @ts-ignore
         headerRight: () => searchIconView(),
       });
     }, 10);
   };
 
+  const initCoordinates = useCallback(() => {
+    if (route.params.coordinates) {
+      setCoordinates(
+        [
+          parseFloat(route.params.coordinates[0].toFixed(6)),
+          parseFloat(route.params.coordinates[1].toFixed(6)),
+        ],
+      );
+    }
+  }, [route.params.coordinates]);
+
+  const getEventTypes = async () => {
+    let eventTypesList: EventType[] | PersistedEventType[] = [];
+    const hasEventsPermission = await userHasEventsPermissions();
+
+    if (mergeCategories.current) {
+      const userInfo = await retrieveUserInfo();
+
+      if (userInfo?.userType) {
+        const profileId = userInfo?.userType === UserType.profile ? parseInt(userInfo.userId || '', 10) : undefined;
+
+        eventTypesList = await retrieveReportTypesByUserType(
+          userInfo.userType,
+          userInfo?.permissions,
+          profileId,
+        );
+
+        if (eventTypesList.length === 0) {
+          setShowPermissionView(true);
+          setEmptyEventCategory(hasEventsPermission);
+        }
+
+        setEventTypes(eventTypesList);
+      }
+    } else {
+      eventTypesList = await retrieveReportTypesByCategory([route.params.categoryId]);
+
+      if (eventTypesList.length === 0) {
+        setShowPermissionView(true);
+        setEmptyEventCategory(hasEventsPermission);
+      }
+
+      setEventTypes(eventTypesList);
+    }
+  };
+
   const updateAppBar = async () => {
     navigation.setOptions({
+      // @ts-ignore
       headerLeft: () => searchBackIconView(),
       headerRight: () => null,
       headerTitle: () => searchInputView(),
@@ -160,52 +192,21 @@ const ReportTypesView = ({ route, navigation }: ReportTypesViewProps) => {
 
   const hideSearchIcon = () => {
     navigation.setOptions({
+      // @ts-ignore
       headerRight: () => null,
     });
   };
 
-  const initCoordinates = () => {
-    if (route.params.coordinates) {
-      setCoordinates(
-        [
-          parseFloat(route.params.coordinates[0].toFixed(6)),
-          parseFloat(route.params.coordinates[1].toFixed(6)),
-        ],
-      );
-    }
-  };
-
-  const getReportTypes = async () => {
-    let reportTypesList;
-    const hasEventsPermission = await userHasEventsPermissions();
-
-    if (mergeCategories.current) {
-      const userInfo = await retrieveUserInfo();
-      if (userInfo?.userType) {
-        const profileId = userInfo?.userType === UserType.profile ? parseInt(userInfo.userId || '', 10) : undefined;
-        reportTypesList = await retrieveReportTypesByUserType(
-          userInfo.userType,
-          userInfo?.permissions,
-          profileId,
-        );
-      }
-    } else {
-      reportTypesList = await retrieveReportTypesByCategory([route.params.categoryId]);
-    }
-
-    setReportTypes(reportTypesList);
-
-    if (reportTypesList.length === 0) {
-      setShowPermissionView(true);
-
-      setEmptyEventCategory(hasEventsPermission);
-    }
-  };
-
-  const filterReportTypes = async (queryText: string) => {
-    // eslint-disable-next-line max-len
-    const filteredReportTypesList = await filterReportTypesByDisplay([route.params.categoryId, `%${queryText}%`], mergeCategories.current, queryText);
-    setFilteredReportTypes(filteredReportTypesList);
+  const filterEventTypes = async (queryText: string) => {
+    const filteredEventTypesList = await filterReportTypesByDisplay(
+      [
+        route.params.categoryId,
+        `%${queryText}%`,
+      ],
+      mergeCategories.current,
+      queryText,
+    );
+    setFilteredEventTypes(filteredEventTypesList);
   };
 
   const showSearchInput = async () => {
@@ -215,32 +216,47 @@ const ReportTypesView = ({ route, navigation }: ReportTypesViewProps) => {
 
   const backFromSearch = () => {
     initAppBar();
-    getReportTypes();
+    getEventTypes();
     isSearching.current = false;
     setIsSearchModeEnabled(false);
   };
 
-  const searchReport = (text: string) => {
+  const searchEvent = (text: string) => {
     isSearching.current = true;
-    filterReportTypes(text);
+    filterEventTypes(text);
   };
 
-  const navigateToReportForm = useCallback((
+  const navigateToEventForm = useCallback((
     titleValue: string,
     idValue: string,
     schema: string,
     geometryType: string,
   ) => {
     navigation.navigate('ReportForm', {
+      coordinates,
+      geometryType,
+      schema,
       title: titleValue,
       typeId: idValue,
-      coordinates,
-      schema,
-      geometryType,
     });
   }, [coordinates]);
 
+  const onEventPressHanlder = useCallback((item) => {
+    if (route.params.isPatrolInfoEventType) {
+      setStringForKey(PATROL_INFO_EVENT_TYPE_VALUE, item.value);
+      navigation.goBack();
+    } else {
+      navigateToEventForm(
+        item.display,
+        item.id.toString(),
+        item.schema,
+        item.geometry_type,
+      );
+    }
+  }, []);
+
   // Additional Components
+
   const searchIconView = () => (<SearchButton onPress={showSearchInput} />);
 
   const searchBackIconView = () => customBackButton(osBackIcon, backFromSearch);
@@ -249,63 +265,47 @@ const ReportTypesView = ({ route, navigation }: ReportTypesViewProps) => {
     <TextInput
       placeholder={t('reportTypes.searchPlaceholder')}
       style={styles.searchInput}
-      onChangeText={(text) => (searchReport(text))}
+      onChangeText={(text) => (searchEvent(text))}
       ref={inputRef}
       placeholderTextColor={COLORS_LIGHT.G3_secondaryMediumLightGray}
     />
   );
 
-  const rowRenderer = (type: any, data: any) => {
-    switch (type) {
-      case 'DEFAULT_TYPE':
-        return (
-          <ReportTypesCell
-            typeId={data.id.toString()}
-            title={data.display}
-            iconImage={data.icon_svg}
-            priority={data.default_priority}
-            onPress={() => {
-              if (route.params.isPatrolInfoEventType) {
-                setStringForKey(PATROL_INFO_EVENT_TYPE_VALUE, data.value);
-                navigation.goBack();
-              } else {
-                navigateToReportForm(
-                  data.display,
-                  data.id.toString(),
-                  data.schema,
-                  data.geometry_type,
-                );
-              }
-            }}
-          />
-        );
-      default:
-        return null;
-    }
-  };
+  // List components
+
+  const renderItem = ({ item }: any) => (
+    <ReportTypesCell
+      iconImage={item.icon_svg}
+      onPress={() => onEventPressHanlder(item)}
+      priority={item.default_priority}
+      title={item.display}
+      typeId={item.id.toString()}
+    />
+  );
 
   return (
     <SafeAreaView style={styles.content} edges={['bottom']}>
       {(!showPermissionView) ? (
         <View>
-          {(isSearching.current && filteredReportTypes.length === 0)
+          {(isSearching.current && filteredEventTypes.length === 0)
             ? <EmptySearchResultsView />
             : (
               <View style={{ height: '100%' }}>
-                <RecyclerListView
-                  style={styles.flatList}
-                  layoutProvider={layoutProvider}
-                  dataProvider={dataProvider}
-                  rowRenderer={rowRenderer}
-                  canChangeSize={false}
-                  disableRecycling // This prevents blank spaces when scrolling up
+                <FlashList
+                  // @ts-ignore
+                  data={eventTypes}
+                  estimatedItemSize={ELEMENT_INSPECTOR_WIDTH}
                   keyboardShouldPersistTaps="always"
+                  keyExtractor={(item) => item.id.toString()}
+                  numColumns={3}
+                  renderItem={renderItem}
                 />
               </View>
             )}
         </View>
-      ) : (<PermissionView emptyEventCategory={emptyEventCategory} />)}
-
+      ) : (
+        <PermissionView emptyEventCategory={emptyEventCategory} />
+      )}
     </SafeAreaView>
   );
 };

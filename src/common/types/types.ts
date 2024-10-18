@@ -35,6 +35,7 @@ export type RootStackParamList = {
     perimeterMeters?: number,
     polygonPoints?: string,
     viewBox?: string,
+    isPatrolInfoEvent?: boolean,
   },
   ReportEditLocationView: { coordinates: Position },
   RecordReportAreaView: undefined,
@@ -56,7 +57,7 @@ export type RootStackParamList = {
   },
   EventsListFilterView: undefined,
   ReportsPendingSync: undefined,
-  SubjectsView: {
+  TrackedBySubjectsView: {
     subjects?: any,
   },
   BasemapView: undefined,
@@ -72,6 +73,11 @@ export type RootStackParamList = {
   },
   PhotoQualityView: undefined,
   ResetDatabaseCacheView: undefined,
+  SubjectsListView: {
+    parentSubjectGroupName?: string,
+    isParentView?: boolean,
+    parentId?: string,
+  }
 };
 
 export type BottomSheetParamList = {
@@ -79,6 +85,7 @@ export type BottomSheetParamList = {
   PatrolDetailsView: { patrolId: number },
   PatrolTrack: undefined,
   TrackingStatusView: undefined,
+  SubjectDetailsView: undefined,
 };
 
 export interface EdgeInsets {
@@ -372,4 +379,44 @@ export interface EventListItem {
   statusIcon: string,
   text: string,
   title: string,
+  errorMsg?: string,
+  hasErrorOnEvent: boolean,
 }
+
+export type SubjectGroupData = {
+  count: number,
+  isVisible: boolean,
+  title: string,
+  type: 'group',
+  subjects: number[],
+  id: string,
+};
+
+export type Subject = {
+  id: number,
+  name: string,
+  type: 'subject',
+  isVisible: boolean,
+  icon: string,
+  lastPosition: Position,
+  lastPositionUpdate: string,
+  isHidden: boolean,
+};
+
+export type SubjectGroupSyncItem = {
+  name: string,
+  remoteId: string,
+  parentId?: string,
+  parentLocalId?: string,
+};
+
+export type SubjectSyncItem = {
+  iconSVG: string,
+  isActive: string,
+  lastPosition: string,
+  lastPositionDate: string,
+  name: string,
+  remoteId: string,
+  tracksAvailable: string,
+  updatedAt: string,
+};

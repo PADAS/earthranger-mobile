@@ -29,7 +29,8 @@
     "loadingAccountInformation": "Sincronizando contas de usuário",
     "loadingReportCategories": "Sincronizando Categorias de Eventos",
     "loadingTypesOfReports": "Sincronizando tipos de eventos",
-    "loadingPatrolTypes": "Sincronizando tipos de patrulha"
+    "loadingPatrolTypes": "Sincronizando tipos de patrulha",
+    "loadingSubjectGroups": "Sincronizando grupos de assuntos"
   },
   "mapTrackLocation": {
     "tracking": "Rastreamento",
@@ -88,7 +89,8 @@
     "map": "Mapa",
     "status": "Status",
     "events": "Eventos",
-    "settings": "Definições"
+    "settings": "Definições",
+    "subjects": "Assuntos"
   },
   "menuSettingsView": {
     "settings": "DEFINIÇÕES",
@@ -165,7 +167,15 @@
     "slowestUpload": "Carregamento mais lento",
     "fastestUpload": "Carregamento mais rápido",
     "patrolInfo": "Informações da patrulha",
-    "eventType": "Tipo de evento"
+    "eventType": "Tipo de evento",
+    "mapCenterItem": {
+      "main": {
+        "title": "Centro do mapa aberto"
+      },
+      "secondary": {
+        "title": "Coordenadas Centrais"
+      }
+    }
   },
   "aboutView": {
     "version": "Versão 1.1.9.49",
@@ -264,6 +274,13 @@
     "defaultPendingSync": "Ainda não sincronizado",
     "wifiDataConnectionRequired": "Conexão Wi-Fi necessária para sincronizar fotos.",
     "save": "Salvar",
+    "errors": {
+      "BadRequest": "Pedido ruim",
+      "Unauthorized" : "Não autorizado",
+      "Forbidden": "Proibido",
+      "NotFound": "Não encontrado",
+      "ServerError": "Erro de servidor"
+    },
     "accuracy": "Precisão",
     "lowAccuracy": "Baixa precisão"
   },
@@ -410,5 +427,19 @@
     "title": "Salvar alterações nos filtros?",
     "saveAndApply": "Salvar e aplicar filtros",
     "discard": "Descartar mudanças"
+  },
+  "subjectsView": {
+    "emptyList": "Não há assuntos para exibir",
+    "subject": "assunto",
+    "subjects": "assuntos",
+    "timeDifference": {
+      "daysAgo": "{{diff}} dias atrás",
+      "dayAgo": "{{diff}} dia atrás",
+      "hoursAgo": "{{diff}} horas atrás",
+      "hourAgo": "{{diff}} hora atrás",
+      "minutesAgo": "{{diff}} minutos atrás",
+      "minuteAgo": "{{diff}} minuto atrás",
+      "secondsAgo": "{{diff}} segundos atrás"
+    }
   }
 }

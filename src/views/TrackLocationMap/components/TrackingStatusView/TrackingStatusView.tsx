@@ -1,6 +1,7 @@
 /* eslint-disable import/no-cycle */
 // External Dependencies
 import React, {
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -18,6 +19,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useWindowDimensions } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
+import { debounce } from 'lodash-es';
 
 // Internal Dependencies
 import { useMMKVBoolean, useMMKVNumber } from 'react-native-mmkv';
@@ -96,6 +98,34 @@ export const TrackingStatusView = () => {
     };
   }, []);
 
+  // Debounced function for handling button presses
+  const debouncedHandlePress = useCallback(
+    debounce((componentAction?, action?, number?) => {
+      eventEmitter.emit(
+        BOTTOM_SHEET_NAVIGATOR,
+        { bottomSheetComponentAction: componentAction, bottomSheetAction: action, index: number },
+      );
+    }, 300, { leading: true, trailing: false }),
+    [],
+  );
+
+  // Cleanup function to cancel any pending debounced calls
+  useEffect(() => () => {
+    debouncedHandlePress.cancel();
+  }, [debouncedHandlePress]);
+
+  const onEndTracking = () => {
+    debouncedHandlePress(BottomSheetComponentAction.stopTracking);
+  };
+
+  const onStartPatrol = () => {
+    debouncedHandlePress(BottomSheetComponentAction.startPatrol);
+  };
+
+  const onMinimizeView = () => {
+    debouncedHandlePress(null, BottomSheetAction.snapToIndex, 0);
+  };
+
   const textAnimatedStyle = useAnimatedStyle(() => ({
     fontSize: interpolate(
       animatedPosition.value,
@@ -116,13 +146,6 @@ export const TrackingStatusView = () => {
       Extrapolation.CLAMP,
     ),
   }), []);
-
-  const onEndTracking = () => {
-    eventEmitter.emit(
-      BOTTOM_SHEET_NAVIGATOR,
-      { bottomSheetComponentAction: BottomSheetComponentAction.stopTracking },
-    );
-  };
 
   return (
     <View style={styles.container}>
@@ -161,10 +184,7 @@ export const TrackingStatusView = () => {
           <Button
             iconSource={chevronIcon}
             style={styles.headerChevronIcon}
-            onPress={() => eventEmitter.emit(
-              BOTTOM_SHEET_NAVIGATOR,
-              { bottomSheetAction: BottomSheetAction.snapToIndex, index: 0 },
-            )}
+            onPress={() => onMinimizeView()}
             hitSlop={{
               top: 20, bottom: 20, left: 20, right: 20,
             }}
@@ -186,10 +206,7 @@ export const TrackingStatusView = () => {
         {isPatrolPermissionAvailable && (
         <View style={styles.buttonContainer}>
           <Button
-            onPress={() => eventEmitter.emit(
-              BOTTOM_SHEET_NAVIGATOR,
-              { bottomSheetComponentAction: BottomSheetComponentAction.startPatrol },
-            )}
+            onPress={() => onStartPatrol()}
             style={
                 [
                   styles.startButton,

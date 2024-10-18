@@ -61,6 +61,7 @@ import { getAuthState, setAuthState } from '../../common/utils/authUtils';
 import { AuthState } from '../../common/enums/enums';
 import { removeDBLocations } from '../../common/utils/locationUtils';
 import { deleteSession } from '../../common/utils/deleteSession';
+import subjectsStorage from '../../common/data/storage/subjectsStorage';
 
 // Styles
 import style from './LoginView.styles';
@@ -174,6 +175,7 @@ const LoginView = ({
           setIsLoading(false);
           navigateTo(MAIN_TAB_BAR);
         } else {
+          subjectsStorage.clearUserData();
           setBoolForKey(EXPERIMENTAL_FEATURES_FLAG_KEY, false);
           setBoolForKey(TRACKED_BY_SUBJECT_STATUS_KEY, false);
           setBoolForKey(BASEMAP_KEY, false);

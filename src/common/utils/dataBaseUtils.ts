@@ -1,9 +1,9 @@
+// Internal Dependencies
+import { PermissionLevel } from '../enums/enums';
+
 // ------------------------------------------------------------------------
 // public functions
 // ------------------------------------------------------------------------
-
-// Internal Dependencies
-import { PermissionLevel } from '../enums/enums';
 
 // Creates a query string by replacing all instances of `?` in provided query
 // with corresponding values in params array

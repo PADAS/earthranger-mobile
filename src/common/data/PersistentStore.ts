@@ -18,61 +18,68 @@ import {
   TABLE_PATROL_SEGMENTS,
   TABLE_USER_PROFILES,
   TABLE_USER_SUBJECTS,
+  TABLE_SUBJECTS,
+  TABLE_SUBJECT_GROUPS,
+  TABLE_SUBJECT_GROUP_MEMBERSHIPS,
+  TABLE_PROFILE_SUBJECT_GROUPS,
 } from './sql/tables';
 import {
-  ACCOUNTS_USER_IDX,
   ATTACHMENTS_IDX,
   EVENTS_IDX,
   EVENT_CATEGORY_IDX,
   EVENT_TYPE_IDX,
   EVENT_TYPE_DISPLAY_IDX,
-  SELECT_USER_BY_USERNAME,
   SYNC_STATES_IDX, SELECT_SYNC_STATE,
   PATROL_TYPES_IDX,
+  SUBJECTS_IDX,
+} from './sql/queries';
+import {
+  ACCOUNTS_USER_IDX,
+  SELECT_USER_BY_USERNAME,
   USER_PROFILES_IDX,
   USER_SUBJECTS_IDX,
-} from './sql/queries';
+} from './sql/userQueries';
 import { logSQL } from '../utils/logUtils';
 import { DATABASE_FILE_NAME, IS_IOS, USER_ID_KEY } from '../constants/constants';
 import { setSecuredStringForKey } from './storage/utils';
 
 // Migrations
-import { ALTER_TABLE_EVENT_TYPE_GEOMETRY } from './sql/db_m_001';
-import { ALTER_TABLE_ACCOUNT_USER_CONTENT_TYPE, ALTER_TABLE_ACCOUNT_USER_REPORTED_BY } from './sql/db_m_002';
-import { ALTER_TABLE_EVENTS_GEOMETRY } from './sql/db_m_003';
+import { ALTER_TABLE_EVENT_TYPE_GEOMETRY } from './sql/migrations/db_m_001';
+import { ALTER_TABLE_ACCOUNT_USER_CONTENT_TYPE, ALTER_TABLE_ACCOUNT_USER_REPORTED_BY } from './sql/migrations/db_m_002';
+import { ALTER_TABLE_EVENTS_GEOMETRY } from './sql/migrations/db_m_003';
 import {
   ALTER_TABLE_EVENT_TYPE, DROP_TABLE_EVENT_TYPE,
   DROP_TABLE_EVENT_TYPE_TEMP,
   INSERT_TABLE_EVENT_TYPE_TEMP,
   TABLE_EVENT_TYPE_TEMP,
-} from './sql/db_m_004';
+} from './sql/migrations/db_m_004';
 import {
   ALTER_TABLE_EVENT_CATEGORY,
   DROP_TABLE_EVENT_CATEGORY,
   DROP_TABLE_EVENT_CATEGORY_TEMP,
   INSERT_TABLE_EVENT_CATEGORY_TEMP,
   TABLE_EVENT_CATEGORY_TEMP,
-} from './sql/db_m_005';
-import { M_TABLE_SYNC_STATES } from './sql/db_m_006';
-import { M_TABLE_PATROL_TYPES } from './sql/db_m_007';
-import { ADD_INDEX_PATROL_TYPES_IDX, DROP_INDEX_PATROL_TYPES_IDX } from './sql/db_m_008';
-import { DROP_TABLE_CHOICES } from './sql/db_m_009';
-import { M_TABLE_PATROLS, M_TABLE_PATROL_SEGMENTS } from './sql/db_m_010';
-import { ALTER_TABLE_ACCOUNT_USER_SUBJECT_ID } from './sql/db_m_011';
-import { ALTER_TABLE_ACCOUNT_USER_ACCEPTED_EULA } from './sql/db_m_012';
-import { M_TABLE_USER_PROFILES } from './sql/db_m_013';
-import { ALTER_TABLE_EVENTS_PATROL_SEGMENT_ID } from './sql/db_m_014';
-import { ALTER_TABLE_USER_PROFILE_PIN } from './sql/db_m_015';
+} from './sql/migrations/db_m_005';
+import { M_TABLE_SYNC_STATES } from './sql/migrations/db_m_006';
+import { M_TABLE_PATROL_TYPES } from './sql/migrations/db_m_007';
+import { ADD_INDEX_PATROL_TYPES_IDX, DROP_INDEX_PATROL_TYPES_IDX } from './sql/migrations/db_m_008';
+import { DROP_TABLE_CHOICES } from './sql/migrations/db_m_009';
+import { M_TABLE_PATROLS, M_TABLE_PATROL_SEGMENTS } from './sql/migrations/db_m_010';
+import { ALTER_TABLE_ACCOUNT_USER_SUBJECT_ID } from './sql/migrations/db_m_011';
+import { ALTER_TABLE_ACCOUNT_USER_ACCEPTED_EULA } from './sql/migrations/db_m_012';
+import { M_TABLE_USER_PROFILES } from './sql/migrations/db_m_013';
+import { ALTER_TABLE_EVENTS_PATROL_SEGMENT_ID } from './sql/migrations/db_m_014';
+import { ALTER_TABLE_USER_PROFILE_PIN } from './sql/migrations/db_m_015';
 import {
   ALTER_TABLE_ATTACHMENTS_PROFILE_ID,
   ALTER_TABLE_EVENTS_PROFILE_ID,
   ALTER_TABLE_EVENT_CATEGORY_PROFILE_ID,
   ALTER_TABLE_EVENT_TYPE_PROFILE_ID,
   ALTER_TABLE_PATROL_TYPES_PROFILE_ID,
-} from './sql/db_m_016';
-import { ALTER_TABLE_ACCOUNTS_USER_PIN } from './sql/db_m_017';
-import { M_TABLE_USER_SUBJECTS } from './sql/db_m_018';
-import { ALTER_TABLE_PATROL_TYPE_ORDERNUM } from './sql/db_m_019';
+} from './sql/migrations/db_m_016';
+import { ALTER_TABLE_ACCOUNTS_USER_PIN } from './sql/migrations/db_m_017';
+import { M_TABLE_USER_SUBJECTS } from './sql/migrations/db_m_018';
+import { ALTER_TABLE_PATROL_TYPE_ORDERNUM } from './sql/migrations/db_m_019';
 import {
   ALTER_TABLE_ACCOUNTS_USER, ALTER_TABLE_USER_PROFILES,
   DROP_TABLE_ACCOUNTS_USER,
@@ -82,20 +89,20 @@ import {
   INSERT_TABLE_USER_PROFILES_TEMP,
   TABLE_ACCOUNTS_USER_TEMP,
   TABLE_USER_PROFILES_TEMP,
-} from './sql/db_m_020';
+} from './sql/migrations/db_m_020';
 import {
   ADD_INDEX_ACCOUNTS_USER_IDX, ADD_INDEX_USER_PROFILES_IDX,
   DROP_INDEX_ACCOUNTS_USER_IDX,
   DROP_INDEX_USER_PROFILES_IDX,
-} from './sql/db_m_021';
-import { ALTER_TABLE_EVENTS_STATE } from './sql/db_m_022';
+} from './sql/migrations/db_m_021';
+import { ALTER_TABLE_EVENTS_STATE } from './sql/migrations/db_m_022';
 import {
   ALTER_TABLE_EVENTS,
   DROP_TABLE_EVENTS,
   DROP_TABLE_EVENTS_TEMP,
   INSERT_TABLE_EVENTS_TEMP,
   TABLE_EVENTS_TEMP,
-} from './sql/db_m_023';
+} from './sql/migrations/db_m_023';
 import {
   ALTER_TABLE_ATTACHMENTS,
   ALTER_TABLE_PATROL_TYPES,
@@ -111,23 +118,71 @@ import {
   TABLE_EVENT_CATEGORY_TEMP_M24,
   TABLE_EVENT_TYPE_TEMP_M24,
   TABLE_PATROL_TYPES_TEMP,
-} from './sql/db_m_024';
+} from './sql/migrations/db_m_024';
 import {
   ALTER_TABLE_PATROLS_ACCOUNT_ID,
   ALTER_TABLE_PATROLS_PROFILE_ID,
-} from './sql/db_m_025';
-import { ALTER_TABLE_ACCOUNTS_USER_PERMISSIONS, ALTER_TABLE_USER_PROFILES_PERMISSIONS } from './sql/db_m_026';
+} from './sql/migrations/db_m_025';
+import {
+  ALTER_TABLE_ACCOUNTS_USER_PERMISSIONS,
+  ALTER_TABLE_USER_PROFILES_PERMISSIONS,
+} from './sql/migrations/db_m_026';
 import {
   ALTER_TABLE_EVENT_TYPE_M27,
   DROP_TABLE_EVENT_TYPE_M27,
   DROP_TABLE_EVENT_TYPE_TEMP_M27,
   INSERT_TABLE_EVENT_TYPE_TEMP_M27,
   TABLE_EVENT_TYPE_TEMP_M27,
-} from './sql/db_m_027';
-import { DROP_TABLE_DEVICES } from './sql/db_m_028';
-import { ALTER_TABLE_PATROLS_SERIAL_NUMBER } from './sql/db_m_029';
-import { ALTER_TABLE_ACCOUNTS_USER_IS_SUPERUSER } from './sql/db_m_030';
-import { ALTER_TABLE_EVENTS_SERIAL_NUMBER } from './sql/db_m_031';
+} from './sql/migrations/db_m_027';
+import { DROP_TABLE_DEVICES } from './sql/migrations/db_m_028';
+import { ALTER_TABLE_PATROLS_SERIAL_NUMBER } from './sql/migrations/db_m_029';
+import { ALTER_TABLE_ACCOUNTS_USER_IS_SUPERUSER } from './sql/migrations/db_m_030';
+import { ALTER_TABLE_EVENTS_SERIAL_NUMBER } from './sql/migrations/db_m_031';
+import { ALTER_TABLE_EVENT_TYPE_IS_ACTIVE } from './sql/migrations/db_m_032';
+import { ALTER_TABLE_EVENT_CATEGORY_IS_ACTIVE } from './sql/migrations/db_m_033';
+import {
+  ADD_INDEX_SUBJECT_GROUPS_IDX,
+  ADD_INDEX_SUBJECT_IDX,
+  DROP_INDEX_SUBJECT_GROUPS_IDX,
+  DROP_INDEX_SUBJECT_IDX,
+  TABLE_SUBJECTS_M,
+  TABLE_SUBJECT_GROUPS_M,
+} from './sql/migrations/db_m_034';
+import {
+  M_ALTER_TABLE_SUBJECTS_TEMP,
+  M_ALTER_TABLE_SUBJECT_GROUPS,
+  M_DROP_SUBJECTS_TEMP,
+  M_DROP_TABLE_SUBJECTS,
+  M_INSERT_TABLE_SUBJECTS_TEMP,
+  M_TABLE_SUBJECTS_TEMP,
+  M_TABLE_SUBJECT_GROUP_MEMBERSHIPS,
+} from './sql/migrations/db_m_035';
+import { ALTER_TABLE_SUBJECTS_ICON_SVG } from './sql/migrations/db_m_036';
+import {
+  ALTER_TABLE_SUBJECT_GROUPS,
+  DROP_TABLE_SUBJECT_GROUPS,
+  DROP_TABLE_SUBJECT_GROUPS_TEMP,
+  INSERT_TABLE_SUBJECT_GROUPS_TEMP,
+  M_37_PROFILE_SUBJECT_GROUPS_PROFILE_ID_IDX,
+  M_37_PROFILE_SUBJECT_GROUPS_SUBJECT_GROUP_ID_IDX,
+  M_37_SUBJECT_GROUPS_ID_IDX,
+  M_37_SUBJECT_GROUPS_PARENT_ID_IDX,
+  M_37_TABLE_PROFILE_SUBJECT_GROUPS,
+  TABLE_SUBJECT_GROUPS_TEMP,
+} from './sql/migrations/db_m_037';
+import {
+  PROFILE_SUBJECT_GROUPS_PROFILE_ID_IDX,
+  PROFILE_SUBJECT_GROUPS_SUBJECT_GROUP_ID_IDX,
+  SUBJECT_GROUPS_IDX,
+  SUBJECT_GROUPS_ID_IDX,
+  SUBJECT_GROUPS_PARENT_ID_IDX,
+} from './sql/subjectQueries';
+import {
+  M_38_DROP_SUBJECT_GROUPS_ID_IDX,
+  M_38_DROP_TABLE_SUBJECT_GROUPS,
+  M_38_SUBJECT_GROUPS_ID_IDX,
+  M_38_TABLE_SUBJECT_GROUPS,
+} from './sql/migrations/db_m_038';
 
 enablePromise(true);
 
@@ -148,6 +203,7 @@ export const useInitDatabase = () => {
     try {
       const db = await getDBConnection();
       logSQL.debug(`Database installed ${dbPath}`);
+      await db.executeSql('PRAGMA foreign_keys = ON');
       // create accounts_user table and index
       await db.executeSql(TABLE_ACCOUNTS_USER);
       await db.executeSql(ACCOUNTS_USER_IDX);
@@ -189,6 +245,21 @@ export const useInitDatabase = () => {
       logSQL.debug('patrols table created');
       await db.executeSql(TABLE_PATROL_SEGMENTS);
       logSQL.debug('patrol_segments table created');
+      // create subjects and subject_groups tables and indexes
+      await db.executeSql(TABLE_SUBJECTS);
+      await db.executeSql(SUBJECTS_IDX);
+      logSQL.debug('subjects table created');
+      await db.executeSql(TABLE_SUBJECT_GROUPS);
+      await db.executeSql(SUBJECT_GROUPS_IDX);
+      await db.executeSql(SUBJECT_GROUPS_ID_IDX);
+      await db.executeSql(SUBJECT_GROUPS_PARENT_ID_IDX);
+      logSQL.debug('subject_groups table created');
+      await db.executeSql(TABLE_SUBJECT_GROUP_MEMBERSHIPS);
+      logSQL.debug('subject_group_memberships table created');
+      await db.executeSql(TABLE_PROFILE_SUBJECT_GROUPS);
+      await db.executeSql(PROFILE_SUBJECT_GROUPS_PROFILE_ID_IDX);
+      await db.executeSql(PROFILE_SUBJECT_GROUPS_SUBJECT_GROUP_ID_IDX);
+      logSQL.debug('profile_subject_groups table created');
       // update db schema version
       await updateSchemaVersion();
       logSQL.debug(`db schema updated: version ${await getSchemaVersion()}`);
@@ -472,6 +543,50 @@ export const onUpgrade = async (newVersion: number) => {
       // falls through
       case 31:
         await db.executeSql(ALTER_TABLE_EVENTS_SERIAL_NUMBER);
+      // falls through
+      case 32:
+        await db.executeSql(ALTER_TABLE_EVENT_TYPE_IS_ACTIVE);
+      // falls through
+      case 33:
+        await db.executeSql(ALTER_TABLE_EVENT_CATEGORY_IS_ACTIVE);
+      // falls through
+      case 34:
+        await db.executeSql(TABLE_SUBJECTS_M);
+        await db.executeSql(DROP_INDEX_SUBJECT_IDX);
+        await db.executeSql(ADD_INDEX_SUBJECT_IDX);
+        await db.executeSql(TABLE_SUBJECT_GROUPS_M);
+        await db.executeSql(DROP_INDEX_SUBJECT_GROUPS_IDX);
+        await db.executeSql(ADD_INDEX_SUBJECT_GROUPS_IDX);
+      // falls through
+      case 35:
+        await db.executeSql(M_ALTER_TABLE_SUBJECT_GROUPS);
+        await db.executeSql(M_DROP_SUBJECTS_TEMP);
+        await db.executeSql(M_TABLE_SUBJECTS_TEMP);
+        await db.executeSql(M_INSERT_TABLE_SUBJECTS_TEMP);
+        await db.executeSql(M_DROP_TABLE_SUBJECTS);
+        await db.executeSql(M_ALTER_TABLE_SUBJECTS_TEMP);
+        await db.executeSql(M_TABLE_SUBJECT_GROUP_MEMBERSHIPS);
+      // falls through
+      case 36:
+        await db.executeSql(ALTER_TABLE_SUBJECTS_ICON_SVG);
+      // falls through
+      case 37:
+        await db.executeSql(DROP_TABLE_SUBJECT_GROUPS_TEMP);
+        await db.executeSql(TABLE_SUBJECT_GROUPS_TEMP);
+        await db.executeSql(INSERT_TABLE_SUBJECT_GROUPS_TEMP);
+        await db.executeSql(DROP_TABLE_SUBJECT_GROUPS);
+        await db.executeSql(ALTER_TABLE_SUBJECT_GROUPS);
+        await db.executeSql(M_37_SUBJECT_GROUPS_ID_IDX);
+        await db.executeSql(M_37_SUBJECT_GROUPS_PARENT_ID_IDX);
+        await db.executeSql(M_37_TABLE_PROFILE_SUBJECT_GROUPS);
+        await db.executeSql(M_37_PROFILE_SUBJECT_GROUPS_PROFILE_ID_IDX);
+        await db.executeSql(M_37_PROFILE_SUBJECT_GROUPS_SUBJECT_GROUP_ID_IDX);
+      // falls through
+      case 38:
+        await db.executeSql(M_38_DROP_SUBJECT_GROUPS_ID_IDX);
+        await db.executeSql(M_38_DROP_TABLE_SUBJECT_GROUPS);
+        await db.executeSql(M_38_TABLE_SUBJECT_GROUPS);
+        await db.executeSql(M_38_SUBJECT_GROUPS_ID_IDX);
       // falls through
       default:
         // Do nothing

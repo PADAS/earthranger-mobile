@@ -197,7 +197,7 @@ export const useUploadPatrols = () => {
       } catch (error) {
         const apiStatus = getApiStatus(error);
 
-        if (apiStatus === ApiStatus.NotFound) {
+        if (apiStatus === ApiStatus.NotFound && activePatrol.remote_id) {
           await updatePatrolState(patrolId, PatrolStatus.Canceled);
         }
       }

@@ -1,6 +1,6 @@
 // External Dependencies
+import Mapbox from '@rnmapbox/maps';
 import React, { useCallback, useEffect, useState } from 'react';
-import MapboxGL from '@react-native-mapbox-gl/maps';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Dimensions, Image, Linking, Pressable, ScrollView, Switch, View,
@@ -47,6 +47,9 @@ import {
   UPLOAD_PHOTOS_WIFI,
   USER_NAME_KEY,
   ACTIVE_USER_HAS_PATROLS_PERMISSION,
+  CUSTOM_CENTER_COORDS_ENABLED,
+  CUSTOM_CENTER_COORDS_LAT,
+  CUSTOM_CENTER_COORDS_LON,
 } from '../../../common/constants/constants';
 import { SITE } from '../../../api/EarthRangerService';
 import { getSecuredStringForKey, setSecuredStringForKey } from '../../../common/data/storage/utils';
@@ -57,9 +60,14 @@ import {
   setBoolForKey,
   setStringForKey,
 } from '../../../common/data/storage/keyValue';
-import { isObservationPendingData, nullIslandLocation } from '../../../common/utils/locationUtils';
+import {
+  formatCoordinates,
+  isObservationPendingData,
+  LocationFormats,
+  nullIslandLocation,
+} from '../../../common/utils/locationUtils';
 import { COLORS_LIGHT } from '../../../common/constants/colors';
-import { RootStackParamList } from '../../../common/types/types';
+import { Position, RootStackParamList } from '../../../common/types/types';
 import { deleteSession } from '../../../common/utils/deleteSession';
 import log, { logSQL } from '../../../common/utils/logUtils';
 import { useGetNumberReportDrafts } from '../../../common/data/reports/useGetNumberReportDrafts';
@@ -69,9 +77,13 @@ import { getAuthState, setAuthState } from '../../../common/utils/authUtils';
 import { AuthState, UserType } from '../../../common/enums/enums';
 import { useRetrieveData } from '../../../common/data/hooks/useRetrieveData';
 import { useGetDBConnection } from '../../../common/data/PersistentStore';
-import { SELECT_USER_BY_USERNAME } from '../../../common/data/sql/queries';
+import { SELECT_USER_BY_USERNAME } from '../../../common/data/sql/userQueries';
 import { useRetrieveReportTypes } from '../../../common/data/reports/useRetrieveReportTypes';
 import { useRetrieveUser } from '../../../common/data/users/useRetrieveUser';
+import { SettingsItem } from '../SettingsItem/SettingsItem';
+import { SettingsSubItem } from '../SettingsItem/SettingsSubItem';
+import { useGetLocation } from '../../../common/data/location/useGetLocation';
+import { EditLocationDialog } from '../../../common/components/EditLocationDialog/EditLocationDialog';
 
 // Icons
 import { icons } from '../../../ui/AssetsUtils';
@@ -97,6 +109,7 @@ import { CameraRollIcon } from '../../../common/icons/CameraRollIcon';
 import { WiFiIcon } from '../../../common/icons/WiFiIcon';
 import { PatrolStartIcon } from '../../../common/icons/PatrolStartIcon';
 import { DatabaseIcon } from '../../../common/icons/DatabaseIcon';
+import { CenterIcon } from '../../../common/icons/CenterIcon';
 
 // Styles
 import { style } from './style';
@@ -126,6 +139,8 @@ export const SettingsView = ({
   const { getDBInstance } = useGetDBConnection();
   const { retrieveDefaultEventType, retrieveEventTypeDisplayByValue } = useRetrieveReportTypes();
   const { retrieveUserInfo } = useRetrieveUser();
+  const { getLocationWithRetries } = useGetLocation();
+
   // eslint-disable-next-line max-len
   const [patrolDefaultEventTypeStatus] = useMMKVString(PATROL_INFO_EVENT_TYPE_VALUE, localStorage);
 
@@ -164,6 +179,15 @@ export const SettingsView = ({
     localStorage,
   );
   const [isDeviceOnline, setIsDeviceOnline] = useState(true);
+  const [isMapCenterEnabled] = useMMKVBoolean(
+    CUSTOM_CENTER_COORDS_ENABLED,
+    localStorage,
+  );
+  const [currentCoordinates, setCurrentCoordinates] = useState<Position>([
+    parseFloat(getStringForKey(CUSTOM_CENTER_COORDS_LON) || '0'),
+    parseFloat(getStringForKey(CUSTOM_CENTER_COORDS_LAT) || '0'),
+  ]);
+  const [showMapCenterCoordinatesDialog, setShowMapCenterCoordinatesDialog] = useState(false);
 
   useEffect(() => {
     initSiteValue();
@@ -186,13 +210,13 @@ export const SettingsView = ({
     useCallback(() => {
       setBoolForKey(SETTINGS_VIEW_DISAPPEAR_KEY, true);
       switch (getStringForKey(BASEMAP_KEY)) {
-        case MapboxGL.StyleURL.Outdoors:
+        case Mapbox.StyleURL.Outdoors:
           setBasemapName('topo');
           break;
-        case MapboxGL.StyleURL.Satellite:
+        case Mapbox.StyleURL.Satellite:
           setBasemapName('satellite');
           break;
-        case MapboxGL.StyleURL.Street:
+        case Mapbox.StyleURL.Street:
         default:
           setBasemapName('street');
           break;
@@ -357,6 +381,49 @@ export const SettingsView = ({
       setStringForKey(TRACKED_BY_SUBJECT_NAME_KEY, '');
       setStringForKey(TRACKED_BY_SUBJECT_ID_KEY, '');
     }
+  };
+
+  const toggleMapCenter = async () => {
+    setBoolForKey(CUSTOM_CENTER_COORDS_ENABLED, !isMapCenterEnabled);
+
+    // Fetch current coordinates just when enabling the setting
+    if (!isMapCenterEnabled) {
+      const location = await getLocationWithRetries();
+      setCurrentCoordinates(
+        [
+          location.coords.longitude,
+          location.coords.latitude,
+        ],
+      );
+
+      setStringForKey(CUSTOM_CENTER_COORDS_LAT, location.coords.latitude.toString());
+      setStringForKey(CUSTOM_CENTER_COORDS_LON, location.coords.longitude.toString());
+    } else {
+      setStringForKey(CUSTOM_CENTER_COORDS_LAT, '');
+      setStringForKey(CUSTOM_CENTER_COORDS_LON, '');
+    }
+  };
+
+  const onMapCenterCoordinatesPress = () => {
+    setShowMapCenterCoordinatesDialog(true);
+  };
+
+  const onMapCenterDialogClosePress = () => {
+    setShowMapCenterCoordinatesDialog(false);
+  };
+
+  const onMapCenterDialogSavePress = (updatedCoordinates: Position) => {
+    setShowMapCenterCoordinatesDialog(false);
+
+    setCurrentCoordinates(
+      [
+        parseFloat(updatedCoordinates[0].toFixed(6)),
+        parseFloat(updatedCoordinates[1].toFixed(6)),
+      ],
+    );
+
+    setStringForKey(CUSTOM_CENTER_COORDS_LAT, updatedCoordinates[1].toString());
+    setStringForKey(CUSTOM_CENTER_COORDS_LON, updatedCoordinates[0].toString());
   };
 
   const onLogout = async () => {
@@ -591,7 +658,8 @@ export const SettingsView = ({
           <View style={style.menuItemContainer}>
             <Pressable onPress={() => {
               if (!isActivelyTracking) {
-                navigation.navigate('SubjectsView');
+                // @ts-ignore
+                navigation.navigate('TrackedBySubjectsView');
               }
             }}
             >
@@ -637,7 +705,9 @@ export const SettingsView = ({
                 <ImageIcon color={COLORS_LIGHT.G2_5_mobileSecondaryGray} width="18" height="18" />
               </View>
               <View style={style.textIconSecondary}>
-                <Text style={style.textSettingName} color={COLORS_LIGHT.G0_black}>{t('settingsView.photoQuality')}</Text>
+                <Text style={style.textSettingName} color={COLORS_LIGHT.G0_black}>
+                  {t('settingsView.photoQuality')}
+                </Text>
                 <Text caption color={COLORS_LIGHT.G2_secondaryMediumGray}>
                   {getPhotoQualityString[photoQuality as QualityType]}
                 </Text>
@@ -790,6 +860,28 @@ export const SettingsView = ({
           </Pressable>
         </View>
         {/* End Coordinates */}
+
+        {/* Map Center */}
+        <SettingsItem
+          icon={<CenterIcon color={COLORS_LIGHT.G2_secondaryMediumGray} />}
+          isEnabled={isMapCenterEnabled}
+          label={t('settingsView.mapCenterItem.main.title')}
+          toggle={toggleMapCenter}
+        >
+          <SettingsSubItem
+            description={
+              formatCoordinates(
+                currentCoordinates[1],
+                currentCoordinates[0],
+                LocationFormats.DEG,
+              )
+            }
+            isEnabled={isMapCenterEnabled}
+            label={t('settingsView.mapCenterItem.secondary.title')}
+            onPress={onMapCenterCoordinatesPress}
+          />
+        </SettingsItem>
+        {/* End Map Center */}
 
         {/* Category Label */}
         <View style={style.labelContainer}>
@@ -1035,6 +1127,13 @@ export const SettingsView = ({
           positiveButtonBackgroundColor={ALERT_BUTTON_BACKGROUND_COLOR_BLUE}
         />
         {/* End Switch User Error */}
+
+        <EditLocationDialog
+          coordinates={currentCoordinates}
+          displayEditDialog={showMapCenterCoordinatesDialog}
+          onCancelDialogPress={onMapCenterDialogClosePress}
+          onSaveDialogPress={onMapCenterDialogSavePress}
+        />
       </ScrollView>
     </SafeAreaView>
   );

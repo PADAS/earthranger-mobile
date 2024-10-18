@@ -28,6 +28,9 @@ import { AuthState, Permissions } from '../../../common/enums/enums';
 import { getBoolForKey, setBoolForKey } from '../../../common/data/storage/keyValue';
 import { useRetrievePatrolPermissions } from '../../../common/data/permissions/useRetrievePermissions';
 import { useRetrieveBasemapThumbnails } from '../../../common/data/basemaps/useRetrieveBasemapThumbnails';
+import { useDownloadSubjectGroups } from '../../../common/data/subjects/useDownloadSubjectGroups';
+import { useRetrieveSubjects } from '../../../common/data/subjects/useRetrieveSubjects';
+import subjectsStorage from '../../../common/data/storage/subjectsStorage';
 
 // Constants
 import { COLORS_LIGHT } from '../../../common/constants/colors';
@@ -52,6 +55,8 @@ const SyncLoaderView = () => {
   const { populateUserSubjects } = usePopulateUserSubjects();
   const { isPermissionAvailable } = useRetrievePatrolPermissions();
   const { retrieveBasemapThumbnails } = useRetrieveBasemapThumbnails();
+  const { downloadSubjectGroups } = useDownloadSubjectGroups();
+  const { retrieveSubjects } = useRetrieveSubjects();
 
   // Component's State
   const [currentLoadingStepName, setCurrentLoadingStepName] = useState('');
@@ -62,18 +67,22 @@ const SyncLoaderView = () => {
   const LOADING_STEPS = [
     {
       message: t('loginView.loadingAccountInformation'),
-      progress: 25,
+      progress: 20,
     },
     {
       message: t('loginView.loadingReportCategories'),
-      progress: 50,
+      progress: 40,
     },
     {
       message: t('loginView.loadingTypesOfReports'),
-      progress: 75,
+      progress: 60,
     },
     {
       message: t('loginView.loadingPatrolTypes'),
+      progress: 80,
+    },
+    {
+      message: t('loginView.loadingSubjectGroups'),
       progress: 100,
     },
   ];
@@ -106,6 +115,14 @@ const SyncLoaderView = () => {
         await populatePatrolTypes(accessToken.current);
       }
       setCurrentLoadingProgress(LOADING_STEPS[3].progress);
+
+      // Retrieve and populate subject groups
+      setCurrentLoadingStepName(LOADING_STEPS[4].message);
+      await downloadSubjectGroups(accessToken.current);
+      setCurrentLoadingProgress(LOADING_STEPS[4].progress);
+
+      // Initialize list of subjects in key/value storage
+      await initSubjectsList();
 
       // initial state synced with remote scope
       // eslint-disable-next-line no-restricted-syntax
@@ -145,6 +162,16 @@ const SyncLoaderView = () => {
       index: 0,
       routes: [{ name }],
     }));
+  };
+
+  const initSubjectsList = async () => {
+    const subjectsList = await retrieveSubjects();
+
+    // @ts-ignore
+    if (subjectsList.length > 0 && subjectsStorage.subjectsKey.get() === undefined) {
+      // @ts-ignore
+      subjectsStorage.subjectsKey.set(JSON.stringify(subjectsList.slice()));
+    }
   };
 
   return (

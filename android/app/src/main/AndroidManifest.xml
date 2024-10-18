@@ -14,9 +14,6 @@
       android:theme="@style/AppTheme"
       tools:ignore="LockedOrientationActivity">
 
-      <service android:name="com.transistorsoft.locationmanager.service.TrackingService" android:foregroundServiceType="location" />
-      <service android:name="com.transistorsoft.locationmanager.service.LocationRequestService" android:foregroundServiceType="location" />
-
       <meta-data
               android:name="com.transistorsoft.locationmanager.license"
               android:value="@string/background_geolocation_key" />

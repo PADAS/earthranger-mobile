@@ -1,8 +1,7 @@
 import AnalyticsEvent from '../model/analyticsEvent';
 import { SITE_VALUE_KEY } from '../../common/constants/constants';
 import {
-  SWITCH_TRACKING_OFF,
-  SWITCH_TRACKING_ON,
+  TAP_STOP_TRACKING,
   TAP_START_TRACKING,
   TAP_TRACKING_OFF,
   TAP_TRACKING_ON,
@@ -11,8 +10,7 @@ import {
   LOCATION_PERMISSION_ALLOWED,
   LOCATION_PERMISSION_DENIED,
   START_TRACKING_LOCATION,
-  SWITCH_TRACKING_LOCATION_OFF,
-  SWITCH_TRACKING_LOCATION_ON,
+  STOP_TRACKING_LOCATION,
 } from '../model/constantsEvents';
 import { MAP_SCREEN } from '../model/constantsScreens';
 import { LOCATION_PERMISSION_CATEGORY, LOCATION_TRACKING_CATEGORY } from '../model/constantsCategories';
@@ -26,20 +24,12 @@ export const createStartTrackingLocationEvent = () => ({
   action: TAP_START_TRACKING,
 } as AnalyticsEvent);
 
-export const createSwitchTrackingLocationOnEvent = () => ({
+export const createStopTrackingLocationEvent = () => ({
   siteName: getSecuredStringForKey(SITE_VALUE_KEY),
-  eventName: SWITCH_TRACKING_LOCATION_ON,
+  eventName: STOP_TRACKING_LOCATION,
   screenName: MAP_SCREEN,
   category: LOCATION_TRACKING_CATEGORY,
-  action: SWITCH_TRACKING_ON,
-} as AnalyticsEvent);
-
-export const createSwitchTrackingLocationOffEvent = () => ({
-  siteName: getSecuredStringForKey(SITE_VALUE_KEY),
-  eventName: SWITCH_TRACKING_LOCATION_OFF,
-  screenName: MAP_SCREEN,
-  category: LOCATION_TRACKING_CATEGORY,
-  action: SWITCH_TRACKING_OFF,
+  action: TAP_STOP_TRACKING,
 } as AnalyticsEvent);
 
 export const createLocationPermissionAllowedEvent = () => ({

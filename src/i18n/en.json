@@ -29,7 +29,8 @@
     "loadingAccountInformation": "Syncing User Accounts",
     "loadingReportCategories": "Syncing Event Categories",
     "loadingTypesOfReports": "Syncing Event Types",
-    "loadingPatrolTypes": "Syncing Patrol Types"
+    "loadingPatrolTypes": "Syncing Patrol Types",
+    "loadingSubjectGroups": "Syncing Subjects Groups"
   },
   "mapTrackLocation": {
     "tracking": "Tracking",
@@ -88,7 +89,8 @@
     "map": "Map",
     "status": "Status",
     "events": "Events",
-    "settings": "Settings"
+    "settings": "Settings",
+    "subjects": "Subjects"
   },
   "menuSettingsView": {
     "settings": "SETTINGS",
@@ -165,7 +167,15 @@
     "slowestUpload": "Slowest upload",
     "fastestUpload": "Fastest upload",
     "patrolInfo": "Patrol Info",
-    "eventType": "Event Type"
+    "eventType": "Event Type",
+    "mapCenterItem": {
+      "main": {
+        "title": "Map Center on Open"
+      },
+      "secondary": {
+        "title": "Center Coordinates"
+      }
+    }
   },
   "aboutView": {
     "version": "Version 1.1.9.49",
@@ -264,6 +274,13 @@
     "defaultPendingSync": "Not yet synced",
     "wifiDataConnectionRequired": "Wifi connection required to sync photos.",
     "save": "Save",
+    "errors": {
+        "BadRequest": "Bad Request",
+        "Unauthorized" : "Unauthorized",
+        "Forbidden": "Forbidden",
+        "NotFound": "Not Found",
+        "ServerError": "Server Error"
+    },
     "accuracy": "Accuracy",
     "lowAccuracy": "Low Accuracy"
   },
@@ -410,5 +427,19 @@
     "title": "Save changes to filters?",
     "saveAndApply": "Save and apply filters",
     "discard": "Discard changes"
+  },
+  "subjectsView": {
+    "emptyList": "No subjects to display",
+    "subject": "subject",
+    "subjects": "subjects",
+    "timeDifference": {
+      "daysAgo": "{{diff}} days ago",
+      "dayAgo": "{{diff}} day ago",
+      "hoursAgo": "{{diff}} hours ago",
+      "hourAgo": "{{diff}} hour ago",
+      "minutesAgo": "{{diff}} minutes ago",
+      "minuteAgo": "{{diff}} minute ago",
+      "secondsAgo": "{{diff}} secs ago"
+    }
   }
 }

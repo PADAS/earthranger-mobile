@@ -35,7 +35,7 @@ import { SyncLoaderView } from './src/views/Login/SyncLoaderView/SyncLoaderView'
 import {
   PinAuthenticationView,
 } from './src/views/Login/PinAuthenticationView/PinAuthenticationView';
-import { SubjectsView } from './src/views/SettingsSection/SubjectsView/SubjectsView';
+import { TrackedBySubjectsView } from './src/views/SettingsSection/SubjectsView/TrackedBySubjectsView';
 import { BasemapView } from './src/views/SettingsSection/BasemapView/BasemapView';
 import { CoordinateUnitsView } from './src/views/SettingsSection/CoordinateUnitsView/CoordinateUnitsView';
 import { PatrolsTypeView } from './src/views/TrackLocationMap/components/PatrolsTypeView/PatrolsTypeView';
@@ -44,6 +44,7 @@ import { PhotoQualityView } from './src/views/SettingsSection/PhotoQualityView/P
 import { cropHeaderTitleText } from './src/common/utils/stringUtils';
 import { ResetDatabaseCacheView } from './src/views/SettingsSection/ResetDatabaseCacheView/ResetDatabaseCacheView';
 import { EventsListFilterView } from './src/views/Reports/components/EventsListFilterView/EventsListFilterView';
+import { SubjectsListView } from './src/views/SubjectsView/SubjectsListView';
 
 LogBox.ignoreAllLogs(true);
 
@@ -192,8 +193,8 @@ export const App = () => {
               })}
             />
             <Stack.Screen
-              name="SubjectsView"
-              component={SubjectsView}
+              name="TrackedBySubjectsView"
+              component={TrackedBySubjectsView}
               options={({ navigation }) => ({
                 ...navigationOptionsHeader,
                 title: '',
@@ -255,6 +256,15 @@ export const App = () => {
               options={({ navigation }) => ({
                 ...navigationOptionsHeader,
                 title: t('aboutView.resetDatabaseCache'),
+                headerLeft: () => customBackButton(osBackIcon, () => navigation.pop(), true),
+              })}
+            />
+            <Stack.Screen
+              name="SubjectsListView"
+              component={SubjectsListView}
+              options={({ navigation }) => ({
+                ...navigationOptionsHeader,
+                title: '',
                 headerLeft: () => customBackButton(osBackIcon, () => navigation.pop(), true),
               })}
             />

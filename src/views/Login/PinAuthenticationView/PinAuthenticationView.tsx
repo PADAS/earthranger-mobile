@@ -12,6 +12,9 @@ import { useRetrieveUser } from '../../../common/data/users/useRetrieveUser';
 import {
   ACTIVE_USER_HAS_PATROLS_PERMISSION,
   ACTIVE_USER_NAME_KEY,
+  CUSTOM_CENTER_COORDS_ENABLED,
+  CUSTOM_CENTER_COORDS_LAT,
+  CUSTOM_CENTER_COORDS_LON,
   PATROL_INFO_ENABLED,
   PATROL_INFO_EVENT_TYPE_VALUE,
   REPORTS_SUBMITTED_KEY,
@@ -57,6 +60,9 @@ const PinAuthenticationView = () => {
           resetUserEventFilters();
           setNumberForKey(REPORTS_SUBMITTED_KEY, 0);
           setBoolForKey(PATROL_INFO_ENABLED, false);
+          setBoolForKey(CUSTOM_CENTER_COORDS_ENABLED, false);
+          setStringForKey(CUSTOM_CENTER_COORDS_LAT, '');
+          setStringForKey(CUSTOM_CENTER_COORDS_LON, '');
         }
         setSecuredStringForKey(ACTIVE_USER_NAME_KEY, user.username);
         setSecuredStringForKey(USER_REMOTE_ID_KEY, user.remote_id);

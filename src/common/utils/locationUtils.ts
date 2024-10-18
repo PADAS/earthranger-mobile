@@ -1,5 +1,5 @@
 // External Dependencies
-import MapboxGL from '@react-native-mapbox-gl/maps';
+import Mapbox from '@rnmapbox/maps';
 import { isEqual } from 'lodash-es';
 import LatLon from 'geodesy/latlon-ellipsoidal-vincenty';
 import { LatLon as LatLon_Utm } from 'geodesy/utm';
@@ -17,7 +17,7 @@ import { Position } from '../types/types';
 
 const LNG_LAT_DECIMAL_PRECISION = 5;
 
-let mapUserLocation: MapboxGL.Location | undefined;
+let mapUserLocation: Mapbox.Location | undefined;
 
 // ------------------------------------------------------------------------
 // public enum
@@ -111,7 +111,7 @@ export const isValidObservationAccuracy = (
   threshold: number = OBSERVATION_DISTANCE_THRESHOLD_METERS,
 ) => accuracy < threshold;
 
-export const setMapUserLocation = (location: MapboxGL.Location) => {
+export const setMapUserLocation = (location: Mapbox.Location) => {
   mapUserLocation = location;
 };
 

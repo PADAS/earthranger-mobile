@@ -33,6 +33,15 @@ export const useRetrieveReports = () => {
   const { retrieveUserInfo } = useRetrieveUser();
   const { t } = useTranslation();
 
+  // Constants
+  const APIErrorStatus: { [index: string]: string } = {
+    '400': t('reports.errors.BadRequest'),
+    '401': t('reports.errors.Unauthorized'),
+    '403': t('reports.errors.Forbidden'),
+    '404': t('reports.errors.NotFound'),
+    '500': t('reports.errors.ServerError'),
+  };
+
   const statusFiltersPermutations: { [key: string]: string } = {
     '000': '?',
     '100': '? AND events.is_draft = 1',
@@ -127,6 +136,9 @@ export const useRetrieveReports = () => {
             let statusIcon = null;
             let labelText = null;
             let text = null;
+            let errorMsg;
+            const hasErrorOnEvent = reportItem.state || false;
+
             const attachmentsStatus = {
               pending: {
                 images: 0,
@@ -171,7 +183,8 @@ export const useRetrieveReports = () => {
               fgColor = COLORS_LIGHT.red;
               statusIcon = 'errorIcon';
               labelText = t('reports.statusList.error');
-              text = t('reports.statusDetails.error');
+              text = `${formatEventUploadPendingDetails(attachmentsStatus).pending.join(', ')}`;
+              errorMsg = APIErrorStatus[reportItem.state.toString()];
             } else if (
               reportItem.remote_id
               && attachmentsStatus.pending.images === 0
@@ -182,7 +195,7 @@ export const useRetrieveReports = () => {
               fgColor = '#3B6211';
               statusIcon = 'submittedIcon';
               labelText = t('reports.statusList.synced');
-              text = `${t('reports.statusDetails.submitted')} ${dayjs(reportItem.created_at).format('YYYY MMM D, HH:mm')}`;
+              text = `${t('reports.statusDetails.submitted')} ${dayjs(reportItem.updated_at).format('YYYY MMM D, HH:mm')}`;
             } else {
               status = EventStatus.pendingSync;
               bgColor = COLORS_LIGHT.G6_LightGreyButton;
@@ -207,6 +220,8 @@ export const useRetrieveReports = () => {
               statusIcon,
               text,
               title: reportItem.title,
+              errorMsg,
+              hasErrorOnEvent,
             });
           }
         }

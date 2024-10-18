@@ -16,7 +16,6 @@ import {
   ACTIVE_USER_HAS_PATROLS_PERMISSION,
   ACTIVE_USER_NAME_KEY,
   COORDINATES_FORMAT_KEY,
-  CURRENT_MENU_SETTINGS_TAB,
   LOCAL_DB_SYNCING,
   PARENT_USER_REMOTE_ID_KEY,
   PATROLS_SYNCING,
@@ -59,6 +58,8 @@ import { deleteSession } from '../../common/utils/deleteSession';
 import { isEmptyString } from '../../common/utils/stringUtils';
 import { useRetrievePatrolPermissions } from '../../common/data/permissions/useRetrievePermissions';
 import { QualityType } from '../../common/utils/imageUtils';
+import { useRetrieveSubjects } from '../../common/data/subjects/useRetrieveSubjects';
+import subjectsStorage from '../../common/data/storage/subjectsStorage';
 
 // Styles
 import { styles } from './style';
@@ -84,10 +85,12 @@ export const SplashScreen = ({
     onSynchronizeEventsCategories,
     onSynchronizeEventsTypes,
     onSyncPatrolTypes,
+    onSyncSubjects,
   } = useOnSynchronizeData();
   const { handleRefreshToken } = useRefreshToken();
   const insets = useSafeAreaInsets();
   const { isPermissionAvailable } = useRetrievePatrolPermissions();
+  const { retrieveSubjects } = useRetrieveSubjects();
 
   // Component's State
   const [showLoaderView, setShowLoaderView] = useState(false);
@@ -113,7 +116,6 @@ export const SplashScreen = ({
       } finally {
         setSafeAreaInsets(insets);
         setBoolForKey(SHOW_USER_TRAILS_ENABLED_KEY, true);
-        setStringForKey(CURRENT_MENU_SETTINGS_TAB, 'status');
         if (!getStringForKey(COORDINATES_FORMAT_KEY)) {
           setStringForKey(COORDINATES_FORMAT_KEY, LocationFormats.DEG);
         }
@@ -155,7 +157,8 @@ export const SplashScreen = ({
 
     if (await needsUpgrade(SCHEMA_VERSION)) {
       await onUpgrade(SCHEMA_VERSION);
-      if (SCHEMA_VERSION as number === 26) {
+      const parentId = getSecuredStringForKey(PARENT_USER_REMOTE_ID_KEY);
+      if (isEmptyString(parentId)) {
         const userId = getSecuredStringForKey(USER_REMOTE_ID_KEY);
         if (!isEmptyString(userId) && userId !== undefined) {
           setSecuredStringForKey(PARENT_USER_REMOTE_ID_KEY, userId);
@@ -167,8 +170,9 @@ export const SplashScreen = ({
       }
     }
 
-    if (sessionToken.current) {
-      log.info(`Site: ${getSecuredStringForKey(SITE_VALUE_KEY)}`);
+    const siteName = getSecuredStringForKey(SITE_VALUE_KEY);
+    if (sessionToken.current && !isEmptyString(siteName)) {
+      log.info(`Site: ${siteName}`);
       const userName = getSecuredStringForKey(USER_NAME_KEY);
       log.info(`Username: ${userName}`);
       if (userName && isEmptyString(getSecuredStringForKey(ACTIVE_USER_NAME_KEY))) {
@@ -186,6 +190,7 @@ export const SplashScreen = ({
         setBoolForKey(ACTIVE_USER_HAS_PATROLS_PERMISSION, isPatrolPermissionAvailable);
       }
 
+      await initSubjectsList();
       await updateAuthState();
       const authState = getAuthState();
 
@@ -239,7 +244,6 @@ export const SplashScreen = ({
   const checkSyncState = async (token: string) => {
     isSyncing.current = true;
     setShowLoaderView(true);
-    // check sync state
 
     // eslint-disable-next-line no-restricted-syntax
     for (const syncScope of Object.values(SyncScope)) {
@@ -257,16 +261,7 @@ export const SplashScreen = ({
         if (state === -1) {
           log.info(`[State] ${syncScope} : no local state defined`);
           await insertSyncState(syncScope, scope, scope);
-          switch (syncScope) {
-            case SyncScope.Users:
-              await syncResource(SyncScope.Users, sessionToken.current);
-              break;
-            case SyncScope.PatrolTypes:
-              await syncResource(SyncScope.PatrolTypes, sessionToken.current);
-              break;
-            default:
-              break;
-          }
+          await syncResource(syncScope, sessionToken.current);
           isSyncing.current = false;
         } else {
           log.info(`[State] ${syncScope} : ${state}`);
@@ -287,6 +282,10 @@ export const SplashScreen = ({
           }
         }
       }
+      // @TODO: To be replaced as soon as server returns an eTag for Subjects
+      if (eTag === '500' && syncScope === SyncScope.Subjects) {
+        await syncResource(SyncScope.Subjects, sessionToken.current);
+      }
     }
 
     setStatusMessage('');
@@ -304,6 +303,8 @@ export const SplashScreen = ({
         return onSynchronizeProfiles(token);
       case SyncScope.PatrolTypes:
         return onSyncPatrolTypes(token);
+      case SyncScope.Subjects:
+        return onSyncSubjects(token);
       default:
         return '';
     }
@@ -320,6 +321,16 @@ export const SplashScreen = ({
     await logScreenView(screenViewEventToHashMap(
       createScreenViewEvent(SPLASH_SCREEN_SCREEN, SPLASH_SCREEN_SCREEN),
     ));
+  };
+
+  const initSubjectsList = async () => {
+    const subjectsList = await retrieveSubjects();
+
+    // @ts-ignore
+    if (subjectsList.length > 0 && subjectsStorage.subjectsKey.get() === undefined) {
+      // @ts-ignore
+      subjectsStorage.subjectsKey.set(JSON.stringify(subjectsList.slice()));
+    }
   };
 
   return (

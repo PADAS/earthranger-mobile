@@ -13,7 +13,7 @@ import {
   SELECT_USER_PROFILE_PINS,
   UPSERT_USER,
   UPSERT_USER_PROFILE,
-} from '../sql/queries';
+} from '../sql/userQueries';
 import { logSQL, logSync } from '../../utils/logUtils';
 import {
   createSubjectForUsername, getRemoteUser, getRemoteUserByID, getUserProfiles,

@@ -12,6 +12,8 @@ export const getApiStatus = (error: any) => {
       return ApiStatus.NotFound;
     case error.toString().includes('500'):
       return ApiStatus.ServerError;
+    case error.toString().includes('Error'):
+      return ApiStatus.BadRequest;
     default:
       return ApiStatus.Unknown;
   }

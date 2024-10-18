@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { Incubator, Text, View } from 'react-native-ui-lib';
 import { useFocusEffect } from '@react-navigation/native';
 import { isEmpty } from 'lodash-es';
+import { useMMKVBoolean } from 'react-native-mmkv';
 
 // Internal Dependencies
 import { EventCell } from '../EventCell/EventCell';
@@ -24,7 +25,11 @@ import { useRemoveEvent } from '../../../../common/data/reports/useRemoveEvent';
 import { logSQL } from '../../../../common/utils/logUtils';
 import { logEvent } from '../../../../analytics/wrapper/analyticsWrapper';
 import AnalyticsEvent, { analyticsEventToHashMap } from '../../../../analytics/model/analyticsEvent';
-import { createOpenReportDraftEvent, removeReportDraftEvent, undoDeleteDraftEvent } from '../../../../analytics/reports/reportsAnalytics';
+import {
+  createOpenReportDraftEvent,
+  removeReportDraftEvent,
+  undoDeleteDraftEvent,
+} from '../../../../analytics/reports/reportsAnalytics';
 import { osBackIcon } from '../../../../common/components/header/header';
 import { SearchButton } from '../../../../common/components/SearchButton/SearchButton';
 import {
@@ -33,12 +38,12 @@ import {
   IS_STATUS_FILTER_DRAFT_SELECTED,
   IS_STATUS_FILTER_ENABLED,
   IS_STATUS_FILTER_PENDING_SELECTED,
-  IS_STATUS_FILTER_SYNCED_SELECTED,
+  IS_STATUS_FILTER_SYNCED_SELECTED, REPORTS_SYNCING,
 } from '../../../../common/constants/constants';
 import { EmptySearchResultsView } from '../../../../common/components/EmptySearchResults/EmptySearchResultsView';
 import { TuneIcon } from '../../../../common/icons/TuneIcon';
 import { EmptyEventsListView } from './components/EmptyEventsListView/EmptyEventsListView';
-import { getBoolForKey } from '../../../../common/data/storage/keyValue';
+import { getBoolForKey, localStorage } from '../../../../common/data/storage/keyValue';
 import { useRetrieveReports } from '../../../../common/data/reports/useRetrieveReports';
 import { useEventHandler } from '../../../../common/utils/useEventHandler';
 
@@ -62,6 +67,7 @@ const EventsList = ({
   const { retrieveReportNotSyncedById } = useRetrieveReportNotSyncedById();
   const { removeEvent } = useRemoveEvent();
   const { retrieveReports } = useRetrieveReports();
+  const [isEventSyncing] = useMMKVBoolean(REPORTS_SYNCING, localStorage);
 
   // Refs
   const inputRef = useRef<TextInput>(null);
@@ -264,14 +270,14 @@ const EventsList = ({
       }
     };
 
-    if (!isSearchModeEnabled || updatedFilters.current) {
+    if ((!isSearchModeEnabled || updatedFilters.current) && !isEventSyncing) {
       if (isSearchModeEnabled) {
         removeSearchInput();
       }
       getEvents();
       updatedFilters.current = false;
     }
-  }, []));
+  }, [isEventSyncing]));
 
   useFocusEffect(useCallback(() => () => {
     if (isSearchModeEnabled) {
@@ -371,6 +377,8 @@ const EventsList = ({
             title={item.title}
             type={item.status}
             isEditable={(isEmpty(item.remoteId))}
+            errorMsg={item.errorMsg}
+            hasErrorOnEvent={item.hasErrorOnEvent}
           />
         );
       default:

@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
   },
   iconStatus: {
     marginLeft: 'auto',

@@ -1,5 +1,5 @@
 // External Dependencies
-import MapboxGL from '@react-native-mapbox-gl/maps';
+import Mapbox from '@rnmapbox/maps';
 import React, {
   useEffect, useMemo, useRef, useState,
 } from 'react';
@@ -32,7 +32,7 @@ import styles from './Basemap.styles';
 import { getEventEmitter } from '../../utils/AppEventEmitter';
 import { BottomSheetAction } from '../../enums/enums';
 
-MapboxGL.setAccessToken(Config.MAPBOX_API_KEY);
+Mapbox.setAccessToken(Config.MAPBOX_API_KEY);
 
 // Interfaces + Types
 interface BasemapProps {
@@ -48,7 +48,7 @@ const Basemap = ({ hideHeader }: BasemapProps) => {
 
   // Component's State
   const [basemapSelected, setBasemapSelected] = useState(
-    getStringForKey(BASEMAP_KEY) || MapboxGL.StyleURL.Outdoors,
+    getStringForKey(BASEMAP_KEY) || Mapbox.StyleURL.Outdoors,
   );
   const [topoUrl, setTopoUrl] = useState<string | undefined>(
     getStringForKey(BASEMAP_TOPO_LOCAL) || undefined,
@@ -63,7 +63,7 @@ const Basemap = ({ hideHeader }: BasemapProps) => {
 
   useEffect(() => {
     if (basemapSelected !== getStringForKey(BASEMAP_KEY)) {
-      setBasemapSelected(getStringForKey(BASEMAP_KEY) || MapboxGL.StyleURL.Outdoors);
+      setBasemapSelected(getStringForKey(BASEMAP_KEY) || Mapbox.StyleURL.Outdoors);
     }
   }, [basemapStatus]);
 
@@ -108,7 +108,7 @@ const Basemap = ({ hideHeader }: BasemapProps) => {
       key: string,
     ) => {
       if (!await exists(`${RNFS.DocumentDirectoryPath}/basemaps/thumbnails/${type}.png`)) {
-        // @TODO: Replace with the code to download the image and persist it to local storage
+        // eslint-disable-next-line max-len
         const remoteUrl = `${getMapBoxStaticImageUrl(style)}/${coordinates},${zoomLevel}/${mapSize}x${mapSize}?access_token=${Config.MAPBOX_API_KEY}`;
         setValue(remoteUrl);
         setStringForKey(key, remoteUrl);
@@ -148,19 +148,19 @@ const Basemap = ({ hideHeader }: BasemapProps) => {
     {
       key: '1',
       type: 'topo',
-      style: MapboxGL.StyleURL.Outdoors,
+      style: Mapbox.StyleURL.Outdoors,
       url: topoUrl,
     },
     {
       key: '2',
       type: 'satellite',
-      style: MapboxGL.StyleURL.Satellite,
+      style: Mapbox.StyleURL.Satellite,
       url: satelliteUrl,
     },
     {
       key: '3',
       type: 'street',
-      style: MapboxGL.StyleURL.Street,
+      style: Mapbox.StyleURL.Street,
       url: streetUrl,
     },
   ], [topoUrl, satelliteUrl, streetUrl]);
