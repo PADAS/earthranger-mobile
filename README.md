@@ -1,11 +1,5 @@
 # EarthRanger Mobile
-
-This is the Mobile app for the [EarthRanger](https://www.earthranger.com/) platform.
-
-## Team info
-
-- [Jira EM Board](https://allenai.atlassian.net/jira/software/projects/EM/boards/150)
-- [Confluence Docs](https://allenai.atlassian.net/wiki/spaces/EM/pages/29285744643/)
+Android and iOS client to the [EarthRanger platform](https://www.earthranger.com/)
 
 ## Developers Setup
 The EarthRanger mobile app is a cross-plaform React Native app where development is using React Native CLI.  Follow the instructions below to set up your developer environment on a Mac OS:
@@ -28,7 +22,7 @@ $ brew install watchman
 
 - Install Java JDK
 
-  [Java 11](https://jdk.java.net/archive/) is required to build the app.
+  [Java 11](https://jdk.java.net/archive/) is the minimum required version to build the app.
 
 - Install [Android Studio](https://developer.android.com/studio), SDK and accept the licenses
 
@@ -38,19 +32,66 @@ $ brew install watchman
 $ xcode-select --install
 ```
 
+### Fork the repo
+
+If you haven't already, fork [this repo](https://github.com/PADAS/earthranger-mobile/fork). Some instruction below on working with your fork, for reference check out [GitHubs Working with forks](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks),
+
 ### Clone the repo
 
-```bash
+```sh
 # ssh clone url
-$ git clone git@github.com:PADAS/er-mobile.git
+# Clones your fork of the repository into the current directory in terminal
+$ git clone git@github.com:YOUR-USERNAME/earthranger-mobile.git
 
 # github cli
-$ gh repo clone PADAS/er-mobile
+$ gh repo clone YOUR-USERNAME/earthranger-mobile
 ```
+
+### Configure remote upstream for your fork
+To sync changes you make in a fork with this repository, you must configure a remote that points to the upstream repository in Git.
+
+- Open a terminal or command prompt
+- List the current configured remote repository for your fork
+
+```sh
+$ git remote -v
+origin  https://github.com/YOUR_USERNAME/earthranger-mobile.git (fetch)
+origin  https://github.com/YOUR_USERNAME/earthranger-mobile.git (push)
+```
+
+- Specify a new remote upstream repository
+
+```sh
+$ git remote add upstream https://github.com/PADAS/earthranger-mobile.git  
+```
+
+- Verify the new upstream repository
+
+```sh
+$ git remote -v
+
+origin  https://github.com/YOUR_USERNAME/earthranger-mobile.git (fetch)
+origin  https://github.com/YOUR_USERNAME/earthranger-mobile.git (push)
+upstream https://github.com/PADAS/earthranger-mobile.git (fetch)
+upstream https://github.com/PADAS/earthranger-mobile.git (push)
+```
+
+- Keep your fork up to date with [upstream](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork)
 
 ### Install yarn and dependencies
 
-```
+**Mapbox**
+
+This app uses Mapbox React Native which requires developers configure credentials to download and develop against their SDK.  You'll need two tokens:
+
+- Secret access token with (Downloads:Read) scope to download iOS and Android SDK from mapbox. The secret token starts with `sk.ey`.
+- Public token to use as accessToken when running the app. The public token starts with `pk.ey`
+
+Refernece [Mapbox account sign up](https://docs.mapbox.com/android/maps/guides/install/#step-1-log-insign-up-for-a-mapbox-account) on mapbox.com for instructions with configureing credentials. 
+
+Once you have Mapbox credentials setup you can install app dependencies with the following: 
+
+```sh
 $ npm install --global yarn
 $ yarn
 ```
@@ -64,9 +105,9 @@ $ yarn
   - Android SDK Build tools `30.0.2`
   - Android SDK Command line tools (latest)
 
-**[Create and manage AVDs](https://developer.android.com/studio/run/managing-avds)**.  AVDs are a configuration defining characteristics of an Android phone or tablet to simulate with an [Android Emulator](https://developer.android.com/studio/run/emulator).  An AVD should have been created on install of Android Studio, use the AVD Manager to create more phones/tablets to test against.
+  **[Create and manage AVDs](https://developer.android.com/studio/run/managing-avds)**.  AVDs are a configuration defining characteristics of an Android phone or tablet to simulate with an [Android Emulator](https://developer.android.com/studio/run/emulator).  An AVD should have been created on install of Android Studio, use the AVD Manager to create more phones/tablets to test against.
 
-**Configure ANDROID_HOME environment variable**
+  **Configure ANDROID_HOME environment variable**
 
 - Add the following to your respective bash/zsh profile:
 
@@ -109,121 +150,6 @@ $ pod install
 $ cd ..
 ```
 
-## Build the app
-
-There are multiple ways to build the app, here we detail the steps our future CI/CD systems will use to build the app:
-
-### Android
-
-Android uses the [Gradle Build Tool](https://gradle.org/), the Android project includes a Gradle Wrapper script that invokes a declared version of Gradle that allows developers to have consistent builds tools w/o manageing the local build chain
-
-- From the root of the project, `cd` into **android** folder and execute the following:
-
-```sh
-# build android debug variant
-$ ./gradlew clean assembleDebug --info
-````
-
-### iOS
-
-We are using [Fastlane](https://docs.fastlane.tools/) for many iOS build automation tasks. We referenced the iOS dependency on **Ruby** for Cocoapods ealier, fastlane is another tool with depends on `ruby`, below you can follow either managed Ruby or Homebrew instructions below, if you can't decide use Homebrew as it will configure correct Ruby to run fastlane
-
-**Managed Ruby**
-If you have a [managed Ruby environment](https://www.ruby-lang.org/en/documentation/installation/#managers) installed you can use `bundler` to execute tasks.
-
-```sh
-# verify which Ruby version you have, fastlane supports v2.5+
-$ ruby --version
-# install bundler
-$ gem install bundler
-# build the app
-$ bundle exec  fastlane ios build install:false
-```
-
-**Homebrew**
-If you do not have a managed Ruby env, you used system Ruby to install Cocoapods, you can install fastlane via homebrew and it will install an adequate version of Ruby for fastlane.
-
-```sh
-# install via homebrew
-brew install fastlane
-# build the app
-$ fastlane ios build install:false
-```
-
-## Add iOS device to team
-In order to build and run the app on an iOS device you need to register the device with our team provisioning profile.
-
-Using Xcode with your device connected:
-1. Select **Windows > Device and Simulators** and select the **Devices** tab
-2. Select your device under the **Connected** list
-3. Your device ID is the labeled as **Identifier**, copy that value and share in Slack `#er-mobile-dev` channel
-
-## Setup certificates and provisioning files
-We are using Git for code signing which uses one code signing identity shared across our team.  We are currently maintaining 3 certificates for developing and distributing the app.  Follow the instructions below to get started setting up.
-
-### Developer Certificate
-Run the following in order to code sign the app and run locally it on a device.
-
-* Create a *.match* file at the root of the repo. This file is not tracked by git
-
-```sh
-# credentials file, I will send file contents through Slack
-$ touch .match
-```
-
-* Slack `#er-mobile-dev` channel for credentials to populate the file
-* Run the `fetch-dev-certs` script
-
-```sh
-# source credentials and fetch certs/profiles from git
-$ ./fetch-dev-certs.sh
-
-# should result something similar embedded in your output
-
-...
-
-[20:10:05]: 🔓  Successfully decrypted certificates repo
-[20:10:05]: Installing certificate...
-
-+-------------------+------------------------------------------------+
-|                       Installed Certificate                        |
-+-------------------+------------------------------------------------+
-| User ID           | 3UQ6CV34U9                                     |
-| Common Name       | Apple Development: AI2 Mobile Dev (9KY9CX6C43) |
-| Organisation Unit | G7H4CBL7Z8                                     |
-| Organisation      | Allen Institute for Artificial Intelligence    |
-| Country           | US                                             |
-| Start Datetime    | 2022-04-21 00:52:02 UTC                        |
-| End Datetime      | 2023-04-21 00:52:01 UTC                        |
-+-------------------+------------------------------------------------+
-
-...
-
-[20:10:05]: All required keys, certificates and provisioning profiles are installed 🙌
-[20:10:05]: Setting Provisioning Profile type to 'development'
-
-+------+----------------------------+-------------+
-|                fastlane summary                 |
-+------+----------------------------+-------------+
-| Step | Action                     | Time (in s) |
-+------+----------------------------+-------------+
-| 1    | Verifying fastlane version | 0           |
-| 2    | match                      | 1           |
-+------+----------------------------+-------------+
-
-[20:10:05]: fastlane.tools finished successfully 🎉
-
-```
-
-### Confirm certificates
-You can conifirm the certificates are installed correctly and Xcode can use them with the following:
-
- - Open Xcode preferences
- - Select the Allen Institute team Apple ID
- - Click on **Manage Certificates**
-
- You should see the approriate certificate created by **AI2 Mobile Dev** under Development certificates
-
 ## Run the app
 There are mulitple ways to run the app. You can open the respective IDE's, Android Studio or xCode and click the **Run** button with the app selected.  Instructions below run the app from a terminal. In all instances, be sure you have a connected physical device and/or emulator/simulator running.
 
@@ -243,7 +169,7 @@ Run the app with `yarn`
 
 ```sh
 # run from the root of the project
-$ yarn android --appId=com.earthranger.debug
+$ yarn android 
 ````
 
 This should build and install the app on a running device/emulator
@@ -257,7 +183,7 @@ Yarn is the easiest tool to build and install the app with the following command
 
 ```sh
 # run from the root of the project
-$ yarn ios
+$ yarn ios --device="YOUR_DEVICE_NAME"
 ```
 
 This should build and install the app on a running device/simulator
@@ -276,15 +202,16 @@ $ brew install ios-deploy
 $ [bundle exec] fastlane ios build install:true
 ```
 
-## Testing
-Testing is a Work in Progress, we have testing skaffolding setup which you can read about [here](https://allenai.atlassian.net/wiki/spaces/EM/pages/29326770216/Unit+testing)
+## Contributors
 
-```
-$ yarn test
-```
+EarthRanger is an open-source project built by the [EarthRanger team](https://www.earthranger.com/) at the [Allen Institute for AI](https://allenai.org/) (AI2). AI2 is a non-profit institute with the mission to contribute to humanity through high-impact AI research and engineering.  Contributions are welcome! If you find a bug or have a feature request, please open an issue.
 
-## Reference
+<a href="https://github.com/PADAS/earthranger-mobile/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=PADAS/earthranger-mobile" />
+</a>
 
-- [React Native setting up dev environment](https://reactnative.dev/docs/0.65/environment-setup)
-- [Fastlane](https://docs.fastlane.tools/)
+
+## Licensing
+
+A copy of the license is available in the repository's [LICENSE](LICENSE) file.
 
