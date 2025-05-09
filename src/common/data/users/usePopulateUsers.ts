@@ -25,7 +25,7 @@ import {
 import { useRetrieveData } from '../hooks/useRetrieveData';
 import { User } from '../../types/usersResponse';
 import { getApiStatus } from '../../utils/errorUtils';
-import { ApiStatus } from '../../types/apiModels';
+import { ApiResponseCodes } from '../../types/apiModels';
 import { isEmptyString } from '../../utils/stringUtils';
 import { getAuthState, setAuthState } from '../../utils/authUtils';
 import { AuthState } from '../../enums/enums';
@@ -52,7 +52,7 @@ export const usePopulateUsers = () => {
           subjectId = userAsSubject.data.subject.id;
         } else {
           logSync.error('Subject could not be created, status: ', newSubject.status);
-          return ApiStatus.Unknown;
+          return apiresponsecodes.Unknown;
         }
       } else if (username && user && user.data.subject) {
         subjectId = user.data.subject.id;
@@ -95,7 +95,7 @@ export const usePopulateUsers = () => {
       logSync.error('Fetch information from remote database: error', error);
       return getApiStatus(error);
     }
-    return ApiStatus.Succeeded;
+    return ApiResponseCodes.Succeeded;
   }, []);
 
   const upsertUsers = useCallback(async (accessToken: string, user: User) => {
@@ -152,7 +152,7 @@ export const usePopulateUsers = () => {
       logSQL.error('[usePopulateUsers] - getUsers: error', error);
       return getApiStatus(error);
     }
-    return ApiStatus.Succeeded;
+    return ApiResponseCodes.Succeeded;
   }, []);
 
   const populateUserProfiles = useCallback(async (accessToken: string) => {

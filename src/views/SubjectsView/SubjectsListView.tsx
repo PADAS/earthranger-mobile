@@ -6,7 +6,7 @@ import {
   TextInput,
   TextStyle,
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import { CommonActions, useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native-ui-lib';
 import React, {
@@ -21,7 +21,11 @@ import { COLORS_LIGHT } from '../../common/constants/colors';
 import { customBackButton, osBackIcon } from '../../common/components/header/header';
 import { EmptySubjectsList } from './components/EmptySubjectsList';
 import { IS_IOS } from '../../common/constants/constants';
-import { RootStackParamList, Subject, SubjectGroupData } from '../../common/types/types';
+import {
+  RootStackParamList,
+  Subject,
+  SubjectGroupData,
+} from '../../common/types/types';
 import { SearchButton } from '../../common/components/SearchButton/SearchButton';
 import { SubjectGroupHeader } from './components/SubjectGroupHeader';
 import { SubjectItem } from './components/SubjectItem';
@@ -29,6 +33,7 @@ import { useRetrieveSubjectGroups } from '../../common/data/subjects/useRetrieve
 import subjectsStorage from '../../common/data/storage/subjectsStorage';
 import { useRetrieveUser } from '../../common/data/users/useRetrieveUser';
 import { UserType } from '../../common/enums/enums';
+import { getCoordinatesFromFeature } from '../../common/utils/geometryUtils';
 
 interface SubjectsListViewProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'SubjectsListView'>;
@@ -68,6 +73,7 @@ export const SubjectsListView = ({ navigation }: SubjectsListViewProps) => {
       setData(retrievedData);
 
       const subjectsCount = retrievedData.reduce((acc, cur) => (cur.type === 'subject' ? acc + 1 : acc), 0);
+      // eslint-disable-next-line max-len
       const subjectGroupsCount = retrievedData.reduce((acc, cur) => (cur.type === 'group' && cur.count > 0 ? acc + 1 : acc), 0);
 
       setDisplayEmptyView(subjectsCount === 0 && subjectGroupsCount === 0);
@@ -218,6 +224,18 @@ export const SubjectsListView = ({ navigation }: SubjectsListViewProps) => {
     setExtraData(Math.random().toString());
   };
 
+  const navigateTo = (name: string, params?: object) => {
+    navigation.dispatch(CommonActions.reset({
+      index: 0,
+      routes: [{ name, params }],
+    }));
+  };
+
+  const onLocationPress = (lastPosition: any) => {
+    const flyToPosition = getCoordinatesFromFeature(lastPosition);
+    navigateTo('MainTabBar', { flyTo: flyToPosition });
+  };
+
   // Additional Components
   const searchIconView = () => (<SearchButton onPress={showSearchInput} />);
   const searchBackIconView = () => customBackButton(osBackIcon, clearSearchInputView);
@@ -258,6 +276,7 @@ export const SubjectsListView = ({ navigation }: SubjectsListViewProps) => {
                 lastPositionUpdate={item.lastPositionUpdate || ''}
                 name={item.name || ''}
                 onVisibilityPress={() => onVisibilityPress(item)}
+                onLocationPress={() => onLocationPress(item.lastPosition)}
                 icon={item.icon}
               />
             );

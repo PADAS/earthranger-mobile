@@ -67,7 +67,7 @@ export const DELETE_ATTACHMENTS_BY_REPORT_ID = 'DELETE FROM attachments WHERE ev
 // Select Statements
 export const SELECT_EVENT_CATEGORY_FILTER_EMPTY_TYPE = 'SELECT event_category.* FROM event_category INNER JOIN event_type on event_category.remote_id = event_type.category_id WHERE event_category.account_id = ? GROUP BY event_category.display ORDER BY event_category.ordernum, event_category.value';
 export const SELECT_EVENT_CATEGORY_BY_VALUE = 'SELECT id, value, display, ordernum, account_id, profile_id FROM event_category WHERE value = ?';
-export const SELECT_EVENT_CATEGORIES_FOR_PARENT_USER = 'SELECT id, remote_id, value, display FROM event_category WHERE account_id IS NOT NULL';
+export const SELECT_EVENT_CATEGORIES_FOR_PARENT_USER = 'SELECT id, remote_id, value, display FROM event_category WHERE ( ? )';
 export const SELECT_EVENT_CATEGORIES_FOR_PROFILE_USER = 'SELECT id, remote_id, value, display FROM event_category WHERE (profile_id LIKE ? OR profile_id LIKE ? OR profile_id LIKE ? OR profile_id = ?)';
 export const SELECT_EVENT_TYPES_BY_CATEGORY = 'SELECT * FROM event_type WHERE category_id = ?';
 export const SELECT_EVENT_TYPES_BY_CATEGORY_AND_DISPLAY = 'SELECT * FROM event_type WHERE category_id = ? AND display LIKE ?';
@@ -102,7 +102,7 @@ export const SELECT_PATROL_TYPES_BY_USER = 'SELECT * FROM patrol_types WHERE acc
 export const SELECT_PATROL_BY_ID = 'SELECT * FROM patrols WHERE id = ?';
 export const SELECT_PATROL_SEGMENTS_AND_PATROL_TYPE_BY_ID = 'SELECT patrol_segments.*, patrol_types.value AS patrol_type FROM patrol_segments JOIN patrol_types on patrol_segments.patrol_type_id = patrol_types.id WHERE patrol_id = ?';
 export const SELECT_PATROL_DETAILS_BY_PATROL_ID = 'SELECT patrols.remote_id, patrols.title, patrols.serial_number, patrol_segments.start_latitude, patrol_segments.start_longitude, patrol_segments.start_time, patrol_types.value AS patrol_type, patrol_types.icon_svg, patrols.created_at FROM patrols JOIN patrol_segments ON patrols.id = patrol_segments.patrol_id JOIN patrol_types ON patrol_segments.patrol_type_id = patrol_types.id WHERE patrol_id = ?';
-export const SELECT_PENDING_SYNC_PATROLS = 'SELECT * FROM patrols WHERE remote_id IS NULL AND state <> \'unauthorized\' OR (state = \'open\' AND updated_at IS NOT NULL)';
+export const SELECT_PENDING_SYNC_PATROLS = 'SELECT * FROM patrols WHERE remote_id IS NULL AND state NOT IN (\'unauthorized\', \'duplicate\') OR (state = \'open\' AND updated_at IS NOT NULL)';
 export const SELECT_PENDING_SYNC_PATROLS_COUNT_USER = 'SELECT COUNT(*) AS count FROM patrols WHERE profile_id IS NULL AND state = \'open\' AND ((remote_id IS NULL) OR (remote_id IS NOT NULL AND updated_at IS NOT NULL))';
 export const SELECT_PENDING_SYNC_PATROLS_COUNT_PROFILE = 'SELECT COUNT(*) AS count FROM patrols WHERE profile_id = ? AND state = \'open\' AND ((remote_id IS NULL) OR (remote_id IS NOT NULL AND updated_at IS NOT NULL))';
 export const SELECT_SYNCED_PATROLS = 'SELECT * FROM patrols WHERE remote_id IS NOT NULL AND state = \'done\'';

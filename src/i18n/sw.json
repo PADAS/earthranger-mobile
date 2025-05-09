@@ -433,6 +433,7 @@
       "minutesAgo": "{{diff}} dakika zilizopita",
       "minuteAgo": "{{diff}} dakika iliyopita",
       "secondsAgo": "sekunde {{diff}} zilizopita"
-    }
+    },
+    "distance": "{{subjectDistance}} km kutoka kwako"
   }
 }

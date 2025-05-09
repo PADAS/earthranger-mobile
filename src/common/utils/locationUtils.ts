@@ -1,5 +1,6 @@
 // External Dependencies
 import Mapbox from '@rnmapbox/maps';
+import Geolocation from 'react-native-geolocation-service';
 import { isEqual } from 'lodash-es';
 import LatLon from 'geodesy/latlon-ellipsoidal-vincenty';
 import { LatLon as LatLon_Utm } from 'geodesy/utm';
@@ -10,6 +11,7 @@ import distance from '@turf/distance';
 // Internal Dependencies
 import BackgroundLocation from '../backgrounGeolocation/BackgroundLocation';
 import { Position } from '../types/types';
+import { IS_ANDROID } from '../constants/constants';
 
 // ------------------------------------------------------------------------
 // internals
@@ -79,6 +81,25 @@ export const formatCoordinates = (
   }
   return '';
 };
+
+export const requestMapLocationPermissions = async () => {
+  if (IS_ANDROID) {
+    await Mapbox.requestAndroidLocationPermissions();
+  }
+};
+
+// Utility function to get current position
+export const getCurrentPositionAsync = (isFlyTo: boolean) => new Promise((resolve, reject) => {
+  if (isFlyTo) {
+    reject(new Error('Geolocation skipped due to flyTo being set'));
+  } else {
+    Geolocation.getCurrentPosition(
+      (position) => resolve(position),
+      (error) => reject(error),
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+    );
+  }
+});
 
 export const getMapUserPosition = () => (mapUserLocation ? [
   mapUserLocation?.coords.longitude,

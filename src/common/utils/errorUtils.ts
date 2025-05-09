@@ -1,22 +1,20 @@
-import { ApiStatus } from '../types/apiModels';
+import axios from 'axios';
+import { ApiResponseCodes } from '../types/apiModels';
 
-export const getApiStatus = (error: any) => {
-  switch (true) {
-    case error.toString().includes('400'):
-      return ApiStatus.BadRequest;
-    case error.toString().includes('401'):
-      return ApiStatus.Unauthorized;
-    case error.toString().includes('403'):
-      return ApiStatus.Forbidden;
-    case error.toString().includes('404'):
-      return ApiStatus.NotFound;
-    case error.toString().includes('500'):
-      return ApiStatus.ServerError;
-    case error.toString().includes('Error'):
-      return ApiStatus.BadRequest;
-    default:
-      return ApiStatus.Unknown;
+export const getApiStatus = (error: unknown): ApiResponseCodes => {
+  if (axios.isAxiosError(error)) {
+    const status = error.response?.status;
+    switch (status) {
+      case 400: return ApiResponseCodes.BadRequest;
+      case 401: return ApiResponseCodes.Unauthorized;
+      case 403: return ApiResponseCodes.Forbidden;
+      case 404: return ApiResponseCodes.NotFound;
+      case 409: return ApiResponseCodes.Conflict;
+      case 500: return ApiResponseCodes.ServerError;
+      default: return ApiResponseCodes.Unknown;
+    }
   }
+  return ApiResponseCodes.Unknown;
 };
 
-export const isExpiredTokenStatus = (apiStatus: ApiStatus) => apiStatus === ApiStatus.Unauthorized;
+export const isExpiredTokenStatus = (apiStatus: ApiResponseCodes) => apiStatus === ApiResponseCodes.Unauthorized;

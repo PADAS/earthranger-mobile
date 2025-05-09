@@ -47,7 +47,7 @@ import { useUploadReports } from '../../common/data/reports/useUploadReports';
 import { useRefreshToken } from '../../common/utils/useRefreshToken';
 import { useUploadPatrols } from '../../common/data/patrols/useUploadPatrols';
 import { isInternetReachable } from '../../common/utils/NetworkInfoUtils';
-import { ApiStatus } from '../../common/types/apiModels';
+import { ApiResponseCodes } from '../../common/types/apiModels';
 import { isExpiredTokenStatus } from '../../common/utils/errorUtils';
 import { SyncIcon } from '../../common/icons/SyncIcon';
 import { getSyncStateScope, SyncScope, useOnSynchronizeData } from '../../api/SyncService';
@@ -142,13 +142,14 @@ export const StatusView = ({ navigation }: StatusViewProps) => {
       const accessToken = getSession()?.access_token || '';
       // Sync Patrols
       if (getBoolForKey(ACTIVE_USER_HAS_PATROLS_PERMISSION) && patrolsPendingSyncCount) {
-        const apiStatus = await uploadPatrols(accessToken);
-        if (isExpiredTokenStatus(apiStatus)) {
+        const patrolUploadResults = await uploadPatrols(accessToken);
+        const result = patrolUploadResults[0];
+        if (isExpiredTokenStatus(result.status)) {
           await handleRefreshToken(navigation);
           return;
         }
 
-        if (apiStatus === ApiStatus.Forbidden) {
+        if (result.status === ApiResponseCodes.Forbidden) {
           setIsForbiddenAlertVisible(true);
         }
 
@@ -167,13 +168,13 @@ export const StatusView = ({ navigation }: StatusViewProps) => {
       if (reportsPendingSync > 0) {
         const response = await uploadReportAndAttachments();
 
-        if (response.reportStatus === ApiStatus.Unauthorized
-          || response.attachmentStatus === ApiStatus.Unauthorized) {
+        if (response.reportStatus === ApiResponseCodes.Unauthorized
+          || response.attachmentStatus === ApiResponseCodes.Unauthorized) {
           await handleRefreshToken(navigation);
           return;
         }
-        if (response.reportStatus === ApiStatus.Succeeded
-          || response.attachmentStatus === ApiStatus.Succeeded) {
+        if (response.reportStatus === ApiResponseCodes.Succeeded
+          || response.attachmentStatus === ApiResponseCodes.Succeeded) {
           setStringForKey(LAST_SYNC_REPORTS_TIME_KEY, dayjs().format(DATE_FORMAT_HHMM_DD_MMM_YYYY));
           await updateReportsData();
           setReportsSubmitted(reportsSubmitted + reportsPendingSync);

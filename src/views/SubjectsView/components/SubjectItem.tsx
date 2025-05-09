@@ -16,20 +16,20 @@ import { calculateDateDifference } from '../../../common/utils/timeUtils';
 interface SubjectItemProps {
   icon: string,
   isVisible: boolean,
-  // lastPosition: Position,
   lastPositionUpdate: string,
   name: string,
   onVisibilityPress: () => void,
+  onLocationPress: () => void,
 }
 
 export const SubjectItem = (props: SubjectItemProps) => {
   const {
     icon,
     isVisible,
-    // lastPosition,
     lastPositionUpdate,
     name,
     onVisibilityPress,
+    onLocationPress,
   } = props;
 
   // Hooks
@@ -95,7 +95,7 @@ export const SubjectItem = (props: SubjectItemProps) => {
               top: 20, bottom: 20, left: 20, right: 20,
             }}
             iconSource={locationIcon}
-            onPress={() => null}
+            onPress={onLocationPress}
             style={$actionButton}
           />
         </View>

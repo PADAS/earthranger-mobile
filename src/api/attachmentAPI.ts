@@ -5,7 +5,7 @@ import axios from 'axios';
 import {
   API_EVENT, API_ATTACHMENT_FILES, getApiUrl, USER_AGENT_VALUE,
 } from './EarthRangerService';
-import { ApiStatus, FileRequest } from '../common/types/apiModels';
+import { ApiResponseCodes, FileRequest } from '../common/types/apiModels';
 import log from '../common/utils/logUtils';
 import { getApiStatus } from '../common/utils/errorUtils';
 
@@ -51,7 +51,7 @@ export const uploadAttachmentFile = async (
     } catch (error: any) {
       log.debug(`Attempt ${retryCount} failed with error: ${error.message}. Retrying...`);
 
-      if (getApiStatus(error.message) === ApiStatus.NotFound) {
+      if (getApiStatus(error.message) === ApiResponseCodes.NotFound) {
         throw new Error(error);
       }
 

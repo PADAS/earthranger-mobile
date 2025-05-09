@@ -1,6 +1,12 @@
-export enum PatrolStatus {
+export enum PatrolAction {
+  Upload = 'UPLOAD',
+  Stop = 'STOP',
+}
+
+export enum PatrolState {
   Unauthorized = 'unauthorized',
   Open = 'open',
   Done = 'done',
-  Canceled = 'canceled',
+  Duplicate = 'duplicate',
+  Rejected = 'rejected',
 }

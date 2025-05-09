@@ -42,8 +42,8 @@ import {
 } from '../../../../common/data/storage/keyValue';
 import BackgroundLocation from '../../../../common/backgrounGeolocation/BackgroundLocation';
 import log from '../../../../common/utils/logUtils';
-import { ApiStatus } from '../../../../common/types/apiModels';
-import { PatrolStatus } from '../../../../common/utils/patrolsUtils';
+import { ApiResponseCodes } from '../../../../common/types/apiModels';
+import { PatrolState } from '../../../../common/utils/patrolsUtils';
 import { usePopulatePatrolStart } from '../../../../common/data/patrols/usePopulatePatrolStart';
 import { useUploadPatrols } from '../../../../common/data/patrols/useUploadPatrols';
 import { getSession } from '../../../../common/data/storage/session';
@@ -70,7 +70,7 @@ const StartPatrolView = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'StartPatrolView'>>();
   const { t } = useTranslation();
   const { populatePatrolStart } = usePopulatePatrolStart();
-  const { startPatrol } = useUploadPatrols();
+  const { uploadPatrols } = useUploadPatrols();
   const { updatePatrolState } = useUpdatePatrolState();
   const { retrieveDefaultEventTypeByValue } = useRetrieveReportTypes();
 
@@ -160,11 +160,12 @@ const StartPatrolView = () => {
     if (isDeviceOnline && patrolId) {
       try {
         const accessToken = getSession()?.access_token || '';
-        const apiStatus = await startPatrol(patrolId.toString(), accessToken);
-        if (apiStatus === ApiStatus.Forbidden) {
+        const patrolUploadResults = await uploadPatrols(accessToken);
+        const result = patrolUploadResults[0];
+        if (result.status === ApiResponseCodes.Forbidden) {
           setIsLoaderVisible(false);
           status = PatrolResult.unauthorized;
-          await updatePatrolState(patrolId.toString(), PatrolStatus.Unauthorized);
+          await updatePatrolState(patrolId.toString(), PatrolState.Unauthorized);
           setShowUnauthorizedPatrolAlert(true);
         } else {
           status = PatrolResult.succeeded;

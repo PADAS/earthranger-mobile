@@ -8,7 +8,7 @@ import { isEmpty } from 'lodash-es';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { logGeneral } from './logUtils';
 import { getSession, saveSession } from '../data/storage/session';
-import { ApiStatus } from '../types/apiModels';
+import { ApiResponseCodes } from '../types/apiModels';
 import { refreshToken as refreshTokenApi } from '../../api/sessionAPI';
 import { getApiStatus, isExpiredTokenStatus } from './errorUtils';
 
@@ -28,12 +28,12 @@ export const useRefreshToken = () => {
       }
       logGeneral.debug('useRefreshToken :: Refreshing token...');
       const status = await refreshToken(token);
-      if (status === ApiStatus.Succeeded) {
+      if (status === ApiResponseCodes.Succeeded) {
         logGeneral.debug('useRefreshToken :: Token refreshed');
         refreshingToken = false;
         return true;
       }
-      if (isExpiredTokenStatus(status) || status === ApiStatus.BadRequest) {
+      if (isExpiredTokenStatus(status) || status === ApiResponseCodes.BadRequest) {
         logGeneral.debug('useRefreshToken :: Expired refresh token');
         navigateToLogin(navigation);
       }
@@ -48,9 +48,9 @@ export const useRefreshToken = () => {
       const sessionData = await refreshTokenApi(token);
       if (sessionData) {
         saveSession(sessionData);
-        return ApiStatus.Succeeded;
+        return ApiResponseCodes.Succeeded;
       }
-      return ApiStatus.Unknown;
+      return ApiResponseCodes.Unknown;
     } catch (error) {
       logGeneral.error('useRefreshToken :: Error refreshing token ', error);
       return getApiStatus(error);

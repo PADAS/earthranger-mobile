@@ -21,14 +21,13 @@ import {
 import BottomSheet from '@gorhom/bottom-sheet';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
-import Geolocation from 'react-native-geolocation-service';
 import {
   Feature, FeatureCollection, Geometry, GeoJsonProperties,
 } from 'geojson';
 import NetInfo, { useNetInfo } from '@react-native-community/netinfo';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Button, Incubator } from 'react-native-ui-lib';
-import { useFocusEffect } from '@react-navigation/native';
+import { RouteProp, useFocusEffect } from '@react-navigation/native';
 import { useMMKVBoolean, useMMKVString } from 'react-native-mmkv';
 import { isEqual, last } from 'lodash-es';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
@@ -135,17 +134,19 @@ import { UserTrailPointsMapLayer } from './components/UserTrailPointsMapLayer/Us
 import { MissingGPS } from './components/MissingGPS/MissingGPS';
 import { TrackingOverlay } from './components/TrackingOverlay/components/TrackingOverlay';
 import {
+  getCurrentPositionAsync,
   getMapUserPosition,
   isNullIslandPosition,
   isValidObservationAccuracy,
   isValidObservationThreshold,
   nullIslandLocation,
+  requestMapLocationPermissions,
   setMapUserLocation,
 } from '../../common/utils/locationUtils';
 import { useUploadPatrols } from '../../common/data/patrols/useUploadPatrols';
 import { useRefreshToken } from '../../common/utils/useRefreshToken';
 import { isExpiredTokenStatus } from '../../common/utils/errorUtils';
-import { ApiStatus } from '../../common/types/apiModels';
+import { ApiResponseCodes } from '../../common/types/apiModels';
 import { getTopAreaInsets } from '../../common/utils/safeAreaInsets';
 import { useRetrieveUserProfiles } from '../../common/data/users/useRetrieveUserProfiles';
 import { useUploadReports } from '../../common/data/reports/useUploadReports';
@@ -199,30 +200,18 @@ const SAFE_AREA_INSETS_BOTTOM = IS_ANDROID ? 25 : 24;
 // Interfaces + Types
 interface TrackLocationProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'TrackLocationMapView'>;
+  route: RouteProp<RootStackParamList, 'TrackLocationMapView'>;
 }
 
 const TrackLocationMapView = ({
+  route,
   navigation,
 }: TrackLocationProps) => {
-  // Functions
-  const getPatrolStartIconGeoJson = (display: boolean, coordinates: number[]) => ({
-    type: 'Feature',
-    id: 'startPatrol',
-    properties: {
-      icon: 'startPatrolIcon',
-      display,
-    },
-    geometry: {
-      type: 'Point',
-      coordinates,
-    },
-  });
-
   // Hooks
   const { t } = useTranslation();
   const { retrievePatrolTypes } = useRetrievePatrolTypes();
   const { populatePatrolStop } = usePopulatePatrolStop();
-  const { uploadPatrols, stopPatrol } = useUploadPatrols();
+  const { uploadPatrols } = useUploadPatrols();
   const { handleRefreshToken } = useRefreshToken();
   const { retrieveUserProfile } = useRetrieveUserProfiles();
   const { uploadReportAndAttachments } = useUploadReports();
@@ -245,11 +234,26 @@ const TrackLocationMapView = ({
   const isUploadAllowed = useRef(true);
   const isUserIdEmpty = useRef(false);
   const lastPatrolLocation = useRef<Position>();
+  const isUsingFlyTo = useRef(false);
 
   // Variables
   const componentId = Math.floor(Math.random() * 10000);
+  const flyTo = route.params?.flyTo;
 
   // Component's State
+  const getPatrolStartIconGeoJson = (display: boolean, coordinates: number[]) => ({
+    type: 'Feature',
+    id: 'startPatrol',
+    properties: {
+      icon: 'startPatrolIcon',
+      display,
+    },
+    geometry: {
+      type: 'Point',
+      coordinates,
+    },
+  });
+
   const [patrolStartIconFeature, setPatrolStartIconFeature] = useState(
     getPatrolStartIconGeoJson(false, nullIslandLocation),
   );
@@ -270,7 +274,7 @@ const TrackLocationMapView = ({
   );
   // eslint-disable-next-line max-len
   const [currentMapLocationMode, setCurrentMapLocationMode] = useState<UserTrackingMode>();
-  const [centerCoordinate, setCenterCoordinate] = useState(nullIslandLocation);
+  const [centerCoordinate, setCenterCoordinate] = useState<[number, number]>(nullIslandLocation);
   const [lastLocation, setLastLocation] = useState<LastLocation>({
     timestamp: '',
     displayDate: '',
@@ -288,6 +292,7 @@ const TrackLocationMapView = ({
   const [displayCoordinatesCopied, setDisplayCoordinatesCopied] = useState(false);
   const [liveCoordinates, setLiveCoordinates] = useState(nullIslandLocation);
   const [isCompassMode, setIsCompassMode] = useState(false);
+  const prominentDisclosureShown = getBoolForKey(PROMINENT_DISCLOSURE_KEY);
 
   /* Basemap */
   const bottomSheetNavigationRef = useRef<BottomSheetNavigatorMethods>(null);
@@ -331,8 +336,6 @@ const TrackLocationMapView = ({
       }
     });
 
-    const prominentDisclosureShown = getBoolForKey(PROMINENT_DISCLOSURE_KEY);
-
     async function initLocationService() {
       if (prominentDisclosureShown) {
         await requestMapLocationPermissions();
@@ -356,6 +359,13 @@ const TrackLocationMapView = ({
       setBasemapSelected(getStringForKey(BASEMAP_KEY) || '');
     }
   }, [basemapStatus]);
+
+  useEffect(() => {
+    zoomToPosition();
+    return () => {
+      isUsingFlyTo.current = false;
+    };
+  }, [flyTo]);
 
   useEffect(() => {
     if (persistedPatrolStatus !== undefined) {
@@ -533,7 +543,9 @@ const TrackLocationMapView = ({
     const initSubjectsGeoJson = async () => {
       const userInfo = await retrieveUserInfo();
       // @ts-ignore
-      const visibleSubjects = JSON.parse(subjectsStorage.subjectsKey.get() || '[]').map((item) => `'${item}'`).join(',');
+      const visibleSubjects = JSON.parse(
+        subjectsStorage.subjectsKey.get() || '[]',
+      ).map((item) => `'${item}'`).join(',');
 
       if (visibleSubjects.length === 0) {
         setSubjectsGeoJson(null);
@@ -573,10 +585,11 @@ const TrackLocationMapView = ({
     if (activePatrolId !== 0 || getNumberForKey(ACTIVE_PATROL_ID_KEY)) {
       if (isConnected && !hasActivePatrolUploaded) {
         try {
-          const apiStatus = await uploadPatrols(accessToken.current);
-          if (isExpiredTokenStatus(apiStatus)) {
+          const patrolUploadResults = await uploadPatrols(accessToken.current);
+          const result = patrolUploadResults[0];
+          if (isExpiredTokenStatus(result.status)) {
             await handleRefreshToken(navigation);
-          } else if (apiStatus === ApiStatus.Succeeded) {
+          } else if (result.status === ApiResponseCodes.Succeeded) {
             logTracking.info(`${VIEW_NAME} :: Active patrol uploaded`);
           }
         } catch (uploadActivePatrolError: any) {
@@ -586,14 +599,32 @@ const TrackLocationMapView = ({
     }
   };
 
-  const requestMapLocationPermissions = async () => {
-    if (IS_ANDROID) {
-      const isLocationPermissionGranted = await Mapbox.requestAndroidLocationPermissions();
-      if (isLocationPermissionGranted) {
-        moveCameraToCurrentLocation();
-      }
+  const zoomToPosition = async () => {
+    if (flyTo) {
+      setCenterCoordinate(flyTo);
+      isUsingFlyTo.current = true;
+    } else if (isCustomCenterCoordsEnabled && customCenterLon && customCenterLat) {
+      logTracking.debug(`custom map center: ${centerCoordinate}`);
+      setCenterCoordinate([parseFloat(customCenterLon), parseFloat(customCenterLat)]);
+      isUsingFlyTo.current = false;
     } else {
+      isUsingFlyTo.current = false;
       moveCameraToCurrentLocation();
+    }
+  };
+
+  const moveCameraToCurrentLocation = async () => {
+    if (flyTo) {
+      return;
+    }
+
+    try {
+      const position = await getCurrentPositionAsync(isUsingFlyTo.current);
+      if (!isUsingFlyTo.current) {
+        setCenterCoordinate([position.coords.longitude, position.coords.latitude]);
+      }
+    } catch (error) {
+      logTracking.error('Error getting current position:', error);
     }
   };
 
@@ -601,11 +632,11 @@ const TrackLocationMapView = ({
     const pendingSyncCount = await retrieveReportPendingSyncCount();
     const response = await uploadReportAndAttachments();
 
-    if (response.reportStatus === ApiStatus.Unauthorized
-      || response.attachmentStatus === ApiStatus.Unauthorized) {
+    if (response.reportStatus === ApiResponseCodes.Unauthorized
+      || response.attachmentStatus === ApiResponseCodes.Unauthorized) {
       await handleRefreshToken(navigation);
-    } else if (response.reportStatus === ApiStatus.Succeeded
-      || response.attachmentStatus === ApiStatus.Succeeded) {
+    } else if (response.reportStatus === ApiResponseCodes.Succeeded
+      || response.attachmentStatus === ApiResponseCodes.Succeeded) {
       const lastSyncDate = dayjs().format(DATE_FORMAT_HHMM_DD_MMM_YYYY);
       setNumberForKey(
         REPORTS_SUBMITTED_KEY,
@@ -613,23 +644,6 @@ const TrackLocationMapView = ({
       );
       setStringForKey(LAST_SYNC_REPORTS_TIME_KEY, lastSyncDate);
     }
-  };
-
-  const moveCameraToCurrentLocation = () => {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        setCenterCoordinate([position.coords.longitude, position.coords.latitude]);
-        isMapZoomAdjusted.current = true;
-      },
-      (positionError: any) => {
-        logTracking.error(
-          `${VIEW_NAME} :: Error getting coordinates for map ->`,
-          positionError.code,
-          positionError.message,
-        );
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
-    );
   };
 
   const trackAnalyticsEvent = useCallback((event: AnalyticsEvent) => {
@@ -777,6 +791,8 @@ const TrackLocationMapView = ({
   const onTrackModeButtonPressHandler = () => {
     let trackMode: UserTrackingMode;
 
+    isUsingFlyTo.current = false;
+
     if (!isMapCentered.current) {
       trackMode = currentMapLocationMode || UserTrackingMode.Follow;
     } else {
@@ -849,7 +865,7 @@ const TrackLocationMapView = ({
       // attempts to upload when online and not syncing
       if (isDeviceOnline && !isSyncing()) {
         if (activePatrolId !== undefined) {
-          await stopPatrol(accessToken.current, activePatrolId.toString());
+          await uploadPatrols(accessToken.current);
           setStringForKey(LAST_SYNC_PATROLS_TIME_KEY, dayjs().format(DATE_FORMAT_HHMM_DD_MMM_YYYY));
           setHasActivePatrolUploaded(true);
           setActivePatrolId(0);
@@ -1067,7 +1083,7 @@ const TrackLocationMapView = ({
   const onHttp = async (response: HttpEvent) => {
     logTracking.info(`${VIEW_NAME} :: onHttp ->`, response);
 
-    if (isExpiredTokenStatus(response.status as ApiStatus)) {
+    if (isExpiredTokenStatus(response.status as ApiResponseCodes)) {
       await handleRefreshToken(navigation);
     }
 
@@ -1204,17 +1220,15 @@ const TrackLocationMapView = ({
           }}
           animationMode="flyTo"
           animationDuration={MAP_ANIMATION_DURATION}
-          // eslint-disable-next-line max-len
           centerCoordinate={
-            // eslint-disable-next-line no-nested-ternary
-            isCustomCenterCoordsEnabled
+            !isUsingFlyTo.current && isCustomCenterCoordsEnabled
               ? [
                 parseFloat(customCenterLon || '0'),
                 parseFloat(customCenterLat || '0'),
               ]
               : centerCoordinate
           }
-          followUserLocation={isCustomCenterCoordsEnabled ? false : isCompassMode}
+          followUserLocation={isCompassMode}
           followUserMode={isCompassMode ? UserTrackingMode.FollowWithHeading : UserTrackingMode.Follow}
           followZoomLevel={ZOOM_LEVEL}
         />

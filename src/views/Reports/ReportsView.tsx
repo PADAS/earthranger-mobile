@@ -33,7 +33,7 @@ import {
 import { isInternetReachable } from '../../common/utils/NetworkInfoUtils';
 import { useRefreshToken } from '../../common/utils/useRefreshToken';
 import { localStorageSecured } from '../../common/data/storage/utils';
-import { ApiStatus } from '../../common/types/apiModels';
+import { ApiResponseCodes } from '../../common/types/apiModels';
 import AnalyticsEvent, { analyticsEventToHashMap } from '../../analytics/model/analyticsEvent';
 import { logEvent } from '../../analytics/wrapper/analyticsWrapper';
 import { addReportEvent } from '../../analytics/reports/reportsAnalytics';
@@ -119,11 +119,11 @@ const ReportsView = ({
   const syncStatusReports = async () => {
     const response = await uploadReportAndAttachments();
 
-    if (response.reportStatus === ApiStatus.Unauthorized
-      || response.attachmentStatus === ApiStatus.Unauthorized) {
+    if (response.reportStatus === ApiResponseCodes.Unauthorized
+      || response.attachmentStatus === ApiResponseCodes.Unauthorized) {
       await handleRefreshToken(navigation);
-    } else if (response.reportStatus === ApiStatus.Succeeded
-      || response.attachmentStatus === ApiStatus.Succeeded) {
+    } else if (response.reportStatus === ApiResponseCodes.Succeeded
+      || response.attachmentStatus === ApiResponseCodes.Succeeded) {
       setReportsSubmittedCount(reportsSubmittedCount + pendingSyncCount);
       await getPendingSyncCount();
     }

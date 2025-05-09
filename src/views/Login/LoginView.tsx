@@ -54,7 +54,7 @@ import { getRemoteUser } from '../../api/usersAPI';
 import { CustomAlert } from '../../common/components/CustomAlert/CustomAlert';
 import { LogOutAlertIcon } from '../../common/icons/LogOutAlertIcon';
 import { usePopulateUsers } from '../../common/data/users/usePopulateUsers';
-import { ApiStatus } from '../../common/types/apiModels';
+import { ApiResponseCodes } from '../../common/types/apiModels';
 import { logGeneral } from '../../common/utils/logUtils';
 import { Loader } from '../../common/components/Loader/Loader';
 import { getAuthState, setAuthState } from '../../common/utils/authUtils';
@@ -189,10 +189,10 @@ const LoginView = ({
           setBoolForKey(SAVE_TO_CAMERA_ROLL, false);
 
           logGeneral.info(`Active User: ${userName}`);
-          let apiStatus = ApiStatus.Unknown;
+          let apiStatus = ApiResponseCodes.Unknown;
           try {
             apiStatus = await populateUsers(accessToken);
-            if (apiStatus === ApiStatus.Succeeded) {
+            if (apiStatus === ApiResponseCodes.Succeeded) {
               setIsLoading(false);
               navigateTo(SYNC_LOADER_VIEW);
             } else {

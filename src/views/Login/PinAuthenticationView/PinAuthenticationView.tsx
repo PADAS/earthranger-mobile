@@ -19,6 +19,7 @@ import {
   PATROL_INFO_EVENT_TYPE_VALUE,
   REPORTS_SUBMITTED_KEY,
   SUBJECT_ID_KEY,
+  TRACKED_BY_SUBJECT_STATUS_KEY,
   USER_REMOTE_ID_KEY,
   USER_SUBJECT_NAME_KEY,
 } from '../../../common/constants/constants';
@@ -61,6 +62,7 @@ const PinAuthenticationView = () => {
           setNumberForKey(REPORTS_SUBMITTED_KEY, 0);
           setBoolForKey(PATROL_INFO_ENABLED, false);
           setBoolForKey(CUSTOM_CENTER_COORDS_ENABLED, false);
+          setBoolForKey(TRACKED_BY_SUBJECT_STATUS_KEY, false);
           setStringForKey(CUSTOM_CENTER_COORDS_LAT, '');
           setStringForKey(CUSTOM_CENTER_COORDS_LON, '');
         }

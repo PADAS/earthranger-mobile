@@ -440,6 +440,7 @@
       "minutesAgo": "{{diff}} minutos atrás",
       "minuteAgo": "{{diff}} minuto atrás",
       "secondsAgo": "{{diff}} segundos atrás"
-    }
+    },
+    "distance": "{{subjectDistance}} km de distância de você"
   }
 }

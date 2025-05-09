@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS_LIGHT.transparent,
   },
   coordinatesContainer: {
-    marginTop: 12,
+    marginTop: 6,
     flexDirection: 'row',
   },
 });

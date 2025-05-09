@@ -14,7 +14,7 @@ import { postEvent, postPatrolSegmentEvent } from '../../../api/reportsAPI';
 import { logGeneral, logSync } from '../../utils/logUtils';
 import { useRetrieveUnsyncedEventsAttachments } from './useRetrieveUnsyncedEventsAttachments';
 import { useReportUploadFile } from './userReportUploadFile';
-import { ApiStatus, FileRequest } from '../../types/apiModels';
+import { ApiResponseCodes, FileRequest } from '../../types/apiModels';
 import { useUpdateReportAttachmentRemoteId } from './useUpdateReportAttachmentRemoteId';
 import { useReportCreateNote } from './useCreateReportNote';
 import { useRetrieveReportedByInfo } from '../users/useRetrieveReportedByInfo';
@@ -74,7 +74,7 @@ export const useUploadReports = () => {
       return { reportStatus, attachmentStatus };
     }
     setIsSyncing(SyncSource.Reports, false);
-    return { reportStatus: ApiStatus.Unauthorized, attachmentStatus: ApiStatus.Unauthorized };
+    return { reportStatus: ApiResponseCodes.Unauthorized, attachmentStatus: ApiResponseCodes.Unauthorized };
   }, []);
 
   const uploadReportEvents = useCallback(async (
@@ -147,8 +147,8 @@ export const useUploadReports = () => {
               reportedByData?.profileRemoteId,
             );
           } catch (error) {
-            if (getApiStatus(error) === ApiStatus.NotFound
-              || getApiStatus(error) === ApiStatus.BadRequest) {
+            if (getApiStatus(error) === ApiResponseCodes.NotFound
+              || getApiStatus(error) === ApiResponseCodes.BadRequest) {
               try {
                 requestResponse = await postEvent(
                   accessToken,
@@ -193,7 +193,7 @@ export const useUploadReports = () => {
         }
       }));
 
-      return ApiStatus.Succeeded;
+      return ApiResponseCodes.Succeeded;
     } catch (error) {
       logSync.debug(`[${TAG}] - Could not upload event(s) - ${error}`);
       return getApiStatus(error);
@@ -239,7 +239,7 @@ export const useUploadReports = () => {
                 // eslint-disable-next-line max-len
                 await persistUploadedAttachment(uploadedAttachment?.data.id, attachment.attachment_id);
               } catch (error: any) {
-                if (getApiStatus(error.message) === ApiStatus.NotFound) {
+                if (getApiStatus(error.message) === ApiResponseCodes.NotFound) {
                   await updateReportAttachmentStatus(attachment.attachment_id.toString(), '-1');
                 }
               }
@@ -255,7 +255,7 @@ export const useUploadReports = () => {
               // eslint-disable-next-line max-len
               await persistUploadedAttachment(uploadedAttachment?.data.id, attachment.attachment_id);
             } catch (error: any) {
-              if (getApiStatus(error.message) === ApiStatus.NotFound) {
+              if (getApiStatus(error.message) === ApiResponseCodes.NotFound) {
                 await updateReportAttachmentStatus(attachment.attachment_id.toString(), '-1');
               }
             }
@@ -263,7 +263,7 @@ export const useUploadReports = () => {
         }
       }
 
-      return ApiStatus.Succeeded;
+      return ApiResponseCodes.Succeeded;
     } catch (error) {
       logSync.debug(`[${TAG}] - Could not upload event attachment - ${error}`);
       return getApiStatus(error);

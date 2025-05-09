@@ -14,8 +14,10 @@ import {
 } from '../sql/queries';
 import { getSecuredStringForKey } from '../storage/utils';
 import { USER_ID_KEY } from '../../constants/constants';
-import { UserType } from '../../enums/enums';
+import { PermissionLevel, UserType } from '../../enums/enums';
 import { logSQL } from '../../utils/logUtils';
+import { bindQueryParams, getCategoryPermissionQueryParams } from '../../utils/dataBaseUtils';
+import { useRetrieveUser } from '../users/useRetrieveUser';
 
 enablePromise(true);
 
@@ -23,6 +25,7 @@ export const useRetrieveReportCategories = () => {
   // Hooks
   const { getDBInstance } = useGetDBConnection();
   const { retrieveData } = useRetrieveData();
+  const { retrieveUserInfo } = useRetrieveUser();
 
   const retrieveReportCategories = useCallback(async () => {
     try {
@@ -80,6 +83,12 @@ export const useRetrieveReportCategories = () => {
     userType: UserType,
     profileId?: number,
   ) => {
+    const userInfo = await retrieveUserInfo();
+    const params: string[] = [getCategoryPermissionQueryParams(
+      userInfo?.permissions,
+      PermissionLevel.add,
+    )];
+
     // Get database connection instance
     const dbInstance = await getDBInstance();
 
@@ -88,7 +97,7 @@ export const useRetrieveReportCategories = () => {
       const eventCategories = await retrieveData(
         dbInstance,
         userType === UserType.account && !profileId
-          ? SELECT_EVENT_CATEGORIES_FOR_PARENT_USER
+          ? bindQueryParams(SELECT_EVENT_CATEGORIES_FOR_PARENT_USER, params)
           : SELECT_EVENT_CATEGORIES_FOR_PROFILE_USER,
         userType === UserType.account && !profileId
           ? []

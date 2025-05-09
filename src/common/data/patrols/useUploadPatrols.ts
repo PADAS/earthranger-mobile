@@ -1,279 +1,145 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
 // External Dependencies
-import axios from 'axios';
 import { useCallback } from 'react';
 
 // Internal Dependencies
 import { useRetrievePendingSyncPatrol } from './useRetrievePendingSyncPatrol';
 import log from '../../utils/logUtils';
 import { PersistedPatrol, PersistedPatrolTypeSegment } from '../../types/types';
-import { getPatrolSegment, postPatrol, updatePatrol as updateRemotePatrol } from '../../../api/patrolsAPI';
+import { postPatrol, updatePatrol as updateRemotePatrol } from '../../../api/patrolsAPI';
 import { useUpdatePatrolData } from './useUpdatePatrolData';
 import { useUpdatePatrolSegmentRemoteId } from './useUpdatePatrolSegmentRemoteId';
 import { useRetrievePatrolTypeSegmentByPatrolId } from './useRetrievePatrolTypeSegmentByPatrolId';
 import { TRACKED_BY_SUBJECT_ID_KEY } from '../../constants/constants';
-import { useRetrievePatrolById } from './useRetrievePatrolById';
 import { useRetrieveUserProfiles } from '../users/useRetrieveUserProfiles';
 import { getApiStatus } from '../../utils/errorUtils';
-import { ApiStatus } from '../../types/apiModels';
+import { ApiResponseCodes } from '../../types/apiModels';
 import { setIsSyncing, SyncSource } from '../../utils/syncUtils';
 import { getStringForKey } from '../storage/keyValue';
-import { PatrolStatus } from '../../utils/patrolsUtils';
-import { useUpdatePatrolState } from './useUpdatePatrolState';
+import { PatrolState } from '../../utils/patrolsUtils';
 import { isEmptyString } from '../../utils/stringUtils';
 import { useRetrieveUser } from '../users/useRetrieveUser';
-
-enum PatrolAction {
-  post = 'POST',
-  stop = 'STOP',
-}
+import { useUpdatePatrolState } from './useUpdatePatrolState';
 
 export const useUploadPatrols = () => {
   // Hooks
-  const { retrievePendingSyncPatrols, retrievePendingSyncPatrol } = useRetrievePendingSyncPatrol();
+  const { retrievePendingSyncPatrols } = useRetrievePendingSyncPatrol();
   const { retrievePatrolTypeSegmentByPatrolId } = useRetrievePatrolTypeSegmentByPatrolId();
   const { updatePatrolRemoteId } = useUpdatePatrolData();
   const { updatePatrolSegmentRemoteId } = useUpdatePatrolSegmentRemoteId();
-  const { retrievePatrolById } = useRetrievePatrolById();
   const { retrieveUserProfileById } = useRetrieveUserProfiles();
-  const { updatePatrolState } = useUpdatePatrolState();
   const { retrieveUserById } = useRetrieveUser();
+  const { updatePatrolState } = useUpdatePatrolState();
 
-  const uploadPatrols = useCallback(async (accessToken: string) => {
+  interface PatrolUploadResult {
+    patrolId: string;
+    status: ApiResponseCodes;
+  }
+
+  const uploadPatrols = useCallback(async (accessToken: string): Promise<PatrolUploadResult[]> => {
+    const results: PatrolUploadResult[] = [];
     try {
       const pendingSyncPatrols = await retrievePendingSyncPatrols();
-
       setIsSyncing(SyncSource.Patrols, true);
 
-      const patrolsPayload = await Promise.all(pendingSyncPatrols.map(async (pendingSyncPatrol) => {
-        const patrolId = pendingSyncPatrol.id.toString();
-
-        let patrol = null;
-
-        const isStop = !!(
-          pendingSyncPatrol.state === PatrolStatus.Open && pendingSyncPatrol.updated_at
-        );
-
-        const patrolLeader = await getPatrolLeader(
-          pendingSyncPatrol.account_id,
-          pendingSyncPatrol.profile_id,
-        );
-
-        if (isStop && pendingSyncPatrol.remote_id) {
-          patrol = {
-            patrolId,
-            type: PatrolAction.stop,
-          };
-        } else {
-          const segments = await retrievePatrolTypeSegmentByPatrolId(patrolId);
-
-          const patrolData = patrolRequestData(
-            pendingSyncPatrol,
-            segments,
-            isStop,
-            patrolLeader.patrolLeaderId,
-          );
-
-          patrol = {
-            patrolData,
-            patrolLeader: patrolLeader.profileRemoteId,
-            patrolId,
-            type: PatrolAction.post,
-          };
-        }
-
-        return patrol;
-      }));
-
-      for (let i = 0, l = patrolsPayload.length; i < l; i++) {
-        const patrol = patrolsPayload[i];
-
-        if (patrol.type === PatrolAction.stop) {
-          await stopPatrol(accessToken, patrol.patrolId || '');
-        } else if (patrol.type === PatrolAction.post) {
-          try {
-            const patrolResponse = await postPatrol(
-              accessToken,
-              patrol.patrolData,
-              patrol.patrolLeader,
-            );
-
-            if (patrolResponse.data && !isEmptyString(patrolResponse.data.id)) {
-              await updatePatrolRemoteId(
-                patrol.patrolId,
-                patrolResponse.data.serial_number,
-                patrolResponse.data.id,
-                patrolResponse.data.state,
-              );
-            }
-
-            log.debug('Patrols uploaded');
-          } catch (error) {
-            setIsSyncing(SyncSource.Patrols, false);
-            if (axios.isAxiosError(error)) {
-              const apiStatus = getApiStatus(error);
-
-              if (apiStatus === ApiStatus.Forbidden) {
-                await updatePatrolState(patrol.patrolId, 'unauthorized');
-              }
-
-              log.error('Error while uploading patrol ', error);
-            } else {
-              log.error('Error while uploading patrol ', error);
-            }
-            throw error;
-          }
-        }
-      }
-    } catch (error) {
-      log.error('Error while uploading patrols ', error);
-      setIsSyncing(SyncSource.Patrols, false);
-      return getApiStatus(error);
-    }
-    setIsSyncing(SyncSource.Patrols, false);
-    return ApiStatus.Succeeded;
-  }, []);
-
-  const stopPatrol = useCallback(async (accessToken: string, patrolId: string) => {
-    try {
-      setIsSyncing(SyncSource.Patrols, true);
-
-      const [activePatrol, segments] = await Promise.all([
-        retrievePatrolById(patrolId),
-        retrievePatrolTypeSegmentByPatrolId(patrolId),
-      ]);
-
-      const patrolLeader = await getPatrolLeader(
-        activePatrol.account_id,
-        activePatrol.profile_id,
-      );
-
-      const patrolData = patrolRequestData(
-        activePatrol,
-        segments,
-        true,
-        patrolLeader.patrolLeaderId,
-      );
-
-      try {
-        const patrolSegmentStatus = await getPatrolSegment(
-          accessToken,
-          segments[0].remote_id,
-          patrolLeader.profileRemoteId,
-        );
-
-        if (patrolSegmentStatus === ApiStatus.Succeeded) {
-          try {
-            const patrolResponse = await updateRemotePatrol(
-              accessToken,
-              patrolData,
-              activePatrol.remote_id,
-              patrolLeader.profileRemoteId,
-            );
-
-            if (patrolResponse.data?.id) {
-              await updatePatrolRemoteId(
-                patrolId,
-                patrolResponse.data.serial_number,
-                patrolResponse.data.id,
-                PatrolStatus.Done,
-              );
-            }
-
-            log.debug('Patrol updated');
-          } catch (error) {
-            setIsSyncing(SyncSource.Patrols, false);
-
-            if (axios.isAxiosError(error)) {
-              log.error('Error while updating patrol ', error);
-            } else {
-              return getApiStatus(error);
-            }
-
-            throw error;
-          }
-        }
-      } catch (error) {
-        const apiStatus = getApiStatus(error);
-
-        if (apiStatus === ApiStatus.NotFound && activePatrol.remote_id) {
-          await updatePatrolState(patrolId, PatrolStatus.Canceled);
-        }
-      }
-    } catch (error) {
-      log.error('Error while updating patrol ', error);
-      setIsSyncing(SyncSource.Patrols, false);
-      return getApiStatus(error);
-    }
-
-    setIsSyncing(SyncSource.Patrols, false);
-    return ApiStatus.Succeeded;
-  }, []);
-
-  const startPatrol = useCallback(async (patrolId: string, accessToken: string) => {
-    try {
-      setIsSyncing(SyncSource.Patrols, true);
-
-      const pendingSyncPatrol = await retrievePendingSyncPatrol(patrolId);
-
-      if (pendingSyncPatrol) {
-        const segments = await retrievePatrolTypeSegmentByPatrolId(patrolId);
-
+      for (const pendingSyncPatrol of pendingSyncPatrols) {
         try {
-          const patrolLeader = await getPatrolLeader(
-            pendingSyncPatrol.account_id,
-            pendingSyncPatrol.profile_id,
-          );
-          const patrolData = patrolRequestData(
-            pendingSyncPatrol,
-            segments,
-            false,
-            patrolLeader.patrolLeaderId,
-          );
-          const patrolResponse = await postPatrol(
-            accessToken,
-            patrolData,
-            patrolLeader.profileRemoteId,
-          );
-
-          if (patrolResponse.data && !isEmptyString(patrolResponse.data.id)) {
-            await Promise.all([
-              updatePatrolRemoteId(
-                patrolId,
-                patrolResponse.data.serial_number,
-                patrolResponse.data.id,
-                PatrolStatus.Open,
-              ),
-              patrolResponse.data.patrol_segments?.length > 0
-                ? updatePatrolSegmentRemoteId(patrolId, patrolResponse.data.patrol_segments[0].id)
-                : Promise.resolve(),
-            ]);
-          }
-
-          log.debug('Active patrol uploaded');
+          const status = await uploadSinglePatrol(accessToken, pendingSyncPatrol);
+          results.push({
+            patrolId: pendingSyncPatrol.id.toString(),
+            status,
+          });
         } catch (error) {
-          setIsSyncing(SyncSource.Patrols, false);
-
-          if (axios.isAxiosError(error)) {
-            log.error('Error while uploading active patrol ', error);
-          } else {
-            return getApiStatus(error);
-          }
-
-          // noinspection ExceptionCaughtLocallyJS
-          throw error;
+          const errorStatus = getApiStatus(error);
+          results.push({
+            patrolId: pendingSyncPatrol.id.toString(),
+            status: errorStatus,
+          });
+          log.error(`Error uploading patrol ${pendingSyncPatrol.id}:`, error);
         }
       }
     } catch (error) {
-      log.error('Error while uploading active patrol ', error);
+      log.error('Error in uploadPatrols:', error);
+      results.push({
+        patrolId: 'general',
+        status: ApiResponseCodes.ServerError,
+      });
+    } finally {
       setIsSyncing(SyncSource.Patrols, false);
-      return getApiStatus(error);
     }
 
-    setIsSyncing(SyncSource.Patrols, false);
-    return ApiStatus.Succeeded;
+    return results;
   }, []);
+
+  const uploadSinglePatrol = async (accessToken: string, pendingSyncPatrol: PersistedPatrol): Promise<ApiResponseCodes> => {
+    const patrolId = pendingSyncPatrol.id.toString();
+    const segments = await retrievePatrolTypeSegmentByPatrolId(patrolId);
+    const patrolLeader = await getPatrolLeader(pendingSyncPatrol.account_id, pendingSyncPatrol.profile_id);
+
+    const isStopped = !!pendingSyncPatrol.updated_at;
+
+    log.info(`Uploading patrol ${patrolId}: isStopped: ${isStopped}, state: ${pendingSyncPatrol.state}, updated_at: ${pendingSyncPatrol.updated_at}, remote_id: ${pendingSyncPatrol.remote_id}`);
+
+    const patrolData = patrolRequestData(pendingSyncPatrol, segments, isStopped, patrolLeader.patrolLeaderId);
+
+    try {
+      let patrolResponse;
+      if (pendingSyncPatrol.remote_id && isStopped) {
+        // Stopping an online patrol
+        patrolResponse = await updateRemotePatrol(accessToken, patrolData, pendingSyncPatrol.remote_id, patrolLeader.profileRemoteId);
+      } else {
+        // Starting a new patrol (online or offline) or uploading a completed offline patrol
+        patrolResponse = await postPatrol(accessToken, patrolData, patrolLeader.profileRemoteId);
+      }
+
+      if (patrolResponse && patrolResponse.data && !isEmptyString(patrolResponse.data.id)) {
+        await updatePatrolAfterUpload(patrolId, patrolResponse.data);
+        return ApiResponseCodes.Succeeded;
+      }
+      log.error('Unexpected response from server when uploading patrol:', patrolResponse);
+      return ApiResponseCodes.BadRequest;
+    } catch (error) {
+      handleApiError(error, patrolId);
+      return getApiStatus(error);
+    }
+  };
+
+  const updatePatrolAfterUpload = async (patrolId: string, responseData: any) => {
+    try {
+      await Promise.all([
+        updatePatrolRemoteId(patrolId, responseData.serial_number, responseData.id, responseData.state),
+        responseData.patrol_segments?.length > 0
+          ? updatePatrolSegmentRemoteId(patrolId, responseData.patrol_segments[0].id)
+          : Promise.resolve(),
+      ]);
+      log.info(`Successfully updated local database for patrol ${patrolId} with state: ${responseData.state}`);
+    } catch (error) {
+      log.error(`Error updating local database for patrol ${patrolId}:`, error);
+    }
+  };
+
+  const handleApiError = async (error: unknown, patrolId: string) => {
+    const status = getApiStatus(error);
+    switch (status) {
+      case ApiResponseCodes.Unauthorized:
+      case ApiResponseCodes.Forbidden:
+        log.warn(`Unauthorized access for patrol ${patrolId}`);
+        await updatePatrolState(patrolId, PatrolState.Unauthorized);
+        break;
+      case ApiResponseCodes.NotFound:
+        log.warn(`Forbidden access for patrol ${patrolId}`);
+        await updatePatrolState(patrolId, PatrolState.Rejected);
+        break;
+      case ApiResponseCodes.Conflict:
+        log.warn(`Conflict for patrol ${patrolId}`);
+        await updatePatrolState(patrolId, PatrolState.Duplicate);
+        break;
+      default:
+        log.error(`Unexpected error (status ${status}) for patrol ${patrolId}:`, error);
+        break;
+    }
+  };
 
   const getPatrolLeader = useCallback(async (accountId: number, profileId: number) => {
     const patrolLeader = {
@@ -303,7 +169,7 @@ export const useUploadPatrols = () => {
     return patrolLeader;
   }, []);
 
-  return { uploadPatrols, stopPatrol, startPatrol };
+  return { uploadPatrols };
 };
 
 const patrolRequestData = (
@@ -313,7 +179,7 @@ const patrolRequestData = (
   patrolLeaderId: string,
 ) => ({
   ...!patrol.remote_id && { created_at: patrol.created_at },
-  state: isStop ? PatrolStatus.Done : patrol.state,
+  state: isStop ? PatrolState.Done : patrol.state,
   patrol_segments: segments.length > 0
     ? segments.map((segment) => segmentsRequestData(patrol, segment, patrolLeaderId))
     : [],

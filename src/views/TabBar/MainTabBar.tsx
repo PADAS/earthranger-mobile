@@ -1,7 +1,7 @@
 // External Dependencies
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { EventListenerCallback } from '@react-navigation/native';
+import { EventListenerCallback, useNavigation, useRoute } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 
 // Internal Dependencies
@@ -33,6 +33,18 @@ const Tab = createBottomTabNavigator();
 
 const MainTabBar = () => {
   const { t } = useTranslation();
+  const navigation = useNavigation();
+  const route = useRoute();
+
+  useEffect(() => {
+    if (route.params?.flyTo) {
+      navigation.navigate({
+        name: t('mainTabBar.map'),
+        params: { flyTo: route.params.flyTo },
+        merge: true,
+      });
+    }
+  }, [route.params, navigation, t]);
 
   const locationIcon = (color: string, focused: boolean) => {
     if (focused) {

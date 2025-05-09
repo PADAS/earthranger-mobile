@@ -5,7 +5,9 @@ export type Position = [number, number];
 export type RootStackParamList = {
   SplashScreen: undefined,
   LoginView: undefined,
-  TrackLocationMapView: undefined,
+  TrackLocationMapView: {
+    flyTo?: Position;
+  }
   MainTabBar: undefined,
   ReportsView: undefined,
   ReportIssueView: undefined,

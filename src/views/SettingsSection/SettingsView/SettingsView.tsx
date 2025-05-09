@@ -455,8 +455,6 @@ export const SettingsView = ({
     if (isActivelyTracking) {
       setShowAlertDialogSwitchUser(true);
     } else if (pinRequired && !patrolStatus) {
-      setStringForKey(TRACKED_BY_SUBJECT_ID_KEY, '');
-      setStringForKey(TRACKED_BY_SUBJECT_NAME_KEY, '');
       navigateTo('PinAuthenticationView');
     }
   };
@@ -623,38 +621,36 @@ export const SettingsView = ({
         {/* End Merge Categories */}
 
         {/* Switch Tracked By Subject */}
-        {experimentalFeaturesEnabled && (
-          <View style={style.menuItemContainer}>
-            <View style={style.settingContainer}>
-              <View style={style.settingIcon}>
-                <SwitchTrackedByUser />
-              </View>
-              <View style={style.settingTextContainer}>
-                <Text
-                  style={style.textSettingName}
-                >
-                  {t('settingsView.switchTrackedBySubject')}
-                </Text>
-              </View>
-              <Switch
-                style={style.switchSetting}
-                trackColor={
-                  { false: COLORS_LIGHT.G5_LightGreyLines, true: COLORS_LIGHT.blueLight }
-                }
-                thumbColor={
-                  isSwitchTrackBySubjectEnabled
-                    ? COLORS_LIGHT.brightBlue : COLORS_LIGHT.G3_secondaryMediumLightGray
-                }
-                onValueChange={toggleSwitchTrackedByUser}
-                value={isSwitchTrackBySubjectEnabled}
-              />
+        <View style={style.menuItemContainer}>
+          <View style={style.settingContainer}>
+            <View style={style.settingIcon}>
+              <SwitchTrackedByUser />
             </View>
+            <View style={style.settingTextContainer}>
+              <Text
+                style={style.textSettingName}
+              >
+                {t('settingsView.switchTrackedBySubject')}
+              </Text>
+            </View>
+            <Switch
+              style={style.switchSetting}
+              trackColor={
+                { false: COLORS_LIGHT.G5_LightGreyLines, true: COLORS_LIGHT.blueLight }
+              }
+              thumbColor={
+                isSwitchTrackBySubjectEnabled
+                  ? COLORS_LIGHT.brightBlue : COLORS_LIGHT.G3_secondaryMediumLightGray
+              }
+              onValueChange={toggleSwitchTrackedByUser}
+              value={isSwitchTrackBySubjectEnabled}
+            />
           </View>
-        )}
+        </View>
         {/* End Switch Tracked By Subject */}
 
         {/* Tracked By Subject */}
-        {experimentalFeaturesEnabled && isSwitchTrackBySubjectEnabled && (
+        {isSwitchTrackBySubjectEnabled && (
           <View style={style.menuItemContainer}>
             <Pressable onPress={() => {
               if (!isActivelyTracking) {

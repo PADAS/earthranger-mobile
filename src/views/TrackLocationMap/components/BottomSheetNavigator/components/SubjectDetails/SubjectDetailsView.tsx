@@ -35,6 +35,9 @@ import { getStringForKey, localStorage } from '../../../../../../common/data/sto
 import { useRetrieveSubjectIcon } from '../../../../../../common/data/subjects/useRetrieveSubjectIcon';
 import { calculateDateDifference } from '../../../../../../common/utils/timeUtils';
 import { CopyIcon } from '../../../../../../common/icons/CopyIcon';
+import BackgroundLocation from '../../../../../../common/backgrounGeolocation/BackgroundLocation';
+import { logTracking } from '../../../../../../common/utils/logUtils';
+import { addDistance } from '../../../../../../common/utils/geometryUtils';
 
 // Styles
 import { styles } from './SubjectDetailsView.styles';
@@ -56,6 +59,7 @@ const SubjectDetailsView = () => {
     },
   );
   const [displayCoordinatesCopied, setDisplayCoordinatesCopied] = useState(false);
+  const [subjectDistance, setSubjectDistance] = useState<string>('');
 
   // References
   const eventEmitter = useRef(getEventEmitter()).current;
@@ -75,7 +79,33 @@ const SubjectDetailsView = () => {
         setSubjectIcon(await retrieveSubjectIcon(id) || '');
       };
 
+      const getCurrentDistanceToSubject = async () => {
+        try {
+          const location = await BackgroundLocation.getCurrentPosition({
+            samples: 1,
+            persist: false,
+          });
+
+          if (location) {
+            setSubjectDistance(addDistance(
+              [
+                location.coords.latitude,
+                location.coords.longitude,
+              ],
+              [
+                currentSubjectData.coordinates.latitude,
+                currentSubjectData.coordinates.longitude,
+              ],
+              0,
+            ).toFixed(2));
+          }
+        } catch (error) {
+          logTracking.error('getCurrentLocation: error', error);
+        }
+      };
+
       initData(currentSubjectData.id);
+      getCurrentDistanceToSubject();
     }
   }, [subjectData]);
 
@@ -136,6 +166,10 @@ const SubjectDetailsView = () => {
           {/* End Close Icon */}
         </View>
         { /* End Header */ }
+
+        <Text heading2 black marginB-16>
+          {t('subjectsView.distance', { subjectDistance })}
+        </Text>
 
         <Text mobileBody brightBlue>
           {calculateDateDifference(subjectLastUpdate, t)}

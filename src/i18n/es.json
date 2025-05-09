@@ -440,6 +440,7 @@
       "minutesAgo": "Hace {{diff}} minutos",
       "minuteAgo": "Hace {{diff}} minutos",
       "secondsAgo": "Hace {{diff}} segundos"
-    }
+    },
+    "distance": "A {{subjectDistance}} km de ti"
   }
 }
