@@ -218,6 +218,7 @@ const ReportForm = () => {
   const [draftViewFinishedLoading, setDraftViewFinishedLoading] = useState(false);
   const [isLoaderVisible, setIsLoaderVisible] = useState(false);
   const [accuracy, setAccuracy] = useState(0);
+  const [isEventPositionGeoPostion, setIsEventPositionGeoPosition] = useState(false);
 
   let mapURL = createMapBoxPointMapURL(reportCoordinates);
 
@@ -274,7 +275,7 @@ const ReportForm = () => {
   useEffect(() => {
     showCloseFormCustomAlert = hasReportChanges();
     setIsSaveDraftEnabled(showCloseFormCustomAlert);
-  }, [notesDataSource, images, isFormEmpty, formData, polygonPoints, reportCoordinates]);
+  }, [notesDataSource, images, isFormEmpty, formData, polygonPoints, reportCoordinates, isEventPositionGeoPostion]);
 
   useEffect(() => {
     const backAction = () => {
@@ -367,6 +368,8 @@ const ReportForm = () => {
         parseFloat(updatedCoordinates[1].toFixed(6)),
       ]);
     }
+
+    showCloseFormCustomAlert = false;
   }, [route]));
 
   useEffect(() => {
@@ -529,6 +532,7 @@ const ReportForm = () => {
           parseFloat(location.coords.latitude.toFixed(6))],
       );
       setAccuracy(location.coords.accuracy);
+      setIsEventPositionGeoPosition(true);
     }
   };
 
@@ -611,6 +615,7 @@ const ReportForm = () => {
 
   // Handler Functions
   const onMapPress = () => {
+    setIsEventPositionGeoPosition(false);
     navigation.navigate('ReportEditLocationView', { coordinates: reportCoordinates });
   };
 
@@ -631,6 +636,7 @@ const ReportForm = () => {
       parseFloat(updatedReportCoordinates[1].toFixed(6)),
     ]);
     setIsSaveDraftEnabled(true);
+    setIsEventPositionGeoPosition(false);
   };
 
   const onNotePress = () => {
@@ -948,7 +954,7 @@ const ReportForm = () => {
     return (!isEqual(reportSnapshot.current.data, formData) && !isFormEmpty)
       || !isEqual(reportSnapshot.current.notes, notesDataSource)
       || reportSnapshot.current.photoCount !== images.length
-      || (reportGeometryType === 'Point' && !isEqual(reportCoordinates, initialCoordinates.current));
+      || (reportGeometryType === 'Point' && (!isEqual(reportCoordinates, initialCoordinates.current) && !isEventPositionGeoPostion));
   };
 
   const saveReportSnapshot = () => {
@@ -964,7 +970,7 @@ const ReportForm = () => {
   const closeFormView = () => {
     if (isDefaultPatrolInfoEnabled && showSchemaErrorMessage) {
       navigation.popToTop();
-    } else if (showSchemaErrorMessage || isFormEmpty) {
+    } else if (showSchemaErrorMessage || (isFormEmpty && !showCloseFormCustomAlert)) {
       navigation.pop();
     } else if (showCloseFormCustomAlert) {
       setShowAlertCloseForm(true);

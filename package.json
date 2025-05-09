@@ -1,6 +1,6 @@
 {
   "name": "das_mobile_rn",
-  "version": "2.6.1",
+  "version": "2.6.2",
   "private": true,
   "scripts": {
     "preinstall": "git config core.hooksPath .githooks",

@@ -2,6 +2,7 @@
 // ------------------------------------------------------------------------
 // Indexes
 // ------------------------------------------------------------------------
+export const SUBJECTS_IDX = 'CREATE UNIQUE INDEX IF NOT EXISTS subject_remote_id_idx ON subjects (remote_id)';
 export const SUBJECT_GROUPS_IDX = `CREATE UNIQUE INDEX IF NOT EXISTS subject_groups_remote_id_idx
   ON subject_groups (remote_id)`;
 export const SUBJECT_GROUPS_ID_IDX = 'CREATE INDEX IF NOT EXISTS subject_groups_id_idx ON subject_groups (id)';

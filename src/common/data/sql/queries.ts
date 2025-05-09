@@ -10,7 +10,6 @@ export const ATTACHMENTS_IDX = 'CREATE INDEX IF NOT EXISTS attachments_id_idx ON
 
 export const SYNC_STATES_IDX = 'CREATE UNIQUE INDEX IF NOT EXISTS sync_states_account_resource_scope_idx ON sync_states (account_id ASC, resource ASC, scope ASC)';
 export const PATROL_TYPES_IDX = 'CREATE UNIQUE INDEX IF NOT EXISTS patrol_types_id_idx ON patrol_types (remote_id)';
-export const SUBJECTS_IDX = 'CREATE UNIQUE INDEX IF NOT EXISTS subject_remote_id_idx ON subjects (remote_id)';
 
 // ------------------------------------------------------------------------
 // SQL Queries

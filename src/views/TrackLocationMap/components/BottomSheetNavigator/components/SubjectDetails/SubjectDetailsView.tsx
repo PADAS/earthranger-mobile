@@ -1,6 +1,11 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 // External Dependencies
-import { Button, Text, View } from 'react-native-ui-lib';
+import {
+  Button,
+  Incubator,
+  Text,
+  View,
+} from 'react-native-ui-lib';
 import { SvgXml } from 'react-native-svg';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +16,8 @@ import React, {
   useState,
 } from 'react';
 import { useMMKVString } from 'react-native-mmkv';
+import { Pressable } from 'react-native';
+import Clipboard from '@react-native-community/clipboard';
 
 // Internal Dependencies
 import {
@@ -27,6 +34,7 @@ import { getEventEmitter } from '../../../../../../common/utils/AppEventEmitter'
 import { getStringForKey, localStorage } from '../../../../../../common/data/storage/keyValue';
 import { useRetrieveSubjectIcon } from '../../../../../../common/data/subjects/useRetrieveSubjectIcon';
 import { calculateDateDifference } from '../../../../../../common/utils/timeUtils';
+import { CopyIcon } from '../../../../../../common/icons/CopyIcon';
 
 // Styles
 import { styles } from './SubjectDetailsView.styles';
@@ -47,6 +55,7 @@ const SubjectDetailsView = () => {
       longitude: 0,
     },
   );
+  const [displayCoordinatesCopied, setDisplayCoordinatesCopied] = useState(false);
 
   // References
   const eventEmitter = useRef(getEventEmitter()).current;
@@ -72,6 +81,18 @@ const SubjectDetailsView = () => {
 
   // Icons
   const closeIcon = () => <CloseIcon />;
+
+  const onPressCopyCoordinates = () => {
+    Clipboard.setString(
+      formatCoordinates(
+        subjectCoordinates.latitude || 0,
+        subjectCoordinates.longitude || 0,
+        getStringForKey(COORDINATES_FORMAT_KEY),
+      ),
+    );
+
+    setDisplayCoordinatesCopied(true);
+  };
 
   return (
     <>
@@ -120,14 +141,37 @@ const SubjectDetailsView = () => {
           {calculateDateDifference(subjectLastUpdate, t)}
         </Text>
 
-        <Text bodySmall black>
-          {formatCoordinates(
-            subjectCoordinates.latitude,
-            subjectCoordinates.longitude,
-            getStringForKey(COORDINATES_FORMAT_KEY),
-          )}
-        </Text>
+        <View style={styles.coordinatesContainer}>
+          <Text bodySmall black marginR-12>
+            {formatCoordinates(
+              subjectCoordinates.latitude,
+              subjectCoordinates.longitude,
+              getStringForKey(COORDINATES_FORMAT_KEY),
+            )}
+          </Text>
+          <Pressable
+            hitSlop={{
+              top: 18, bottom: 18, left: 18, right: 18,
+            }}
+            onPress={onPressCopyCoordinates}
+          >
+            <CopyIcon />
+          </Pressable>
+        </View>
       </View>
+
+      {/* Coordinates copied to clipboard Toast */}
+      <Incubator.Toast
+        autoDismiss={2000}
+        backgroundColor={COLORS_LIGHT.G0_black}
+        message={t('mapTrackLocation.coordinatesCopied')}
+        messageStyle={{ color: COLORS_LIGHT.white, marginLeft: -24 }}
+        onDismiss={() => setDisplayCoordinatesCopied(false)}
+        position="bottom"
+        style={{ borderRadius: 4 }}
+        visible={displayCoordinatesCopied}
+      />
+      {/* End Coordinates copied to clipboard Toast */}
     </>
   );
 };

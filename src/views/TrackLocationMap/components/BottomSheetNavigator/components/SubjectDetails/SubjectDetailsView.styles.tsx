@@ -28,5 +28,8 @@ export const styles = StyleSheet.create({
     marginLeft: 'auto',
     backgroundColor: COLORS_LIGHT.transparent,
   },
-
+  coordinatesContainer: {
+    marginTop: 12,
+    flexDirection: 'row',
+  },
 });

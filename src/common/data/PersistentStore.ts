@@ -31,7 +31,6 @@ import {
   EVENT_TYPE_DISPLAY_IDX,
   SYNC_STATES_IDX, SELECT_SYNC_STATE,
   PATROL_TYPES_IDX,
-  SUBJECTS_IDX,
 } from './sql/queries';
 import {
   ACCOUNTS_USER_IDX,
@@ -173,6 +172,7 @@ import {
 import {
   PROFILE_SUBJECT_GROUPS_PROFILE_ID_IDX,
   PROFILE_SUBJECT_GROUPS_SUBJECT_GROUP_ID_IDX,
+  SUBJECTS_IDX,
   SUBJECT_GROUPS_IDX,
   SUBJECT_GROUPS_ID_IDX,
   SUBJECT_GROUPS_PARENT_ID_IDX,
@@ -183,6 +183,7 @@ import {
   M_38_SUBJECT_GROUPS_ID_IDX,
   M_38_TABLE_SUBJECT_GROUPS,
 } from './sql/migrations/db_m_038';
+import { ALTER_TABLE_SUBJECTS_REMOTE_ID_IDX } from './sql/migrations/db_m_039';
 
 enablePromise(true);
 
@@ -587,6 +588,9 @@ export const onUpgrade = async (newVersion: number) => {
         await db.executeSql(M_38_DROP_TABLE_SUBJECT_GROUPS);
         await db.executeSql(M_38_TABLE_SUBJECT_GROUPS);
         await db.executeSql(M_38_SUBJECT_GROUPS_ID_IDX);
+      // falls through
+      case 39:
+        await db.executeSql(ALTER_TABLE_SUBJECTS_REMOTE_ID_IDX);
       // falls through
       default:
         // Do nothing
